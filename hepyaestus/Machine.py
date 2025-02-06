@@ -39,18 +39,7 @@ class Machine(StoreObject):
                     transmitter, eventTime = self.isRequested.value
                     self.printTrace(isRequested=transmitter.id, eventTime=eventTime)
                     self.isRequested = self.env.event()
-                    # assert eventTime == self.env.now, (
-                    #     'isRequested was triggered earlier, not now'
-                    # )
-                    # changed transmitter to the enity being moved
-                    # TODO Provide way to check this
-                    # assert transmitter == self.giver, (
-                    #     'the giver is not the requestingObject'
-                    # )
-                    # assert self.giver.receiver == self, (
-                    #     'the receiver of the signalling object in not the station'
-                    # )
-                    self.isRequested = self.env.event()
+
                     assert isinstance(transmitter, Entity)
                     self.receive(transmitter)
                     break
@@ -65,17 +54,3 @@ class Machine(StoreObject):
 
             if self.giver.canGive():
                 self.giver.canDispose.succeed((self, self.env.now))
-
-                # if self.canDispose in receivedEvents:
-                #     assert self.canDispose.value is not None
-
-                #     transmitter, eventTime = self.canDispose.value
-                #     self.printTrace(canDispose=transmitter.id, eventTime=eventTime)
-                #     self.canDispose = self.env.event()
-
-                #     assert self.receiver is not None
-                #     if self.receiver.canReceive():
-                #         entity = yield self.give()
-                #         assert isinstance(entity, Entity)
-                #         assert self.receiver is not None
-                #         self.receiver.isRequested.succeed((entity, self.env.now))

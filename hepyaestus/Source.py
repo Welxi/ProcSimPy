@@ -21,7 +21,7 @@ class EntityGenerator:
         self.type = 'EntityGenerator'
         self.victim: Source = victim
 
-    def run(self):
+    def run(self) -> Generator:
         while True:
             entity: Entity = self.victim.createEntity()
             entity.initialize(self.env, self.line, currentStation=self.victim)

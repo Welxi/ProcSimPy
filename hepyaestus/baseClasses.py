@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
     from hepyaestus.Entity import Entity
     from hepyaestus.Line import Line
-    from simpy.resources.store import StoreGet
 
 
 class BaseObject:
@@ -72,8 +71,11 @@ class CoreObject(BaseObject, ABC):
     def run(self) -> Generator:
         raise NotImplementedError
 
+    # abstract methods need to have the same return type
+    # need to create generic of give and recieve for store ans resource
+
     # @abstractmethod
-    # def receive(self, entity: Entity):
+    # def receive(self, entity: Entity) -> None:
     #     pass
 
     # @abstractmethod
@@ -82,6 +84,10 @@ class CoreObject(BaseObject, ABC):
 
     @abstractmethod
     def canReceive(self) -> bool:
+        return False
+
+    @abstractmethod
+    def canGive(self) -> bool:
         return False
 
 
@@ -94,10 +100,10 @@ class StoreObject(CoreObject):
         super().initialize(env, line)
         self.store = Store(env, capacity=self.capacity)
 
-    def give(self) -> StoreGet:
+    def give(self):
         return self.store.get()
 
-    def receive(self, entity: Entity):
+    def receive(self, entity: Entity) -> None:
         self.store.put(entity)
 
     def canReceive(self) -> bool:
@@ -124,5 +130,4 @@ class ResourceObject(CoreObject):
         return NotImplementedError
 
     def canReceive(self) -> bool:
-        return False
-        # return len(self.res.users) < self.capacity
+        return len(self.res.users) < self.capacity and not self.isRequested.triggered
