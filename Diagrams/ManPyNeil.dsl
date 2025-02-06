@@ -45,4 +45,10 @@ neil = softwareSystem "ManPy Neil"{
     simNeil.manpyObject -> simpyV4.env "Depends" 
     simNeil.store -> simpyV4.store "Depends"
     simNeil.res -> simpyV4.res "Depends"
+
+    simNeil.core -> simNeil.core "Has Successors and Precursours of Inheritors"
+    
+    simNeil.source -> simNeil.queue "has Successor"
+    simNeil.queue -> simNeil.machine "has Successor"
+    simNeil.machine -> simNeil.exit "has Successor"
 }
