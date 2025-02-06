@@ -76,6 +76,7 @@ def getPhrase() -> dict:
     }
 
 
+# TODO change to f'strings'
 def printTrace(entity: BaseObject, eventTime: float, **kw) -> None:
     assert len(kw) == 1, 'Only pne phrase per printTrace supported'
     charLimit = 60  # could get this from line defaults
