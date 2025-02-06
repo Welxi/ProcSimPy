@@ -21,6 +21,9 @@ class Machine(StoreObject):
             distribution=processingTime
         )
 
+        self.totalWorkingTime: float = 0
+        self.timeLastOperationStarted: float = 0
+
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
 
@@ -42,11 +45,14 @@ class Machine(StoreObject):
 
                     assert isinstance(transmitter, Entity)
                     self.receive(transmitter)
+                    self.timeLastOperationStarted = self.env.now
                     break
 
             yield self.env.timeout(delay=self.processingTime.generateNumber())
 
             if self.receiver.canReceive():
+                print("Hello")
+                self.totalWorkingTime += self.env.now - self.timeLastOperationStarted
                 entity = yield self.give()
                 assert isinstance(entity, Entity)
                 assert self.receiver is not None

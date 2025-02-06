@@ -42,14 +42,14 @@ def main(test=False) -> dict[str, int | float] | None:
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
-    workingRatio = (machine.totalWorkingTime / maxSimTime) * 100
+    workingRatio = (machine.totalWorkingTime / maxSimTime)
 
     if test:
         return {'parts': exit.numOfExits, 'working_ratio': workingRatio}
 
     print(f'Sim End Time: {env.now}')
     print(f'the system produced {exit.numOfExits} parts')
-    print(f'the total working ratio of the {machine.name} is {workingRatio}')
+    print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
 
     return None
 
