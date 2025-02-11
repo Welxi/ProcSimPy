@@ -21,7 +21,6 @@ class BaseObject:
     def initialize(self, env: Environment, line: Line) -> None:
         self.env = env
         self.line = line
-        self.printTrace(create=self.id)
 
     def printTrace(self, eventTime: Optional[float] = None, **kw) -> None:
         if not self.line.traceIsOn:
