@@ -1,0 +1,58 @@
+
+[lint]
+# See https://docs.astral.sh/ruff/rules/
+ignore = [
+    "ISC001", # Implicitly concatenated string literals on one line
+    "N818",   # Require "Error" suffix on exception type names
+    "PYI034", # Confused by Put.__enter__ and Get.__enter__
+    "PYI041", # Use `float` instead of `int | float`
+    "RET505", # Unnecessary `else` after `return` statement
+    "RET506", # Unnecessary `else` after `raise` statement
+    "SIM105", # Use `contextlib.suppress()` instead of try-except-pass
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "UP006",  # Use 'type' instead of 'Type' for annotations
+    "UP007",  # Use 'X | Y' instead of 'Optional' in annotations
+]
+select = [
+    "E", # Pycodestyle
+    "F", # Pyflakes
+    "I", # isort
+    "W", # Pycodestyle
+    #"N", # pep8-naming
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "FA",  # flake8-future-annotations
+    "ICN", # flake8-import-conventions
+    "INP", # flake8-no-pep40
+    "ISC", # flake8-implicit-str-concat
+    "PIE", # flake8-pie
+    "UP",  # pyupgrade
+    "YTT", # flake8-2020
+    #"T20", # flake8-print
+    "FLY",  # flynt
+    "PERF", # Perflint
+    "PL",   # Pylint
+    "PT",   # flake8-pytest-style
+    "PYI",  # flake8-pyi
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RUF",  # ruff-specific
+    "SIM",  # flake8-simplify
+    "SLOT", # flake8-slots
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "TRY",  # tryceratops
+]
+
+[lint.isort]
+known-first-party = ["simpy"]
+
+[lint.extend-per-file-ignores]
+"*/tests/*" = ["PERF203", "PLR0913", "PLR2004"]
+"docs/*" = ["INP001"]
+"docs/examples/code/*" = ["T20"]
+"imports.py" = ["F401", "I001"]
+"tests/*" = ["PERF203", "PLR0913", "PLR2004"]
+
+[format]
+quote-style = "single"

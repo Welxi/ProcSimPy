@@ -1,95 +1,21 @@
 [project]
-name = "hepyaestus"
-version = "0.1.0"
 description = "Discrete Event Simulation (DES) Library for the Manufacturing and Supply line Domains, built on top of SImPy"
+name = "hepyaestus"
 readme = "README.md"
 requires-python = ">=3.13"
+version = "0.1.0"
 
-authors = [
-    {name = "Cornelius (Neil) Sheahan", email = "neil.sheahan@ul.ie"}
-]
+authors = [{ name = "Cornelius (Neil) Sheahan", email = "neil.sheahan@ul.ie" }]
 maintainers = [
-    {name = "Cornelius (Neil) Sheahan", email = "neil.sheahan@ul.ie"}
+    { name = "Cornelius (Neil) Sheahan", email = "neil.sheahan@ul.ie" },
 ]
 
-dependencies = [
-    "simpy>=4.1.1",
-]
+dependencies = ["simpy>=4.1.1"]
 
 [dependency-groups]
-dev = [
-    "coverage>=7.6.10",
-    "pytest>=8.3.4",
-    "pytest-cov>=6.0.0",
-    "ruff>=0.9.4",
-]
+dev = ["coverage>=7.6.10", "pytest-cov>=6.0.0", "pytest>=8.3.4", "ruff>=0.9.4"]
 
-[tool.ruff]
-
-[tool.ruff.lint]
-# See https://docs.astral.sh/ruff/rules/
-# These settings are from the simpy tool:
-# my assumption is that being like them is best till I have formed my own opinion
-select = [
-    "F", # Pyflakes
-    "E", # Pycodestyle
-    "W", # Pycodestyle
-    "I", # isort
-    #"N", # pep8-naming
-    "UP", # pyupgrade
-    "YTT", # flake8-2020
-    "B", # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "FA", # flake8-future-annotations
-    "ISC", # flake8-implicit-str-concat
-    "ICN", # flake8-import-conventions
-    "PIE", # flake8-pie
-    "INP", # flake8-no-pep40
-    #"T20", # flake8-print
-    "PT", # flake8-pytest-style
-    "PYI", # flake8-pyi
-    "RSE", # flake8-raise
-    "RET", # flake8-return
-    "SLOT", # flake8-slots
-    "SIM", # flake8-simplify
-    "TID", # flake8-tidy-imports
-    "TCH", # flake8-type-checking
-    "PL", # Pylint
-    "TRY", # tryceratops
-    "FLY", # flynt
-    "PERF", # Perflint
-    "RUF", # ruff-specific
-]
-ignore = [
-    "ISC001", # Implicitly concatenated string literals on one line
-    "N818", # Require "Error" suffix on exception type names
-    "UP006", # Use 'type' instead of 'Type' for annotations
-    "UP007", # Use 'X | Y' instead of 'Optional' in annotations
-    "PYI034", # Confused by Put.__enter__ and Get.__enter__
-    "PYI041", # Use `float` instead of `int | float`
-    "RET505", # Unnecessary `else` after `return` statement
-    "RET506", # Unnecessary `else` after `raise` statement
-    "SIM105", # Use `contextlib.suppress()` instead of try-except-pass
-    "TRY003", # Avoid specifying long messages outside the exception class
-    # Me adding
-    "E501", # some Dream Comments are just too long
-]
-
-[tool.ruff.format]
-quote-style = "single"
-
-[tool.ruff.lint.isort]
-known-first-party = ["simpy"]
-
-[tool.ruff.lint.extend-per-file-ignores]
-"docs/*" = ["INP001"]
-"docs/examples/code/*" = ["T20"]
-"tests/*" = ["PLR2004", "PLR0913", "PERF203"]
-"*/tests/*" = ["PLR2004", "PLR0913", "PERF203"]
-"imports.py" = ["F401", "I001"]
+# ruff settings in ruff.toml
 
 [tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-]
+exclude_lines = ["if TYPE_CHECKING:", "pragma: no cover"]
