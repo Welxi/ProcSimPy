@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import simpy
+from hepyaestus.RandomNumberGenerator import SeedType, setSeed
 
 if TYPE_CHECKING:
     from hepyaestus.Line import Line
@@ -10,12 +11,12 @@ if TYPE_CHECKING:
 
 class Experiment:
     def __init__(
-        self,
-        line: Line,
-        seed: int = 42,
+        self, line: Line, seed: int = 42, seedType: SeedType = SeedType.INT
     ) -> None:
+        self.interation: int = 1
         self.line: Line = line
         self.seed: int = seed
+        self.seedType = seedType
 
     def run(
         self,
@@ -29,13 +30,16 @@ class Experiment:
         if test:
             self.line.turnTraceingOff()
 
-        for interation in range(self.numberOfReplications):
-            # TODO create RandomNumberGenerator with Seed Here
-            print(f'Interation {interation}: Seed = {self.seed}')
-            self.runIteration()
+        self.runIteration()
+
+        while self.interation < self.numberOfReplications:
+            self.interation += 1
             self.seed += 1
+            self.runIteration()
 
     def runIteration(self) -> None:
+        print(f'Interation {self.interation}: Seed = {self.seed}')
+        setSeed(seed=self.seed, seedType=self.seedType)
         self.env = simpy.Environment()
         self.line.initialize(self.env)
 
