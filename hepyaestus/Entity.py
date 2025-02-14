@@ -19,6 +19,7 @@ class Entity(BaseObject):
         self, env: Environment, line: Line, currentStation: Optional[CoreObject] = None
     ) -> None:
         super().initialize(env, line)
+        self.printTrace(create=None)
         self.creationTime = self.env.now
         self.startTime = self.env.now
         self.currentStation = currentStation if currentStation else None

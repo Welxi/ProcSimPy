@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Optional, Self
 
+from hepyaestus.EventData import EventData
 from simpy import Environment, Resource, Store
 from simpy.core import Infinity
 
@@ -26,9 +27,10 @@ class BaseObject:
         if not self.line.traceIsOn:
             return
         from hepyaestus.printTrace import printTrace
-
-        time: float = eventTime if eventTime is not None else self.env.now
-        printTrace(self, time, **kw)
+        for key, eventData in kw.items():
+            if eventData is None:
+                kw[key] = EventData(caller=self, time=self.env.now)
+        printTrace(self, **kw)
 
 
 class CoreObject(BaseObject, ABC):
@@ -36,14 +38,15 @@ class CoreObject(BaseObject, ABC):
         super().__init__(id, name)
         self.next: list[Self] = []
         self.previous: list[Self] = []
-        self.delay: int = 0
 
-        # Needs to be in init so initialize can check for circular imports in objects not yet initialized
+        # Needs to be in init so initialize can check for circular imports
+        # in objects not yet initialized
         self.giver: Self | None = None
         self.receiver: Self | None = None
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
+        self.printTrace(init=None)
         self.canDispose = self.env.event()
         self.isRequested = self.env.event()
 
