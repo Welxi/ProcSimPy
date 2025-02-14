@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
+from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
@@ -27,7 +28,12 @@ class EntityGenerator:
             entity.initialize(self.env, self.line, currentStation=self.victim)
 
             if self.victim.canReceive() and not self.victim.entityCreated.triggered:
-                self.victim.entityCreated.succeed((entity, self.env.now))
+                self.victim.entityCreated.succeed(
+                    EventData(
+                        caller=self.victim, time=self.env.now, transmission=entity
+                    )
+                    # Adding caller as self.victim because caller needs to be a CoreObject
+                )
 
             yield self.env.timeout(self.victim.calculateInterArrivalTime())
 
@@ -64,19 +70,23 @@ class Source(StoreObject):
             if self.entityCreated in receivedEvents:
                 assert self.entityCreated.value is not None
 
-                transmitter, eventTime = self.entityCreated.value
-                self.printTrace(enter=transmitter.id, eventTime=eventTime)
+                eventData = self.entityCreated.value
+                assert isinstance(eventData, EventData)
+                assert isinstance(eventData.transmission, Entity)
+                assert eventData.time == self.env.now
+                self.printTrace(enter=eventData)
                 self.entityCreated = self.env.event()
 
-                assert isinstance(transmitter, Entity)
-                self.receive(transmitter)
+                self.receive(eventData.transmission)
 
                 assert self.receiver is not None
                 if self.receiver.canReceive():
                     entity = yield self.give()
                     assert isinstance(entity, Entity)
                     assert self.receiver is not None
-                    self.receiver.isRequested.succeed((entity, self.env.now))
+                    self.receiver.isRequested.succeed(
+                        EventData(caller=self, time=self.env.now, transmission=entity)
+                    )
 
     def createEntity(self) -> Entity:
         self.partNumber += 1

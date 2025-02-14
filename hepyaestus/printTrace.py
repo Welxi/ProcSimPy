@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hepyaestus.EventData import EventData
+
 if TYPE_CHECKING:
     from hepyaestus.baseClasses import BaseObject
 
@@ -22,20 +24,32 @@ def supportedKeywords() -> tuple:
     )
 
 
-def consoleTrace(base: BaseObject, eventTime: float, key, context) -> None:
-    timecode = f'ID:{base.id:>3} @T:{eventTime:>4} ->'
+def printTrace(base: BaseObject, **kw) -> None:
+    assert len(kw) == 1, 'Only pne phrase per printTrace supported'
+
+    for key, eventData in kw.items():
+        if key not in supportedKeywords():
+            raise ValueError(f'Unsupported phrase {key} for {base.id}')
+        assert isinstance(eventData, EventData)
+        consoleTrace(baseObject=base, eventData=eventData, key=key)
+
+
+def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
+    ctx = eventData.caller.id
+    base = baseObject.id
+    timecode = f'ID:{base:>3} @T:{eventData.time:>4} ->'
     phrases = {
-        'init': f'{timecode} Object Initialized => {base.id}',
-        'create': f'{timecode} Entity Created => {base.id}',
-        'startWork': f'{timecode} {base.id} started work',
-        'finishWork': f'{timecode} {base.id} finished work',
-        'interrupted': f'{timecode} {base.id} interrupted by {context.id}',
-        'interruptEnd': f'{timecode} {context.id} interruption ended on {base.id}',
-        'enter': f'{timecode} {context.id} entered {base.id}',
-        'received': f'{timecode} {base.id} received {context.id}',
-        'gave': f'{timecode} {base.id} gave {context.id}',
-        'isRequested': f'{timecode} {base.id} received an isRequested event for {context.id}',
-        'canDispose': f'{timecode} {base.id} received a canDispose event for {context.id}',
+        'init': f'{timecode} Object Initialized => {base}',
+        'create': f'{timecode} Entity Created => {base}',
+        'startWork': f'{timecode} {base} started work',
+        'finishWork': f'{timecode} {base} finished work',
+        'interrupted': f'{timecode} {base} interrupted by {ctx}',
+        'interruptEnd': f'{timecode} {ctx} interruption ended on {base}',
+        'enter': f'{timecode} {ctx} entered {base}',
+        'received': f'{timecode} {base} received {ctx}',
+        'gave': f'{timecode} {base} gave {ctx}',
+        'isRequested': f'{timecode} {base} received an isRequested event for {ctx}',
+        'canDispose': f'{timecode} {base} received a canDispose event for {ctx}',
     }
     print(phrases[key])
 
@@ -88,12 +102,3 @@ def getPhrase() -> dict:
         'eventsToCome': {'phrase': 'there are MORE events for now'},
         'noEventsToCome': {'phrase': 'there are NO more events for now'},
     }
-
-
-def printTrace(base: BaseObject, eventTime: float, **kw) -> None:
-    assert len(kw) == 1, 'Only pne phrase per printTrace supported'
-
-    for key, context in kw.items():
-        if key not in supportedKeywords():
-            raise ValueError(f'Unsupported phrase {key} for {base.id}')
-        consoleTrace(base=base, eventTime=eventTime, key=key, context=context)

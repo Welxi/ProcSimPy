@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
+from hepyaestus.EventData import EventData
 
 if TYPE_CHECKING:
     from collections.abc import Generator
