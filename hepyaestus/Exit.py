@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
+from hepyaestus.EventData import EventData
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -25,11 +26,17 @@ class Exit(StoreObject):
         while True:
             yield self.isRequested
             assert self.isRequested.value is not None
-            transmitter, eventTime = self.isRequested.value
-            self.printTrace(isRequested=transmitter.id, eventTime=eventTime)
+            eventData = self.isRequested.value
             self.isRequested = self.env.event()
+            assert isinstance(eventData, EventData)
+            assert isinstance(eventData.transmission, Entity)
+            assert eventData.time == self.env.now
+            self.printTrace(isRequested=eventData)
 
-            assert isinstance(transmitter, Entity)
-            self.receive(transmitter)
-            self.exits.append(transmitter)
+            self.receive(eventData.transmission)
+            self.exits.append(eventData.transmission)
             self.numOfExits += 1
+
+            for giver in self.previous:
+                if giver.canGive():
+                    giver.canDispose.succeed(EventData(caller=self, time=self.env.now))
