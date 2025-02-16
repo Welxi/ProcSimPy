@@ -31,7 +31,8 @@ def printTrace(base: BaseObject, **kw) -> None:
         if key not in supportedKeywords():
             raise ValueError(f'Unsupported phrase {key} for {base.id}')
         assert isinstance(eventData, EventData)
-        consoleTrace(baseObject=base, eventData=eventData, key=key)
+        if eventData.trace:
+            consoleTrace(baseObject=base, eventData=eventData, key=key)
 
 
 def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
