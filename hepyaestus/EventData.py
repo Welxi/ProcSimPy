@@ -14,4 +14,5 @@ class EventData:
     time: float
     caller: BaseObject
     transmission: Entity | None = None
+    trace: bool = True
     id: int = field(default_factory=count().__next__, init=False)
