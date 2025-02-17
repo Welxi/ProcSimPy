@@ -21,8 +21,9 @@ class Line:
         # self.QueueList: list[Queue] = [objectList[1]]
         # self.SourceList: list[Source] = [objectList[0]]
 
-        self.traceIsOn = True  # checked by ManPyObject before calling printTrace
-        # TODO change to defaults dict
+        self.settings: dict[str, int | bool] = {
+            'traceIsOn': True  # checked by baseObject before calling printTrace
+        }
 
     def initialize(self, env: Environment) -> None:
         self.env = env
@@ -31,4 +32,4 @@ class Line:
             self.env.process(object.run())
 
     def turnTraceingOff(self) -> None:
-        self.traceIsOn = False
+        self.settings['traceIsOn'] = False
