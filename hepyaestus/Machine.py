@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
+from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
@@ -22,6 +23,7 @@ class Machine(StoreObject):
         )
 
         self.totalWorkingTime: float = 0
+        self.totalBlockageTime: float = 0
         self.timeLastOperationStarted: float = 0
 
     def initialize(self, env: Environment, line: Line) -> None:
@@ -34,29 +36,47 @@ class Machine(StoreObject):
                     [self.isRequested, self.canDispose]
                 )
                 assert receivedEvents is not None
+                assert self.receiver is not None
+                assert self.giver is not None
+
                 if self.isRequested in receivedEvents:
                     assert self.isRequested.value is not None
-                    assert self.receiver is not None
-                    assert self.giver is not None
 
-                    transmitter, eventTime = self.isRequested.value
-                    self.printTrace(isRequested=transmitter.id, eventTime=eventTime)
+                    eventData = self.isRequested.value
+                    assert isinstance(eventData, EventData)
+                    assert isinstance(eventData.transmission, Entity)
+                    # assert eventData.time == self.env.now
                     self.isRequested = self.env.event()
+                    self.printTrace(isRequested=eventData)
 
-                    assert isinstance(transmitter, Entity)
-                    self.receive(transmitter)
-                    self.timeLastOperationStarted = self.env.now
-                    break
+                    self.receive(eventData.transmission)
+
+                if self.canDispose in receivedEvents:
+                    print('Machine Disposing')
+                    eventData = self.canDispose.value
+                    assert isinstance(eventData, EventData)
+                    # assert eventData.time == self.env.now
+                    self.canDispose = self.env.event()
+                    self.printTrace(canDispose=eventData)
+
+                    # if self.receiver.canReceive():
+                    # I am checking this when I am triggering event
+                    entity = yield self.give()
+                    assert isinstance(entity, Entity)
+
+                    self.receiver.isRequested.succeed(
+                        EventData(caller=self, time=self.env.now, transmission=entity)
+                    )
 
             yield self.env.timeout(delay=self.processingTime.generateNumber())
 
-            if self.receiver.canReceive():
-                print("Hello")
-                self.totalWorkingTime += self.env.now - self.timeLastOperationStarted
-                entity = yield self.give()
-                assert isinstance(entity, Entity)
-                assert self.receiver is not None
-                self.receiver.isRequested.succeed((entity, self.env.now))
+            self.canReceiversReceive()
+            self.canGiversGive()
 
-            if self.giver.canGive():
-                self.giver.canDispose.succeed((self, self.env.now))
+    def give(self):
+        self.totalWorkingTime += self.env.now - self.timeLastOperationStarted
+        return super().give()
+
+    def receive(self, entity: Entity) -> None:
+        self.timeLastOperationStarted = self.env.now
+        super().receive(entity)

@@ -2,12 +2,8 @@ import math
 from abc import ABC, abstractmethod
 from enum import Enum
 
-# TODO: Validate Data on creation of distributions
-# TODO: write tests for distributions
-# Still not sure Enum is the best store of this,
-#  but some automated tests should help my confidence
 
-
+# Still not sure Enum is the best store of this
 # Could Change it to just if it wants numpy or random
 class DistributionType(Enum):
     FIXED = 'Fixed'
@@ -21,9 +17,6 @@ class DistributionType(Enum):
     WEIBULL = 'Weibull'
     CAUCHY = 'Cauchy'
     TRIANGULAR = 'Triangular'
-
-
-# Could add support for custom functions
 
 
 class ProbDistribution(ABC):
@@ -88,7 +81,7 @@ class ExpDistribution(ProbDistribution):
 class GammaDistribution(ProbDistribution):
     def __init__(self, alpha: float, beta: float, shape: float, rate: float) -> None:
         super().__init__(DistributionType.GAMMA)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.alpha: float = alpha
         self.beta: float = beta
         self.shape: float = shape
@@ -106,15 +99,13 @@ class GammaDistribution(ProbDistribution):
 class LogisticDistribution(ProbDistribution):
     def __init__(self, mean: float, scale: float) -> None:
         super().__init__(DistributionType.LOGISTIC)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.mean: float = mean
         self.scale: float = scale
 
     def distributionFunction(self, RanNumGenerator) -> float:
         while 1:
             x: float = RanNumGenerator.random()
-            # TODO: is the Math right here?
-            # Copilot suggested self.stdev instead of self.scale
             number: float = self.mean + self.scale * math.log(x / (1 - x))
             if number > 0:
                 return number
@@ -124,7 +115,7 @@ class LogisticDistribution(ProbDistribution):
 class ErlangDistribution(ProbDistribution):
     def __init__(self, alpha: float, beta: float, shape: float, rate: float) -> None:
         super().__init__(DistributionType.ERLANG)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.alpha: float = alpha
         self.beta: float = beta
         self.shape: float = shape
@@ -142,7 +133,7 @@ class ErlangDistribution(ProbDistribution):
 class GeometricDistribution(ProbDistribution):
     def __init__(self, probability: float) -> None:
         super().__init__(DistributionType.GEOMETRIC)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.probability: float = probability
 
     def distributionFunction(self, RanNumGenerator) -> float:
@@ -152,7 +143,7 @@ class GeometricDistribution(ProbDistribution):
 class LognormalDistribution(ProbDistribution):
     def __init__(self, logmean: float, logsd: float) -> None:
         super().__init__(DistributionType.LOGNORMAL)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.logmean: float = logmean
         self.logsd: float = logsd
 
@@ -163,7 +154,7 @@ class LognormalDistribution(ProbDistribution):
 class WeibullDistribution(ProbDistribution):
     def __init__(self, scale: float, shape: float) -> None:
         super().__init__(DistributionType.WEIBULL)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.scale: float = scale
         self.shape: float = shape
 
@@ -174,7 +165,7 @@ class WeibullDistribution(ProbDistribution):
 class CauchyDistribution(ProbDistribution):
     def __init__(self, location: float, scale: float) -> None:
         super().__init__(DistributionType.CAUCHY)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.location: float = location
         self.scale: float = scale
 
@@ -192,7 +183,7 @@ class CauchyDistribution(ProbDistribution):
 class TriangularDistribution(ProbDistribution):
     def __init__(self, min: float, mean: float, max: float) -> None:
         super().__init__(DistributionType.TRIANGULAR)
-        # TODO Value Check Input
+        # PLAN Value Check Input
         self.min: float = min
         self.mean: float = mean
         self.max: float = max

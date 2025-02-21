@@ -26,31 +26,40 @@ class Queue(StoreObject):
             receivedEvents = yield self.env.any_of([self.isRequested, self.canDispose])
             assert receivedEvents is not None
             assert self.receiver is not None
+            assert self.giver is not None
+
             if self.isRequested in receivedEvents:
                 assert self.isRequested.value is not None
 
-                transmitter, eventTime = self.isRequested.value
-                self.printTrace(isRequested=transmitter.id, eventTime=eventTime)
+                eventData = self.isRequested.value
+                assert isinstance(eventData, EventData)
+                assert isinstance(eventData.transmission, Entity)
+                assert eventData.time == self.env.now
                 self.isRequested = self.env.event()
+                self.printTrace(isRequested=eventData)
 
-                assert isinstance(transmitter, Entity)
-                self.receive(transmitter)
-                # self.canDispose.succeed((self, self.env.now))
+                self.receive(eventData.transmission)
+
                 if self.receiver.canReceive():
-                    entity = yield self.give()
-                    assert isinstance(entity, Entity)
-                    assert self.receiver is not None
-                    self.receiver.isRequested.succeed((entity, self.env.now))
+                    self.canDispose.succeed(EventData(caller=self, time=self.env.now))
 
-            if self.canDispose in receivedEvents and self.receiver.canReceive():
+            if self.canDispose in receivedEvents:
                 assert self.canDispose.value is not None
 
-                transmitter, eventTime = self.canDispose.value
-                self.printTrace(canDispose=transmitter.id, eventTime=eventTime)
+                eventData = self.canDispose.value
+                assert isinstance(eventData, EventData)
+                assert eventData.time == self.env.now
                 self.canDispose = self.env.event()
+                self.printTrace(canDispose=eventData)
 
-                if self.receiver.canReceive():
-                    entity = yield self.give()
-                    assert isinstance(entity, Entity)
-                    assert self.receiver is not None
-                    self.receiver.isRequested.succeed((entity, self.env.now))
+                # if self.receiver.canReceive():
+                # I am checking this when I am triggering event
+                entity = yield self.give()
+                assert isinstance(entity, Entity)
+
+                self.receiver.isRequested.succeed(
+                    EventData(caller=self, time=self.env.now, transmission=entity)
+                )
+
+            self.canReceiversReceive()
+            self.canGiversGive()
