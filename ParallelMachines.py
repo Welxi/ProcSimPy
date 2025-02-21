@@ -40,23 +40,23 @@ def main(test=False) -> dict[str, int | float] | None:
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
-    blockageRatio1 = first_machine.totalBlockageTime / maxSimTime
+    # blockageRatio1 = first_machine.totalBlockageTime / maxSimTime
     workingRatio1 = first_machine.totalWorkingTime / maxSimTime
-    blockageRatio2 = second_machine.totalBlockageTime / maxSimTime
+    # blockageRatio2 = second_machine.totalBlockageTime / maxSimTime
     workingRatio2 = second_machine.totalWorkingTime / maxSimTime
 
     if test:
         return {
             'parts': exit.numOfExits,
-            'blockage_ratio': blockageRatio1,
-            'working_ratio': workingRatio1,
+            'working_ratio_M1': workingRatio1,
+            'working_ratio_M2': workingRatio2,
         }
 
     print(f'Sim End Time: {env.now}')
     print(f'the system produced {exit.numOfExits} parts')
-    print(f'the blockage ratio of the {first_machine.name} is {blockageRatio1:.2%}')
+    # print(f'the blockage ratio of the {first_machine.name} is {blockageRatio1:.2%}')
     print(f'the working ratio of the {first_machine.name} is {workingRatio1:.2%}')
-    print(f'the blockage ratio of the {second_machine.name} is {blockageRatio2:.2%}')
+    # print(f'the blockage ratio of the {second_machine.name} is {blockageRatio2:.2%}')
     print(f'the working ratio of the {second_machine.name} is {workingRatio2:.2%}')
 
     return None

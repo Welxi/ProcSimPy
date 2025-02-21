@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from hepyaestus.Exit import Exit
 from hepyaestus.Experiment import Experiment
 from hepyaestus.Line import Line
@@ -19,7 +21,6 @@ queue = Queue('Q1', 'Queue', capacity=1)
 machine = Machine('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 
-# TODO can define Routing by implicit order of objectList
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
     predecessorList=[source],
@@ -36,13 +37,12 @@ def main(test=False) -> dict[str, int | float] | None:
     env = Environment()
     objectList = [source, queue, machine, exit]
     line = Line(objectList=objectList)
-    line.initialize(env=env)
 
     maxSimTime = 1440.0
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
-    workingRatio = (machine.totalWorkingTime / maxSimTime)
+    workingRatio = machine.totalWorkingTime / maxSimTime
 
     if test:
         return {'parts': exit.numOfExits, 'working_ratio': workingRatio}
