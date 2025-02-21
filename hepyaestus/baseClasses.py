@@ -23,14 +23,14 @@ class BaseObject:
         self.env = env
         self.line = line
 
-    def printTrace(self, eventTime: Optional[float] = None, **kw) -> None:
-        if not self.line.settings['traceIsOn']:
+    def printTrace(self, **kw) -> None:
+        if not self.line.canTrace(self):
             return
         from hepyaestus.printTrace import printTrace
 
         for key, eventData in kw.items():
             if eventData is None:
-                kw[key] = EventData(caller=self, time=self.env.now)
+                kw[key] = EventData(caller=self, time=self.env.now, trace=False)
         printTrace(self, **kw)
 
 
