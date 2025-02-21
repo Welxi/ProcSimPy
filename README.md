@@ -16,7 +16,8 @@ Queue: Buffer before the Machine, in more complex systems provides routing decis
 Machine: Takes an Entity and performs an operation on it for a given time, in this case 2 time units
 Exit: The "Output" of the system
 
->Note on time
+>Note on Time
+>
 >The Library relies on [SimPy time scheduling](https://simpy.readthedocs.io/en/latest/topical_guides/time_and_scheduling.html). It is agnostic to the time scale of the model, what one time unit means in your system is up to you (1 second/minute/hour/etc.)
 >
 >It is important to note that you keep the same base when inputting values 
