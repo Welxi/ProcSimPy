@@ -12,30 +12,29 @@ if TYPE_CHECKING:
 
     from hepyaestus.Line import Line
     from hepyaestus.ProbDistribution import ProbDistribution
-    from simpy import Environment
+    from simpy import Environment, Event
 
 
 class EntityGenerator:
-    def __init__(self, victim: Source, env: Environment, line: Line) -> None:
+    def __init__(self, source: Source, env: Environment, line: Line) -> None:
         self.env: Environment = env
         self.line: Line = line
         self.type = 'EntityGenerator'
-        self.victim: Source = victim
+        self.source: Source = source
 
     def run(self) -> Generator:
         while True:
-            entity: Entity = self.victim.createEntity()
-            entity.initialize(self.env, self.line, currentStation=self.victim)
-
-            if self.victim.canReceive() and not self.victim.entityCreated.triggered:
-                self.victim.entityCreated.succeed(
-                    EventData(
-                        caller=self.victim, time=self.env.now, transmission=entity
-                    )
-                    # Adding caller as self.victim because caller needs to be a CoreObject
+            self.source.entityCreated.succeed(
+                # Adding caller as source because caller needs to be a CoreObject
+                EventData(
+                    caller=self.source,
+                    time=self.source.env.now,
+                    transmission=self.source.createEntity(),
+                    trace=False,
                 )
+            )
 
-            yield self.env.timeout(self.victim.calculateInterArrivalTime())
+            yield self.env.timeout(self.source.calculateInterArrivalTime())
 
 
 class Source(StoreObject):
@@ -56,43 +55,43 @@ class Source(StoreObject):
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
-        self.entityCreated = self.env.event()
+        self.entityCreated: Event = self.env.event()
+        self.events.append(self.entityCreated)
 
         self.entityGenerator = EntityGenerator(
-            victim=self, env=self.env, line=self.line
+            source=self, env=self.env, line=self.line
         )
         self.env.process(self.entityGenerator.run())
 
     def run(self) -> Generator:
         while True:
-            receivedEvents = yield self.env.any_of([self.entityCreated])
-            assert receivedEvents is not None
-            if self.entityCreated in receivedEvents:
-                assert self.entityCreated.value is not None
+            yield self.entityCreated
+            assert self.entityCreated.value is not None
 
-                eventData = self.entityCreated.value
-                assert isinstance(eventData, EventData)
-                assert isinstance(eventData.transmission, Entity)
-                assert eventData.time == self.env.now
-                self.printTrace(enter=eventData)
-                self.entityCreated = self.env.event()
+            eventData = self.entityCreated.value
+            assert isinstance(eventData, EventData)
+            assert isinstance(eventData.transmission, Entity)
+            assert eventData.time == self.env.now
+            self.entityCreated = self.env.event()
 
-                self.receive(eventData.transmission)
+            self.receive(eventData.transmission)
 
+            assert self.receiver is not None
+            if self.receiver.canReceive():
+                entity = yield self.give()
+                assert isinstance(entity, Entity)
                 assert self.receiver is not None
-                if self.receiver.canReceive():
-                    entity = yield self.give()
-                    assert isinstance(entity, Entity)
-                    assert self.receiver is not None
-                    self.receiver.isRequested.succeed(
-                        EventData(caller=self, time=self.env.now, transmission=entity)
-                    )
+                self.receiver.isRequested.succeed(
+                    EventData(caller=self, time=self.env.now, transmission=entity)
+                )
 
-    def createEntity(self) -> Entity:
+    def createEntity(self):
         self.partNumber += 1
         entityId = f'{self.item.type[0]}{self.partNumber}'
         entityName = f'{self.item.type}{self.partNumber}'
-        return self.item(id=entityId, name=entityName)
+        item = self.item(id=entityId, name=entityName)
+        item.initialize(self.env, self.line, currentStation=self)
+        return item
 
     def calculateInterArrivalTime(self) -> float:
         return self.rng.generateNumber()
