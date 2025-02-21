@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Optional, Self
 
 from hepyaestus.EventData import EventData
-from simpy import Environment, Resource, Store
+from simpy import Environment, Event, Resource, Store
 from simpy.core import Infinity
 
 if TYPE_CHECKING:
@@ -48,8 +48,10 @@ class CoreObject(BaseObject, ABC):
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
         self.printTrace(init=None)
-        self.canDispose = self.env.event()
-        self.isRequested = self.env.event()
+        self.canDispose: Event = self.env.event()
+        self.isRequested: Event = self.env.event()
+
+        self.events: list[Event] = [self.canDispose, self.isRequested]
 
         self.giver: Self | None = self.previous[0] if self.previous else None
         self.receiver: Self | None = self.next[0] if self.next else None
@@ -75,7 +77,7 @@ class CoreObject(BaseObject, ABC):
         raise NotImplementedError
 
     # abstract methods need to have the same return type
-    # need to create generic of give and recieve for store ans resource
+    # TODO create generic of give and receive for store and resource
 
     # @abstractmethod
     # def receive(self, entity: Entity) -> None:

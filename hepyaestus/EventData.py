@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from itertools import count
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from hepyaestus.baseClasses import BaseObject
@@ -13,6 +13,6 @@ if TYPE_CHECKING:
 class EventData:
     time: float
     caller: BaseObject
-    transmission: Entity | None = None
+    transmission: Optional[Entity] = None
     trace: bool = True
     id: int = field(default_factory=count().__next__, init=False)

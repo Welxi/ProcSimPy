@@ -26,6 +26,7 @@ class Exit(StoreObject):
         while True:
             yield self.isRequested
             assert self.isRequested.value is not None
+
             eventData = self.isRequested.value
             self.isRequested = self.env.event()
             assert isinstance(eventData, EventData)
@@ -34,9 +35,10 @@ class Exit(StoreObject):
             self.printTrace(isRequested=eventData)
 
             self.receive(eventData.transmission)
-            self.exits.append(eventData.transmission)
-            self.numOfExits += 1
 
-            for giver in self.previous:
-                if giver.canGive():
-                    giver.canDispose.succeed(EventData(caller=self, time=self.env.now))
+            self.canGiversGive()
+
+    def receive(self, entity: Entity) -> None:
+        self.exits.append(entity)
+        self.numOfExits += 1
+        super().receive(entity)
