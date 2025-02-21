@@ -38,7 +38,7 @@ def printTrace(base: BaseObject, **kw) -> None:
 def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
     ctx = eventData.caller.name
     base = baseObject.name
-    transmission = eventData.transmission.id if eventData.transmission else None
+    content = eventData.transmission.id if eventData.transmission else None
     # timecode = f'ID:{base:>3} @T:{eventData.time:>4}'
     timecode = f'@T:{eventData.time:>4}'
     # could format timecode based on maxSimTime
@@ -50,10 +50,10 @@ def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
         'interrupted': f'{base} interrupted by {ctx}',
         'interruptEnd': f'{ctx} interruption ended on {base}',
         'enter': f'{base} entered {ctx}',
-        'received': f'{base} received {transmission}',
-        'gave': f'{base} gave {transmission}',
-        'isRequested': f'E:<isRequested> -> {base} from {ctx}, for {transmission}',
-        'canDispose': f'E:<canDispose> -> {base} from {ctx}',
+        'received': f'{base} received {content}',
+        'gave': f'{base} gave {content}',
+        'isRequested': f'E:<isRequested> -> {base} called from {ctx}, for {content}',
+        'canDispose': f'E:<canDispose> -> {base} called from {ctx}',
     }
     print(f'{timecode} -> {phrases[key]}')
 

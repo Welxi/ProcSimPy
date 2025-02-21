@@ -52,21 +52,24 @@ class Machine(StoreObject):
                     self.receive(eventData.transmission)
 
                 if self.canDispose in receivedEvents:
-                    print('Machine Disposing')
                     eventData = self.canDispose.value
                     assert isinstance(eventData, EventData)
                     # assert eventData.time == self.env.now
                     self.canDispose = self.env.event()
                     self.printTrace(canDispose=eventData)
 
-                    # if self.receiver.canReceive():
-                    # I am checking this when I am triggering event
                     entity = yield self.give()
                     assert isinstance(entity, Entity)
 
-                    self.receiver.isRequested.succeed(
-                        EventData(caller=self, time=self.env.now, transmission=entity)
-                    )
+                    if self.receiver.canReceive():
+                        self.receiver.isRequested.succeed(
+                            EventData(
+                                caller=self, time=self.env.now, transmission=entity
+                            )
+                        )
+                    else:
+                        print('Dispose Called but things changed')
+                break
 
             yield self.env.timeout(delay=self.processingTime.generateNumber())
 
