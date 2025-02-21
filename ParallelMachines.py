@@ -13,7 +13,7 @@ RANDOM_SEED = 42
 print('Two Servers')
 
 arrivalTime = FixedDistribution(mean=0.5)
-processingTimeM1 = FixedDistribution(mean=0.25)
+processingTimeM1 = FixedDistribution(mean=1.0)
 processingTimeM2 = FixedDistribution(mean=1.5)
 
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
