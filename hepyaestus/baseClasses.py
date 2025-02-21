@@ -93,10 +93,30 @@ class CoreObject(BaseObject, ABC):
     def canGive(self) -> bool:
         return False
 
+    def anyEventsTriggered(self) -> bool:
+        return self.canDispose.triggered or self.isRequested.triggered
+
+    def canGiversGive(self) -> None:
+        for giver in self.previous:
+            if giver.canGive():
+                self.giver = giver
+                giver.canDispose.succeed(EventData(caller=self, time=self.env.now))
+                break  # can only accept one at a time so once receiving break
+
+    def canReceiversReceive(self) -> None:
+        if not self.canGive():
+            return
+        for receiver in self.next:
+            if receiver.canReceive():
+                self.receiver = receiver
+                self.canDispose.succeed(EventData(caller=self, time=self.env.now))
+                break  # can only give one at a time so once requesting break
+
 
 class StoreObject(CoreObject):
     def __init__(self, id: str, name: str, capacity: float = Infinity) -> None:
         super().__init__(id, name)
+        assert capacity >= 0, 'capacity must be possitive'
         self.capacity: float = capacity
 
     def initialize(self, env: Environment, line: Line) -> None:
@@ -107,20 +127,21 @@ class StoreObject(CoreObject):
         return self.store.get()
 
     def receive(self, entity: Entity) -> None:
+        entity.updateStation(station=self)
         self.store.put(entity)
 
     def canReceive(self) -> bool:
-        return len(self.store.items) < self.capacity and not self.isRequested.triggered
+        return len(self.store.items) < self.capacity and not self.anyEventsTriggered()
 
     def canGive(self) -> bool:
-        return len(self.store.items) > 0 and not self.isRequested.triggered
+        return len(self.store.items) > 0 and not self.canDispose.triggered
 
 
 class ResourceObject(CoreObject):
     def __init__(self, id: str, name: str, capacity: int = 1) -> None:
         super().__init__(id, name)
         assert capacity >= 0, 'capacity must be possitive'
-        self.capacity = capacity
+        self.capacity: int = capacity
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
