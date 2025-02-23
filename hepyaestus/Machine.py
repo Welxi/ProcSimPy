@@ -61,14 +61,14 @@ class Machine(StoreObject):
                     entity = yield self.give()
                     assert isinstance(entity, Entity)
 
-                    if self.receiver.canReceive():
-                        self.receiver.isRequested.succeed(
-                            EventData(
-                                caller=self, time=self.env.now, transmission=entity
-                            )
+                    self.giveReceiverEntity(
+                        EventData(
+                            caller=self,
+                            time=self.env.now,
+                            transmission=entity,
+                            attempt=eventData.attempt,
                         )
-                    else:
-                        print('Dispose Called but things changed')
+                    )
                 break
 
             yield self.env.timeout(delay=self.processingTime.generateNumber())
