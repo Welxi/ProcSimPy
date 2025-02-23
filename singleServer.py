@@ -7,14 +7,13 @@ from hepyaestus.Machine import Machine
 from hepyaestus.ProbDistribution import FixedDistribution
 from hepyaestus.Queue import Queue
 from hepyaestus.Source import Source
-from simpy import Environment
 
 RANDOM_SEED = 42
 print('Single Server')
 
 
-arrivalTime = FixedDistribution(mean=0.5)
-processingTime = FixedDistribution(mean=0.25)
+arrivalTime = FixedDistribution(mean=1)
+processingTime = FixedDistribution(mean=2)
 
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
 queue = Queue('Q1', 'Queue', capacity=1)
@@ -34,11 +33,10 @@ exit.defineRouting(predecessorList=[machine])
 
 
 def main(test=False) -> dict[str, int | float] | None:
-    env = Environment()
     objectList = [source, queue, machine, exit]
     line = Line(objectList=objectList)
 
-    maxSimTime = 1440.0
+    maxSimTime = 24
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
@@ -47,7 +45,7 @@ def main(test=False) -> dict[str, int | float] | None:
     if test:
         return {'parts': exit.numOfExits, 'working_ratio': workingRatio}
 
-    print(f'Sim End Time: {env.now}')
+    print(f'Sim End Time: {experiment.env.now}')
     print(f'the system produced {exit.numOfExits} parts')
     print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
 

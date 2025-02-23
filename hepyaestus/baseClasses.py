@@ -114,6 +114,20 @@ class CoreObject(BaseObject, ABC):
                 self.canDispose.succeed(EventData(caller=self, time=self.env.now))
                 break  # can only give one at a time so once requesting break
 
+    def giveReceiverEntity(self, event: EventData) -> None:
+        assert self.receiver is not None
+        if self.receiver.canReceive():
+            self.receiver.isRequested.succeed(event)
+        else:
+            # Race Condition during yield of Store Retry handover
+            # if event.attempt > 10:
+            #     raise
+            self.canDispose.succeed(
+                EventData(
+                    caller=event.caller, time=self.env.now, attempt=event.attempt + 1
+                )
+            )
+
 
 class StoreObject(CoreObject):
     def __init__(self, id: str, name: str, capacity: float = Infinity) -> None:
