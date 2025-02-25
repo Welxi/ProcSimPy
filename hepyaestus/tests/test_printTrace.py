@@ -1,246 +1,102 @@
 import pytest
 
 from hepyaestus.baseClasses import BaseObject
+from hepyaestus.EventData import EventData
 from hepyaestus.printTrace import printTrace
 
 
 @pytest.fixture
-def context() -> BaseObject:
+def transmission() -> BaseObject:
     return BaseObject('TE', 'TestEntity')
 
 
 @pytest.fixture
 def base() -> BaseObject:
-    return BaseObject('SO', 'SimObject')
+    return BaseObject('Base', 'SimBase')
 
 
 @pytest.fixture
-def eventTime() -> float:
-    return float(1)
+def caller() -> BaseObject:
+    return BaseObject('Caller', 'SimCaller')
 
 
 @pytest.fixture
-def timecode(base, eventTime) -> str:
-    return f'ID:{base.id:>3} @T:{eventTime:4} ->'
+def eventData(caller, transmission) -> EventData:
+    return EventData(caller=caller, time=1, transmission=transmission)
 
 
-def test_printTrace_invalidArg(base, eventTime) -> None:
-    with pytest.raises(ValueError, match=f'Unsupported phrase asdf for {base.id}'):
-        printTrace(base=base, eventTime=eventTime, asdf='')
+@pytest.fixture
+def timecode(eventData) -> str:
+    return f'@T:{eventData.time:>4} ->'
 
 
-def test_printTrace_TooManArgs(base, eventTime) -> None:
+def test_printTrace_invalidArg(base, eventData) -> None:
+    with pytest.raises(ValueError, match='Unsupported phrase asdf for printTrace'):
+        printTrace(base=base, asdf=eventData)
+
+
+def test_printTrace_TooManArgs(base, eventData) -> None:
     with pytest.raises(
-        AssertionError, match='Only pne phrase per printTrace supported'
+        AssertionError, match='Only one phrase per printTrace supported'
     ):
-        printTrace(base=base, eventTime=eventTime, create='', signal='')
+        printTrace(base=base, create=eventData, signal=eventData)
 
 
-def test_printTrace_init(base, eventTime, timecode, capsys) -> None:
-    printTrace(base=base, eventTime=eventTime, init=base)
+def test_printTrace_keywords(
+    base, eventData, timecode, caller, transmission, capsys
+) -> None:
+    printTrace(base=base, init=eventData)
     captured = capsys.readouterr()
-    assert captured.out == f'{timecode} Object Initialized => {base.id}\n'
+    assert captured.out == f'{timecode} Object Initialized => {base.name}\n'
 
-
-def test_printTrace_create(base, eventTime, timecode, capsys) -> None:
-    printTrace(base=base, eventTime=eventTime, create=base)
+    printTrace(base=base, create=eventData)
     captured = capsys.readouterr()
-    assert captured.out == f'{timecode} Entity Created => {base.id}\n'
+    assert captured.out == f'{timecode} Entity Created => {base.name}\n'
 
-
-def test_printTrace_startWork(base, eventTime, timecode, capsys) -> None:
-    printTrace(base=base, eventTime=eventTime, startWork=base)
+    printTrace(base=base, startWork=eventData)
     captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {base.id} started work\n'
+    assert captured.out == f'{timecode} {base.name} started work\n'
 
-
-def test_printTrace_finishWork(base, eventTime, timecode, capsys) -> None:
-    printTrace(base=base, eventTime=eventTime, finishWork=base)
+    printTrace(base=base, finishWork=eventData)
     captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {base.id} finished work\n'
+    assert captured.out == f'{timecode} {base.name} finished work\n'
 
-
-def test_printTrace_interrupted(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, interrupted=context)
+    printTrace(base=base, interrupted=eventData)
     captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {base.id} interrupted by {context.id}\n'
+    assert captured.out == f'{timecode} {base.name} interrupted by {caller.name}\n'
 
-
-def test_printTrace_interruptionEnd(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, interruptEnd=context)
-    captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {context.id} interruption ended on {base.id}\n'
-
-
-def test_printTrace_enter(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, enter=context)
-    captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {context.id} entered {base.id}\n'
-
-
-def test_printTrace_received(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, received=context)
-    captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {base.id} received {context.id}\n'
-
-
-def test_printTrace_gave(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, gave=context)
-    captured = capsys.readouterr()
-    assert captured.out == f'{timecode} {base.id} gave {context.id}\n'
-
-
-def test_printTrace_isRequested(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, isRequested=context)
+    printTrace(base=base, interruptEnd=eventData)
     captured = capsys.readouterr()
     assert (
-        captured.out
-        == f'{timecode} {base.id} received an isRequested event for {context.id}\n'
+        captured.out == f'{timecode} {caller.name} interruption ended on {base.name}\n'
     )
 
-
-def test_printTrace_canDispose(base, eventTime, timecode, capsys, context) -> None:
-    printTrace(base=base, eventTime=eventTime, canDispose=context)
+    printTrace(base=base, enter=eventData)
     captured = capsys.readouterr()
-    assert (
-        captured.out
-        == f'{timecode} {base.id} received a canDispose event for {context.id}\n'
-    )
+    assert captured.out == f'{timecode} {base.name} entered {caller.name}\n'
+
+    printTrace(base=base, received=eventData)
+    captured = capsys.readouterr()
+    assert captured.out == f'{timecode} {base.name} received {transmission.id}\n'
+
+    printTrace(base=base, gave=eventData)
+    captured = capsys.readouterr()
+    assert captured.out == f'{timecode} {base.name} gave {transmission.id}\n'
 
 
-# def test_printTrace_signal(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, signal=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} signalling: TE\n'
-
-
-# def test_printTrace_signalGiver(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, signalGiver=simObject.id)
-#     captured = capsys.readouterr()
-#     assert (
-#         captured.out
-#         == f'{timecode} _______________________signalling giver: {simObject.id}\n'
-#     )
-
-
-# def test_printTrace_signalReceiver(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, signalReceiver=simObject.id)
+# def test_printTrace_isRequested(base, eventData, timecode, capsys, context) -> None:
+#     printTrace(base=base, isRequested=eventData)
 #     captured = capsys.readouterr()
 #     assert (
 #         captured.out
-#         == f'{timecode} ____________________signalling receiver: {simObject.id}\n'
+#         == f'{timecode} E:<isRequested> -> {base.name} received an isRequested event for {context.name}\n'
 #     )
 
 
-# def test_printTrace_attemptSignal(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, attemptSignal=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} will try to signal: {simObject.id}\n'
-
-
-# def test_printTrace_attemptSignalGiver(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, attemptSignalGiver=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} will try to signal a giver: {simObject.id}\n'
-
-
-# def test_printTrace_attemptSignalReceiver(
-#     simObject, eventTime, timecode, capsys
-# ) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, attemptSignalReceiver=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} will try to signal a receiver: {simObject.id}\n'
-
-
-# def test_printTrace_preempt(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, preempt=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} preempts: {simObject.id}.\n'
-
-
-# def test_printTrace_preempted(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, preempted=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} is being preempted: {simObject.id}.\n'
-
-# def test_printTrace_processEnd(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, processEnd=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} ended processing in: {simObject.id}\n'
-
-# def test_printTrace_destroy(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, destroy=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} destroyed at: {simObject.id} * \n'
-
-
-# def test_printTrace_waitEvent(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, waitEvent=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} will wait for event: {simObject.id}\n'
-
-# def test_printTrace_loadOperatorAvailable(
-#     simObject, eventTime, timecode, capsys
-# ) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, loadOperatorAvailable=simObject.id)
+# def test_printTrace_canDispose(base, eventData, timecode, capsys, context) -> None:
+#     printTrace(base=base, canDispose=eventData)
 #     captured = capsys.readouterr()
 #     assert (
 #         captured.out
-#         == f'{timecode} received a loadOperatorAvailable event at: {simObject.id}\n'
+#         == f'{timecode} E:<canDispose> -> {base.name} called from {context.name}\n'
 #     )
-
-
-# def test_printTrace_resourceAvailable(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, resourceAvailable=simObject.id)
-#     captured = capsys.readouterr()
-#     assert (
-#         captured.out
-#         == f'{timecode} received a resourceAvailable event: {simObject.id}\n'
-#     )
-
-
-# def test_printTrace_entityRemoved(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, entityRemoved=simObject.id)
-#     captured = capsys.readouterr()
-#     assert (
-#         captured.out
-#         == f'{timecode} received an entityRemoved event from: {simObject.id}\n'
-#     )
-
-
-# def test_printTrace_conveyerEnd(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, conveyerEnd=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} has reached conveyer End: {simObject.id}.!\n'
-
-
-# def test_printTrace_conveyerFull(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, conveyerFull=simObject.id)
-#     out, err = capsys.readouterr()
-#     assert out == f'{timecode} is now Full, No of units: TE(*)\n'
-
-
-# def test_printTrace_moveEnd(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, moveEnd=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} received a moveEnd event: {simObject.id}\n'
-
-
-# def test_printTrace_eventsToCome(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, eventsToCome=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} there are MORE events for now: {simObject.id}\n'
-
-
-# def test_printTrace_noEventsToCome(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, noEventsToCome=simObject.id)
-#     captured = capsys.readouterr()
-#     assert (
-#         captured.out == f'{timecode} there are NO more events for now: {simObject.id}\n'
-#     )
-
-
-# def test_printTrace_lineBreak(simObject, eventTime, timecode, capsys) -> None:
-#     printTrace(base=simObject, eventTime=eventTime, lineBreak=simObject.id)
-#     captured = capsys.readouterr()
-#     assert captured.out == f'{timecode} : {simObject.id}\n'
