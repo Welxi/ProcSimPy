@@ -1,26 +1,23 @@
 from __future__ import annotations
 
+from hepyaestus.Entity import Entity
 from hepyaestus.Exit import Exit
 from hepyaestus.Experiment import Experiment
 from hepyaestus.Line import Line
 from hepyaestus.Machine import Machine
 from hepyaestus.ProbDistribution import FixedDistribution
 from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
 
-print('Single Server')
+print('Setting Work in Progress: One Part run till no more events')
 
-arrivalTime = FixedDistribution(mean=0.5)
 processingTime = FixedDistribution(mean=0.25)
 
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
 queue = Queue('Q1', 'Queue', capacity=1)
 machine = Machine('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
+part = Entity('P1', 'Part', startingStation=machine)
 
-source.defineRouting(successorList=[queue])
 queue.defineRouting(
-    predecessorList=[source],
     successorList=[machine],
 )
 machine.defineRouting(
@@ -30,8 +27,10 @@ machine.defineRouting(
 exit.defineRouting(predecessorList=[machine])
 
 
-def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, queue, machine, exit])
+def main(
+    test: bool = False, maxSimTime: float = float('inf')
+) -> dict[str, int | float] | None:
+    line = Line(objectList=[queue, machine, exit, part])
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
@@ -39,12 +38,17 @@ def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     workingRatio = machine.totalWorkingTime / experiment.env.now
 
     if test:
-        return {'parts': exit.numOfExits, 'working_ratio': workingRatio}
+        return {
+            'parts': exit.numOfExits,
+            'simulationTime': experiment.env.now,
+            'working_ratio': workingRatio,
+        }
 
     print(f'Sim End Time: {experiment.env.now}')
-    print(f'the system produced {exit.numOfExits} parts')
+    print(
+        f'the system produced {exit.numOfExits} parts in {exit.timeLastEntityLeft} min'
+    )
     print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
-
     return None
 
 
