@@ -7,36 +7,47 @@ from hepyaestus.Machine import Machine
 from hepyaestus.ProbDistribution import FixedDistribution
 from hepyaestus.Queue import Queue
 from hepyaestus.Source import Source
-from simpy import Environment
 
-RANDOM_SEED = 42
-print('Two Servers')
+print('Selective Queue Chooses M1 over M2')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=1.5)
 
+
+class SelectiveQueue(Queue):
+    # override so that it first chooses M1 and then M2
+    # def selectReceiver(self, possibleReceivers=[]):
+    #     if first_machine.canAccept():
+    #         return first_machine
+    #     elif second_machine.canAccept():
+    #         return second_machine
+    #     return None
+    pass
+
+
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
-queue = Queue('Q', 'Queue', capacity=1)
+selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
 first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
+# F = Failure(
+#     victim=M1,
+#     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
+# )
 
-source.defineRouting(successorList=[queue])
-queue.defineRouting(
+source.defineRouting(successorList=[selectiveQ])
+selectiveQ.defineRouting(
     predecessorList=[source], successorList=[first_machine, second_machine]
 )
-first_machine.defineRouting(predecessorList=[queue], successorList=[exit])
-second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
+first_machine.defineRouting(predecessorList=[selectiveQ], successorList=[exit])
+second_machine.defineRouting(predecessorList=[selectiveQ], successorList=[exit])
 exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
-def main(test=False) -> dict[str, int | float] | None:
-    env = Environment()
-    objectList = [source, queue, first_machine, second_machine, exit]
-    line = Line(objectList=objectList)
+def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
+    line = Line(objectList=[source, selectiveQ, first_machine, second_machine, exit])
 
-    maxSimTime = 10  # 1440.0
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
@@ -45,6 +56,7 @@ def main(test=False) -> dict[str, int | float] | None:
     # blockageRatio2 = second_machine.totalBlockageTime / maxSimTime
     workingRatio2 = second_machine.totalWorkingTime / maxSimTime
 
+    # return results for the test
     if test:
         return {
             'parts': exit.numOfExits,
@@ -52,7 +64,7 @@ def main(test=False) -> dict[str, int | float] | None:
             'working_ratio_M2': workingRatio2,
         }
 
-    print(f'Sim End Time: {env.now}')
+    print(f'Sim End Time: {experiment.env.now}')
     print(f'the system produced {exit.numOfExits} parts')
     # print(f'the blockage ratio of the {first_machine.name} is {blockageRatio1:.2%}')
     print(f'the working ratio of the {first_machine.name} is {workingRatio1:.2%}')
