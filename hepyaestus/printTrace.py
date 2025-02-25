@@ -25,18 +25,18 @@ def supportedKeywords() -> tuple:
 
 
 def printTrace(base: BaseObject, **kw) -> None:
-    assert len(kw) == 1, 'Only pne phrase per printTrace supported'
+    assert len(kw) == 1, 'Only one phrase per printTrace supported'
 
     for key, eventData in kw.items():
         if key not in supportedKeywords():
-            raise ValueError(f'Unsupported phrase {key} for {base.id}')
+            raise ValueError(f'Unsupported phrase {key} for printTrace')
         assert isinstance(eventData, EventData)
         if eventData.trace:
             consoleTrace(baseObject=base, eventData=eventData, key=key)
 
 
 def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
-    ctx = eventData.caller.name
+    caller = eventData.caller.name
     base = baseObject.name
     content = eventData.transmission.id if eventData.transmission else None
     # timecode = f'ID:{base:>3} @T:{eventData.time:>4}'
@@ -47,13 +47,13 @@ def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
         'create': f'Entity Created => {base}',
         'startWork': f'{base} started work',
         'finishWork': f'{base} finished work',
-        'interrupted': f'{base} interrupted by {ctx}',
-        'interruptEnd': f'{ctx} interruption ended on {base}',
-        'enter': f'{base} entered {ctx}',
+        'interrupted': f'{base} interrupted by {caller}',
+        'interruptEnd': f'{caller} interruption ended on {base}',
+        'enter': f'{base} entered {caller}',
         'received': f'{base} received {content}',
         'gave': f'{base} gave {content}',
-        'isRequested': f'E:<isRequested> -> {base} called from {ctx}, for {content}',
-        'canDispose': f'E:<canDispose> -> {base} called from {ctx}',
+        'isRequested': f'E:<isRequested> -> {base} called from {caller}, for {content}',
+        'canDispose': f'E:<canDispose> -> {base} called from {caller}',
     }
     print(f'{timecode} -> {phrases[key]}')
 
