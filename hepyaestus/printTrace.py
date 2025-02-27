@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from hepyaestus.EventData import EventData
 
 if TYPE_CHECKING:
-    from hepyaestus.baseClasses import BaseObject
+    from hepyaestus.Base import BaseObject
 
 
 def supportedKeywords() -> tuple:

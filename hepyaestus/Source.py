@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
+from hepyaestus.Store import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -25,7 +25,7 @@ class EntityGenerator:
     def run(self) -> Generator:
         while True:
             self.source.entityCreated.succeed(
-                # Adding caller as source because caller needs to be a CoreObject
+                # Adding caller as source because caller needs to be a Node
                 EventData(
                     caller=self.source,
                     time=self.source.env.now,
@@ -37,7 +37,7 @@ class EntityGenerator:
             yield self.env.timeout(self.source.calculateInterArrivalTime())
 
 
-class Source(StoreObject):
+class Source(StoreNode):
     def __init__(
         self,
         id: str,

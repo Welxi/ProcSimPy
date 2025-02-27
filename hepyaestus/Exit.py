@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.baseClasses import StoreObject
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
+from hepyaestus.Store import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from simpy import Environment
 
 
-class Exit(StoreObject):
+class Exit(StoreNode):
     def __init__(self, id: str, name: str) -> None:
         super().__init__(id, name)
         self.exits: list[Entity] = []

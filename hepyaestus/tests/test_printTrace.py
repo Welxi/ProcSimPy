@@ -1,6 +1,6 @@
 import pytest
 
-from hepyaestus.baseClasses import BaseObject
+from hepyaestus.Base import BaseObject
 from hepyaestus.EventData import EventData
 from hepyaestus.printTrace import printTrace
 
