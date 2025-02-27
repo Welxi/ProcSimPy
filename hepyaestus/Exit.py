@@ -21,6 +21,7 @@ class Exit(StoreNode):
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
         self.numOfExits: int = 0
+        self.timeLastEntityLeft: float = 0
 
     def run(self) -> Generator:
         while True:
@@ -41,4 +42,5 @@ class Exit(StoreNode):
     def receive(self, entity: Entity) -> None:
         self.exits.append(entity)
         self.numOfExits += 1
+        self.timeLastEntityLeft = self.env.now
         super().receive(entity)

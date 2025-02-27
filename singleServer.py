@@ -39,7 +39,7 @@ def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     workingRatio = machine.totalWorkingTime / experiment.env.now
 
     if test:
-        return {'parts': exit.numOfExits, 'working_ratio': workingRatio}
+        return {'parts': exit.numOfExits, 'working_ratio': workingRatio * 100}
 
     print(f'Sim End Time: {experiment.env.now}')
     print(f'the system produced {exit.numOfExits} parts')
