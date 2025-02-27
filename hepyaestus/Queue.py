@@ -23,7 +23,9 @@ class Queue(StoreNode):
 
     def run(self) -> Generator:
         while True:
-            receivedEvents = yield self.env.any_of([self.isRequested, self.canDispose])
+            receivedEvents = yield self.env.any_of(
+                [self.isRequested, self.canDispose, self.initialWIP]
+            )
             assert receivedEvents is not None
             assert self.receiver is not None
             assert self.giver is not None
@@ -63,5 +65,13 @@ class Queue(StoreNode):
                         attempt=eventData.attempt,
                     )
                 )
+            if self.initialWIP in receivedEvents:
+                eventData = self.initialWIP.value
+                assert isinstance(eventData, EventData)
+                assert isinstance(eventData.transmission, Entity)
+                self.initialWIP = self.env.event()
+                self.printTrace(initialWIP=eventData)
+
+                self.receive(eventData.transmission)
             self.canReceiversReceive()
             self.canGiversGive()

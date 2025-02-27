@@ -1,25 +1,36 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from hepyaestus.baseClasses import BaseObject, CoreObject
-    from simpy import Environment
+from hepyaestus.EventData import EventData
+from hepyaestus.Store import StoreNode
 
-    # from hepyaestus.Exit import Exit
-    # from hepyaestus.Machine import Machine
-    # from hepyaestus.Queue import Queue
-    # from hepyaestus.Source import Source
+if TYPE_CHECKING:
+    from hepyaestus.Base import BaseObject
+    from hepyaestus.Entity import Entity
+    from hepyaestus.Exit import Exit
+    from hepyaestus.Machine import Machine
+    from hepyaestus.Queue import Queue
+    from hepyaestus.Source import Source
+    from simpy import Environment
 
 
 class Line:
     def __init__(self, objectList: list) -> None:
-        self.ObjList: list[CoreObject] = objectList
+        self.ObjList: list[StoreNode] = [
+            object for object in objectList if isinstance(object, StoreNode)
+        ]
 
-        # self.ExitList: list[Exit] = [objectList[3]]
-        # self.MachineList: list[Machine] = [objectList[2]]
-        # self.QueueList: list[Queue] = [objectList[1]]
-        # self.SourceList: list[Source] = [objectList[0]]
+        sortByClass: dict[str, list] = defaultdict(list)
+        for object in objectList:
+            sortByClass[object.__class__.__name__].append(object)
+
+        self.ExitList: list[Exit] = sortByClass['Exit']
+        self.MachineList: list[Machine] = sortByClass['Machine']
+        self.QueueList: list[Queue] = sortByClass['Queue']
+        self.SourceList: list[Source] = sortByClass['Source']
+        self.EntityList: list[Entity] = sortByClass['Entity']
 
         self.settings: dict[str, bool | None | list[BaseObject]] = {
             'traceIsOn': True,  # checked by baseObject before calling printTrace
@@ -31,6 +42,25 @@ class Line:
         for object in self.ObjList:
             object.initialize(self.env, self)
             self.env.process(object.run())
+        self.setWorkInProgress()
+
+    def setWorkInProgress(self) -> None:
+        if self.EntityList is None:
+            return
+
+        stationsWithWIP: set[StoreNode] = set()
+
+        self.EntityList.reverse()  # to maintain order: (LIFO)
+        for entity in self.EntityList:
+            assert entity.startingStation is not None, (
+                'Entity created for Work in Progress must have startingStataion'
+            )
+            stationsWithWIP.add(entity.startingStation)
+            entity.initialize(self.env, self, currentStation=entity.startingStation)
+            entity.startingStation.receive(entity=entity)
+
+        for station in stationsWithWIP:
+            station.initialWIP.succeed(EventData(caller=station, time=self.env.now))
 
     def turnTraceingOff(self) -> None:
         self.settings['traceIsOn'] = False
@@ -43,7 +73,7 @@ class Line:
             return object in self.settings['printFiltering']
         return True
 
-    def filterTrace(self, filter: BaseObject):
+    def filterTrace(self, filter: BaseObject) -> None:
         if self.settings['printFiltering'] is None:
             self.settings['printFiltering'] = [filter]
         else:

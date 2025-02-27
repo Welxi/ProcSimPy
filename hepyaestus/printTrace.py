@@ -21,6 +21,7 @@ def supportedKeywords() -> tuple:
         'gave',
         'isRequested',
         'canDispose',
+        'initialWIP',
     )
 
 
@@ -54,6 +55,7 @@ def consoleTrace(baseObject: BaseObject, eventData: EventData, key) -> None:
         'gave': f'{base} gave {content}',
         'isRequested': f'E:<isRequested> -> {base} called from {caller}, for {content}',
         'canDispose': f'E:<canDispose> -> {base} called from {caller}',
+        'initialWIP': f'E:<initialWIP> -> {base} has Work in Progress',
     }
     print(f'{timecode} -> {phrases[key]}')
 
