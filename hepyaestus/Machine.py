@@ -35,7 +35,7 @@ class Machine(StoreNode):
         while True:
             while True:
                 receivedEvents = yield self.env.any_of(
-                    [self.isRequested, self.canDispose]
+                    [self.isRequested, self.canDispose, self.initialWIP]
                 )
                 assert receivedEvents is not None
                 assert self.receiver is not None
@@ -71,17 +71,39 @@ class Machine(StoreNode):
                             attempt=eventData.attempt,
                         )
                     )
+                if self.initialWIP in receivedEvents:
+                    eventData = self.initialWIP.value
+                    assert isinstance(eventData, EventData)
+                    assert self.notEmpty(), (
+                        'Line needs to populate store before calling WIP'
+                    )
+
+                    # should only ever be called once by Line
+                    self.initialWIP = self.env.event()
+                    # needs to be reset to remove it from receivedEvents
+
+                    self.printTrace(initialWIP=eventData)
+
                 break
 
-            yield self.env.timeout(delay=self.processingTime.generateNumber())
+            yield self.env.timeout(delay=self.calculateProcessingTime())
 
             self.canReceiversReceive()
             self.canGiversGive()
 
-    def give(self):
+    def give(self) -> StoreGet:
         self.totalWorkingTime += self.env.now - self.timeLastOperationStarted
         return super().give()
 
     def receive(self, entity: Entity) -> None:
         self.timeLastOperationStarted = self.env.now
         super().receive(entity)
+
+    def calculateProcessingTime(self) -> float:
+        activeEntity: Entity | None = self.getActiveEntity()
+        if (
+            activeEntity is not None
+            and activeEntity.remainingProcessingTime is not None
+        ):
+            return activeEntity.remainingProcessingTime.generateNumber()
+        return self.processingTime.generateNumber()

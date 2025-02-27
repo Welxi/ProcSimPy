@@ -2,33 +2,60 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from hepyaestus.baseClasses import BaseObject, CoreObject
+from hepyaestus.Base import BaseObject
 from hepyaestus.EventData import EventData
+from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
     from hepyaestus.Line import Line
+    from hepyaestus.ProbDistribution import ProbDistribution
+    from hepyaestus.Store import StoreNode
     from simpy import Environment
 
 
 class Entity(BaseObject):
     type = 'Entity'
 
-    def __init__(self, id: str, name: str) -> None:
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        startingStation: Optional[StoreNode] = None,
+        remainingProcessingTime: Optional[ProbDistribution] = None,
+    ) -> None:
         super().__init__(id, name)
+        self.startingStation: Optional[StoreNode] = startingStation
+        self.remainingProcessingTime: Optional[RandomNumberGenerator] = (
+            RandomNumberGenerator(distribution=remainingProcessingTime)
+            if remainingProcessingTime is not None
+            else None
+        )
 
     def initialize(
-        self, env: Environment, line: Line, currentStation: Optional[CoreObject] = None
+        self,
+        env: Environment,
+        line: Line,
+        currentStation: Optional[StoreNode] = None,
     ) -> None:
+        # Need to check here because of Inheritance rules need same parameters
+        assert currentStation is not None, 'currentStation needed for starting node'
+
         super().initialize(env, line)
         self.printTrace(create=None)
-        self.creationTime = self.env.now
-        self.startTime = self.env.now
-        self.stations: list[tuple[float, Optional[CoreObject]]] = [
+        self.creationTime: float = self.env.now
+        self.startTime: float = self.env.now
+
+        if self.startingStation is not None:
+            assert currentStation == self.startingStation, (
+                'currentStation must begin the same as startingStation'
+            )
+
+        self.currentStation: Optional[StoreNode] = currentStation
+        self.stations: list[tuple[float, Optional[StoreNode]]] = [
             (self.env.now, currentStation)
         ]
-        self.currentStation: Optional[CoreObject] = currentStation
 
-    def updateStation(self, station: CoreObject) -> None:
+    def updateStation(self, station: StoreNode) -> None:
         self.printTrace(enter=EventData(caller=station, time=self.env.now))
         self.currentStation = station
         # ? will I need a list of stations visited for output tracing
