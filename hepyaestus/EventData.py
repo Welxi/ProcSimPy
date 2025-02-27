@@ -5,7 +5,7 @@ from itertools import count
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from hepyaestus.baseClasses import BaseObject
+    from hepyaestus.Base import BaseObject
     from hepyaestus.Entity import Entity
 
 

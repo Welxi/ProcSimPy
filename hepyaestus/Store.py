@@ -3,40 +3,25 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Optional, Self
 
+from hepyaestus.Base import BaseObject
+from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
-from simpy import Environment, Event, Resource, Store
+from simpy import Environment, Event, Store
 from simpy.core import Infinity
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from hepyaestus.Entity import Entity
     from hepyaestus.Line import Line
+    from simpy.resources.store import StoreGet
 
 
-class BaseObject:
-    def __init__(self, id: str, name: str) -> None:
-        self.id = id
-        self.name = name
-
-    def initialize(self, env: Environment, line: Line) -> None:
-        self.env = env
-        self.line = line
-
-    def printTrace(self, **kw) -> None:
-        if not self.line.canTrace(self):
-            return
-        from hepyaestus.printTrace import printTrace
-
-        for key, eventData in kw.items():
-            if eventData is None:
-                kw[key] = EventData(caller=self, time=self.env.now, trace=False)
-        printTrace(self, **kw)
-
-
-class CoreObject(BaseObject, ABC):
-    def __init__(self, id: str, name: str) -> None:
+class StoreNode(BaseObject, ABC):
+    def __init__(self, id: str, name: str, capacity: float = Infinity) -> None:
         super().__init__(id, name)
+        assert capacity >= 0, 'capacity must be possitive'
+        self.capacity: float = capacity
+
         self.next: list[Self] = []
         self.previous: list[Self] = []
 
@@ -50,6 +35,7 @@ class CoreObject(BaseObject, ABC):
         self.printTrace(init=None)
         self.canDispose: Event = self.env.event()
         self.isRequested: Event = self.env.event()
+        self.initialWIP: Event = self.env.event()
 
         self.events: list[Event] = [self.canDispose, self.isRequested]
 
@@ -63,6 +49,7 @@ class CoreObject(BaseObject, ABC):
 
         self.totalWaitingTime = 0
         self.totalWorkingTime = 0
+        self.store = Store(env, capacity=self.capacity)
 
     def defineRouting(
         self,
@@ -72,31 +59,40 @@ class CoreObject(BaseObject, ABC):
         self.previous: list[Self] = predecessorList if predecessorList else []
         self.next: list[Self] = successorList if successorList else []
 
+    def give(self) -> StoreGet:
+        return self.store.get()
+
+    def receive(self, entity: Entity) -> None:
+        entity.updateStation(station=self)
+        self.store.put(entity)
+
+    def canReceive(self) -> bool:
+        return len(self.store.items) < self.capacity and not self.anyEventsTriggered()
+
+    def canGive(self) -> bool:
+        return len(self.store.items) > 0 and not self.canDispose.triggered
+
+    def notEmpty(self) -> bool:
+        return len(self.store.items) > 0
+
+    def getActiveEntity(self) -> Entity | None:
+        if self.notEmpty():
+            entity = self.store.items[0]
+            assert isinstance(entity, Entity)
+            return entity
+        else:
+            return None
+
     @abstractmethod
     def run(self) -> Generator:
         raise NotImplementedError
 
-    # abstract methods need to have the same return type
-    # TODO create generic of give and receive for store and resource
-
-    # @abstractmethod
-    # def receive(self, entity: Entity) -> None:
-    #     pass
-
-    # @abstractmethod
-    # def give(self):
-    #     pass
-
-    @abstractmethod
-    def canReceive(self) -> bool:
-        return False
-
-    @abstractmethod
-    def canGive(self) -> bool:
-        return False
-
     def anyEventsTriggered(self) -> bool:
-        return self.canDispose.triggered or self.isRequested.triggered
+        return (
+            self.canDispose.triggered
+            or self.isRequested.triggered
+            or self.initialWIP.triggered
+        )
 
     def canGiversGive(self) -> None:
         for giver in self.previous:
@@ -127,47 +123,3 @@ class CoreObject(BaseObject, ABC):
                     caller=event.caller, time=self.env.now, attempt=event.attempt + 1
                 )
             )
-
-
-class StoreObject(CoreObject):
-    def __init__(self, id: str, name: str, capacity: float = Infinity) -> None:
-        super().__init__(id, name)
-        assert capacity >= 0, 'capacity must be possitive'
-        self.capacity: float = capacity
-
-    def initialize(self, env: Environment, line: Line) -> None:
-        super().initialize(env, line)
-        self.store = Store(env, capacity=self.capacity)
-
-    def give(self):
-        return self.store.get()
-
-    def receive(self, entity: Entity) -> None:
-        entity.updateStation(station=self)
-        self.store.put(entity)
-
-    def canReceive(self) -> bool:
-        return len(self.store.items) < self.capacity and not self.anyEventsTriggered()
-
-    def canGive(self) -> bool:
-        return len(self.store.items) > 0 and not self.canDispose.triggered
-
-
-class ResourceObject(CoreObject):
-    def __init__(self, id: str, name: str, capacity: int = 1) -> None:
-        super().__init__(id, name)
-        assert capacity >= 0, 'capacity must be possitive'
-        self.capacity: int = capacity
-
-    def initialize(self, env: Environment, line: Line) -> None:
-        super().initialize(env, line)
-        self.res = Resource(env, capacity=self.capacity)
-
-    def give(self):
-        return NotImplementedError
-
-    def receive(self, entity: Entity):
-        return NotImplementedError
-
-    def canReceive(self) -> bool:
-        return len(self.res.users) < self.capacity and not self.isRequested.triggered

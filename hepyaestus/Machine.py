@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.baseClasses import StoreObject
+from simpy.resources.store import StoreGet
+
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
+from hepyaestus.Store import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
     from simpy import Environment
 
 
-class Machine(StoreObject):
+class Machine(StoreNode):
     def __init__(self, id: str, name: str, processingTime: ProbDistribution) -> None:
         super().__init__(id, name)
         self.processingTime: RandomNumberGenerator = RandomNumberGenerator(
