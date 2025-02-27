@@ -44,8 +44,8 @@ def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] |
     if test:
         return {
             'parts': exit.numOfExits,
-            'working_ratio_M1': workingRatio1,
-            'working_ratio_M2': workingRatio2,
+            'working_ratio_M1': workingRatio1 * 100,
+            'working_ratio_M2': workingRatio2 * 100,
         }
 
     print(f'Sim End Time: {experiment.env.now}')
