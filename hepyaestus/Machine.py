@@ -85,6 +85,7 @@ class Machine(StoreNode):
 
                 break
 
+            self.timeLastOperationStarted = self.env.now
             yield self.env.timeout(delay=self.calculateProcessingTime())
 
             self.canReceiversReceive()
@@ -95,7 +96,6 @@ class Machine(StoreNode):
         return super().give()
 
     def receive(self, entity: Entity) -> None:
-        self.timeLastOperationStarted = self.env.now
         super().receive(entity)
 
     def calculateProcessingTime(self) -> float:
