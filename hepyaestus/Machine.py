@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from simpy.resources.store import StoreGet
-
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
@@ -15,6 +13,7 @@ if TYPE_CHECKING:
     from hepyaestus.Line import Line
     from hepyaestus.ProbDistribution import ProbDistribution
     from simpy import Environment
+    from simpy.resources.store import StoreGet
 
 
 class Machine(StoreNode):
