@@ -56,7 +56,7 @@ def test_parallel_machines_4() -> None:
     assert results['NumM2'] == 220
 
 
-def test_setting_WIP_1():
+def test_setting_WIP_1() -> None:
     from SettingWIP1 import main
 
     results = main(test=True)
@@ -66,7 +66,7 @@ def test_setting_WIP_1():
     assert results['working_ratio'] == 100
 
 
-def test_setting_WIP_2():
+def test_setting_WIP_2() -> None:
     from SettingWIP2 import main
 
     results = main(test=True)
@@ -76,7 +76,7 @@ def test_setting_WIP_2():
     assert results['working_ratio'] == 100
 
 
-def test_setting_WIP_3():
+def test_setting_WIP_3() -> None:
     from SettingWIP3 import main
 
     results = main(test=True)
