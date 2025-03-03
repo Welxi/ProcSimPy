@@ -13,14 +13,25 @@ if TYPE_CHECKING:
     from collections.abc import Generator
 
     from hepyaestus.Line import Line
+    from hepyaestus.ShiftScheduler import Shift
     from simpy.resources.store import StoreGet
 
 
 class StoreNode(BaseObject, ABC):
-    def __init__(self, id: str, name: str, capacity: float = Infinity) -> None:
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        capacity: float = Infinity,
+        shift: Optional[Shift] = None,
+    ) -> None:
         super().__init__(id, name)
+
         assert capacity >= 0, 'capacity must be possitive'
         self.capacity: float = capacity
+
+        self.shift: Optional[Shift] = shift
+        self.onShift = self.shift.isOnShift(0) if self.shift is not None else None
 
         self.next: list[Self] = []
         self.previous: list[Self] = []
@@ -36,6 +47,9 @@ class StoreNode(BaseObject, ABC):
         self.canDispose: Event = self.env.event()
         self.isRequested: Event = self.env.event()
         self.initialWIP: Event = self.env.event()
+
+        self.interruptionEnd = self.env.event()
+        self.interruptionStart = self.env.event()
 
         self.events: list[Event] = [self.canDispose, self.isRequested]
 
@@ -85,7 +99,7 @@ class StoreNode(BaseObject, ABC):
 
     @abstractmethod
     def run(self) -> Generator:
-        raise NotImplementedError
+        raise NotImplementedError("Subclass must define 'run' method")
 
     def anyEventsTriggered(self) -> bool:
         return (
