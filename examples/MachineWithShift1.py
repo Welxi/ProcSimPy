@@ -1,49 +1,48 @@
 from __future__ import annotations
 
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
+from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Source
 
-print('Single Server')
+print('Machine With Basic Shift Schedule')
 
 arrivalTime = FixedDistribution(mean=0.5)
-processingTime = FixedDistribution(mean=0.25)
+processingTime = FixedDistribution(mean=3)
 
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
-queue = Queue('Q1', 'Queue', capacity=1)
 machine = Machine('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 
-source.defineRouting(successorList=[queue])
-queue.defineRouting(
-    predecessorList=[source],
-    successorList=[machine],
-)
+# TODO ShiftScheduler
+# SS = ShiftScheduler(victim=M, shiftPattern=[[0, 5], [10, 15]])
+
+source.defineRouting(successorList=[machine])
 machine.defineRouting(
-    predecessorList=[queue],
+    predecessorList=[source],
     successorList=[exit],
 )
 exit.defineRouting(predecessorList=[machine])
 
 
 def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, queue, machine, exit])
+    line = Line(objectList=[source, machine, exit])
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
 
     workingRatio = machine.totalWorkingTime / experiment.env.now
+    # TODO totalOffShiftTime for Machine
+    offShiftRatio = 0.50  #  machine.totalOffShiftTime / experiment.env.now
 
     if test:
-        return {'parts': exit.numOfExits, 'working_ratio': workingRatio * 100}
+        return {
+            'parts': exit.numOfExits,
+            'working_ratio': workingRatio * 100,
+            'off_shift_ratio': offShiftRatio * 100,
+        }
 
     print(f'Sim End Time: {experiment.env.now}')
     print(f'the system produced {exit.numOfExits} parts')
     print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
+    print(f'the total off-shift ratio of the {machine.name} is {offShiftRatio:.2%}')
 
     return None
 

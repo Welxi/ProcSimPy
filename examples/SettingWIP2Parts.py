@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from hepyaestus.Entity import Entity
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
+from hepyaestus import (
+    Entity,
+    Exit,
+    Experiment,
+    FixedDistribution,
+    Line,
+    Machine,
+    Queue,
+)
 
 print('Setting Work in Progress: One Part run till no more events')
 
@@ -15,7 +17,8 @@ processingTime = FixedDistribution(mean=0.25)
 queue = Queue('Q1', 'Queue', capacity=1)
 machine = Machine('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
-part = Entity('P1', 'Part', startingStation=machine)
+part1 = Entity('P1', 'Part', startingStation=machine)
+part2 = Entity('P2', 'Part2', startingStation=machine)
 
 queue.defineRouting(
     successorList=[machine],
@@ -30,7 +33,7 @@ exit.defineRouting(predecessorList=[machine])
 def main(
     test: bool = False, maxSimTime: float = float('inf')
 ) -> dict[str, int | float] | None:
-    line = Line(objectList=[queue, machine, exit, part])
+    line = Line(objectList=[queue, machine, exit, part1, part2])
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)

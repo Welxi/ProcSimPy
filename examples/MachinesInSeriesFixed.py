@@ -1,58 +1,44 @@
 from __future__ import annotations
 
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
+from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
 
-print('Selective Queue Chooses Priority')
+print('Machines in Series')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=1.5)
 
-
-class SelectiveQueue(Queue):
-    # #override so that it chooses receiver according to priority
-    # def selectReceiver(self,possibleReceivers=[]):
-    #     # sort the receivers according to their priority
-    #     possibleReceivers.sort(key=lambda x: x.priority, reverse=True)
-    #     if possibleReceivers[0].canAccept():
-    #         return possibleReceivers[0]
-    #     elif possibleReceivers[1].canAccept():
-    #         return possibleReceivers[1]
-    #     return None
-    pass
-
-
+# TODO Repairman
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
-selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
+queue = Queue('Q', 'Queue', capacity=1)
 first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-# F = Failure(
+
+# TODO Failures
+# F1 = Failure(
 #     victim=M1,
 #     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
+#     repairman=R,
+# )
+# F2 = Failure(
+#     victim=M2,
+#     distribution={'TTF': {'Fixed': {'mean': 40.0}}, 'TTR': {'Fixed': {'mean': 10.0}}},
+#     repairman=R,
 # )
 
-# TODO Move to constructor
-first_machine.priority = 10
-second_machine.priority = 0
-
-source.defineRouting(successorList=[selectiveQ])
-selectiveQ.defineRouting(
+source.defineRouting(successorList=[queue])
+queue.defineRouting(
     predecessorList=[source], successorList=[first_machine, second_machine]
 )
-first_machine.defineRouting(predecessorList=[selectiveQ], successorList=[exit])
-second_machine.defineRouting(predecessorList=[selectiveQ], successorList=[exit])
+first_machine.defineRouting(predecessorList=[queue], successorList=[exit])
+second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, selectiveQ, first_machine, second_machine, exit])
+    objectList = [source, queue, first_machine, second_machine, exit]
+    line = Line(objectList=objectList)
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test)
@@ -62,7 +48,6 @@ def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] |
     # blockageRatio2 = second_machine.totalBlockageTime / maxSimTime
     workingRatio2 = second_machine.totalWorkingTime / maxSimTime
 
-    # return results for the test
     if test:
         return {
             'parts': exit.numOfExits,
