@@ -108,13 +108,15 @@ class ShiftSchedule(Shift):
         return any(start < time < end for start, end in self.schedule)
 
     def next(self, time: float) -> tuple[float, float]:
-        for idx, (start, end) in enumerate(self.schedule):
+        for idx, (_, end) in enumerate(self.schedule):
             if time > end:
-                if self.schedule[idx] == self.schedule[-1]:
-                    return self.schedule[-1]
-                else:
+                if self.schedule[idx] != self.schedule[-1]:
                     return self.schedule[idx + 1]
-        assert False
+                else:
+                    raise AssertionError('Schedule does not cover maxSimTime')
+
+        # mainly here to make linter happy
+        raise AssertionError('Schedule does not cover maxSimTime')
 
 
 def vaildateSchedule(schedule: list[tuple[float, float]]) -> list[tuple[float, float]]:
