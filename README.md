@@ -1,4 +1,4 @@
-# Name (TBD)
+# Process SimPy (ProcSimPy)
 > Warning this project is currently undergoing development and validation please use under you own discretion
 
 Discrete Event Simulation (DES) Python Library for the Manufacturing and Supply line Domains, built on top of [SimPy](https://github.com/simpx/simpy). The scope of the project is to provide simulation modellers with a collection of open source DES objects that can be connected like "black boxes" in order to form a model.
