@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from hepyaestus.Entity import Entity
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
+from hepyaestus import (
+    Entity,
+    Exit,
+    Experiment,
+    FixedDistribution,
+    Line,
+    Machine,
+    Queue,
+)
 
 print('Setting Work in Progress: One Part run till no more events')
 

@@ -1,21 +1,16 @@
 from __future__ import annotations
 
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
+from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
 
 print('Selective Queue Chooses M1 over M2')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
-processingTimeM2 = FixedDistribution(mean=1.5)
+processingTimeM2 = FixedDistribution(mean=0.25)
 
 
 class SelectiveQueue(Queue):
+    # TODO Selective Queue
     # override so that it first chooses M1 and then M2
     # def selectReceiver(self, possibleReceivers=[]):
     #     if first_machine.canAccept():
@@ -31,7 +26,8 @@ selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
 first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-# F = Failure(
+# TODO F = Failure
+# (
 #     victim=M1,
 #     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
 # )

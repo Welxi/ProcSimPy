@@ -1,22 +1,17 @@
 from __future__ import annotations
 
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
+from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
 
 print('Selective Queue Chooses Priority')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
-processingTimeM2 = FixedDistribution(mean=1.5)
+processingTimeM2 = FixedDistribution(mean=0.25)
 
 
 # the custom queue
 class SelectiveQueue(Queue):
+    # TODO Selective Queue
     # #override so that it chooses receiver according to priority
     # def selectReceiver(self,possibleReceivers=[]):
     #     # sort the receivers according to their priority
@@ -31,6 +26,7 @@ class SelectiveQueue(Queue):
 
 # the custom machine
 class Milling(Machine):
+    # ? Unsure of reason, could be achieved by reviewing stations visited
     # def getEntity(self):
     #     activeEntity=Machine.getEntity(self)        #call the parent method to get the entity
     #     part=self.getActiveObjectQueue()[0]         #retrieve the obtained part
@@ -41,6 +37,7 @@ class Milling(Machine):
 
 # the custom exit
 class CountingExit(Exit):
+    # TODO Counting Exit
     # def getEntity(self):
     #     activeEntity=Exit.getEntity(self)                        #call the parent method to get the entity
     #     #check the attribute and update the counters accordingly
@@ -57,7 +54,8 @@ selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
 first_machine = Milling('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Milling('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = CountingExit('E', 'Exit')
-# F = Failure(
+# TODO F = Failure
+# (
 #     victim=M1,
 #     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
 # )

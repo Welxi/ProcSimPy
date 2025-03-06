@@ -49,6 +49,7 @@ known-first-party = ["simpy"]
 
 [lint.extend-per-file-ignores]
 "*/tests/*" = ["PERF203", "PLR0913", "PLR2004"]
+"__init__.py" = ["F401"]
 "docs/*" = ["INP001"]
 "docs/examples/code/*" = ["T20"]
 "imports.py" = ["F401", "I001"]
