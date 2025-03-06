@@ -17,8 +17,15 @@ if TYPE_CHECKING:
 
 
 class Machine(StoreNode):
-    def __init__(self, id: str, name: str, processingTime: ProbDistribution) -> None:
-        super().__init__(id, name)
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        processingTime: ProbDistribution,
+        capacity: int = 1,
+        priority: int = 0,
+    ) -> None:
+        super().__init__(id, name, capacity=capacity, priority=priority)
         self.processingTime: RandomNumberGenerator = RandomNumberGenerator(
             distribution=processingTime
         )

@@ -14,8 +14,13 @@ if TYPE_CHECKING:
 
 
 class Exit(StoreNode):
-    def __init__(self, id: str, name: str) -> None:
-        super().__init__(id, name)
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        priority: int = 0,
+    ) -> None:
+        super().__init__(id, name, priority=priority)
         self.exits: list[Entity] = []
 
     def initialize(self, env: Environment, line: Line) -> None:

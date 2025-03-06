@@ -14,8 +14,14 @@ if TYPE_CHECKING:
 
 
 class Queue(StoreNode):
-    def __init__(self, id: str, name: str, capacity: int = 1) -> None:
-        super().__init__(id, name, capacity)
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        capacity: int = 1,
+        priority: int = 0,
+    ) -> None:
+        super().__init__(id, name, capacity=capacity, priority=priority)
         self.times = 0
 
     def initialize(self, env: Environment, line: Line) -> None:
