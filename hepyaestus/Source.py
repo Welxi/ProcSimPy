@@ -44,8 +44,9 @@ class Source(StoreNode):
         name: str,
         interArrivalTime: ProbDistribution,
         entity: Optional[type[Entity]] = None,
+        priority: int = 0,
     ) -> None:
-        super().__init__(id, name)
+        super().__init__(id, name, priority=priority)
         self.partNumber: int = 0
         self.item = entity if entity else Entity
 

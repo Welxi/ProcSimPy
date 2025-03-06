@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Optional
 
 from hepyaestus.EventData import EventData
 from hepyaestus.Store import StoreNode
@@ -17,7 +17,11 @@ if TYPE_CHECKING:
 
 
 class Line:
-    def __init__(self, objectList: list) -> None:
+    def __init__(
+        self,
+        objectList: list,
+        routingPriority: Optional[Callable[[StoreNode], int]] = None,
+    ) -> None:
         self.ObjList: list[StoreNode] = [
             object for object in objectList if isinstance(object, StoreNode)
         ]
@@ -31,6 +35,8 @@ class Line:
         self.QueueList: list[Queue] = sortByClass['Queue']
         self.SourceList: list[Source] = sortByClass['Source']
         self.EntityList: list[Entity] = sortByClass['Entity']
+
+        self.routingPriority: Optional[Callable[[StoreNode], int]] = routingPriority
 
         self.settings: dict[str, bool | None | list[BaseObject]] = {
             'traceIsOn': True,  # checked by baseObject before calling printTrace
@@ -57,7 +63,7 @@ class Line:
             )
             stationsWithWIP.add(entity.startingStation)
             entity.initialize(self.env, self, currentStation=entity.startingStation)
-            entity.startingStation.receive(entity=entity)
+            entity.startingStation._receive(entity=entity)
 
         for station in stationsWithWIP:
             station.initialWIP.succeed(EventData(caller=station, time=self.env.now))
