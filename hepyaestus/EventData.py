@@ -17,3 +17,6 @@ class EventData:
     trace: bool = True
     attempt: int = 0
     id: int = field(default_factory=count().__next__, init=False)
+
+
+# Could try a EventTrassmission to enforce transmission

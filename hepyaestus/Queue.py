@@ -40,7 +40,7 @@ class Queue(StoreNode):
                 self.isRequested = self.env.event()
                 self.printTrace(isRequested=eventData)
 
-                self.receive(eventData.transmission)
+                self._receive(eventData.transmission)
 
                 if self.receiver.canReceive():
                     self.canDispose.succeed(EventData(caller=self, time=self.env.now))
@@ -54,7 +54,7 @@ class Queue(StoreNode):
                 self.canDispose = self.env.event()
                 self.printTrace(canDispose=eventData)
 
-                entity = yield self.give()
+                entity = yield self._give()
                 assert isinstance(entity, Entity)
 
                 self.giveReceiverEntity(
@@ -72,6 +72,6 @@ class Queue(StoreNode):
                 self.initialWIP = self.env.event()
                 self.printTrace(initialWIP=eventData)
 
-                self.receive(eventData.transmission)
+                self._receive(eventData.transmission)
             self.canReceiversReceive()
             self.canGiversGive()

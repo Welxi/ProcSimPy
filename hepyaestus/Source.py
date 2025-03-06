@@ -74,11 +74,11 @@ class Source(StoreNode):
             assert eventData.time == self.env.now
             self.entityCreated = self.env.event()
 
-            self.receive(eventData.transmission)
+            self._receive(eventData.transmission)
 
             assert self.receiver is not None
             if self.receiver.canReceive():
-                entity = yield self.give()
+                entity = yield self._give()
                 assert isinstance(entity, Entity)
                 assert self.receiver is not None
                 self.receiver.isRequested.succeed(
