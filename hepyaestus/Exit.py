@@ -35,12 +35,12 @@ class Exit(StoreNode):
             assert eventData.time == self.env.now
             self.printTrace(isRequested=eventData)
 
-            self.receive(eventData.transmission)
+            self._receive(eventData.transmission)
 
             self.canGiversGive()
 
-    def receive(self, entity: Entity) -> None:
+    def _receive(self, entity: Entity) -> None:
         self.exits.append(entity)
         self.numOfExits += 1
         self.timeLastEntityLeft = self.env.now
-        super().receive(entity)
+        super()._receive(entity)
