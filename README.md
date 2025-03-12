@@ -26,16 +26,10 @@ A simple single server example
 >
 >It is important to note that you keep the same base when inputting values 
 
-```python 
-from hepyaestus.Exit import Exit
-from hepyaestus.Experiment import Experiment
-from hepyaestus.Line import Line
-from hepyaestus.Machine import Machine
-from hepyaestus.ProbDistribution import FixedDistribution
-from hepyaestus.Queue import Queue
-from hepyaestus.Source import Source
+```python
+from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
 
-# Define the timings of Intrest 
+# Define the timings of Intrest
 arrivalTime = FixedDistribution(mean=1)
 processingTime = FixedDistribution(mean=2)
 
@@ -48,12 +42,12 @@ exit = Exit('E', 'Exit')
 # Link the Nodes to each other (input/output)
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
-    predecessorList=[source],
-    successorList=[machine],
+    predecessorList=[source],
+    successorList=[machine],
 )
 machine.defineRouting(
-    predecessorList=[queue],
-    successorList=[exit],
+    predecessorList=[queue],
+    successorList=[exit],
 )
 exit.defineRouting(predecessorList=[machine])
 
@@ -61,13 +55,14 @@ exit.defineRouting(predecessorList=[machine])
 line = Line(objectList=[source, queue, machine, exit])
 experiment = Experiment(line=line)
 
-experiment.run(maxSimTime=10)
+results = experiment.run(maxSimTime=10)
 
-workingRatio = machine.totalWorkingTime / maxSimTime
+# we are only interested in the first iteration so we can shadow the first results stub
+results = results.stubs[0]  
 
-print(f'Sim End Time: {experiment.env.now}')
-print(f'the system produced {exit.numOfExits} parts')
-print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
+print(f'Sim End Time: {results["simTime"]}')
+print(f'the system produced {results["partsCreated"]} parts')
+print(f'Working Percent of {machine.name} is {machine.stats.workingRatio:.2%}')
 ```
 ## Installation
 Currently in Alpha, you must clone and install dependencies (in project.toml) from package manager of choice 
