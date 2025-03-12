@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+import os
+import sys
+from pathlib import Path
+
+sys.path.append(os.path.join(Path(sys.path[0]).parent))
+
 from hepyaestus import (
     Entity,
     Exit,
@@ -35,20 +41,20 @@ def main(
     line = Line(objectList=[queue, machine, exit, part])
 
     experiment = Experiment(line=line)
-    experiment.run(maxSimTime=maxSimTime, test=test)
+    results = experiment.run(maxSimTime=maxSimTime, test=test)
 
-    workingRatio = machine.totalWorkingTime / exit.timeLastEntityLeft
+    results = results.stubs[0]  # one iteration
 
     if test:
         return {
-            'parts': exit.numOfExits,
-            'simulationTime': exit.timeLastEntityLeft,
-            'working_ratio': workingRatio * 100,
+            'parts': results['partsCreated'],
+            'simulationTime': results['simTime'],
+            'working_percent': machine.stats.workingRatio * 100,
         }
 
-    print(f'Sim End Time: {experiment.env.now}')
-    print(f'the system produced {exit.numOfExits} parts in {experiment.env.now} min')
-    print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
+    print(f'Sim End Time: {results["simTime"]}')
+    print(f'the system produced {results["partsCreated"]} parts')
+    print(f'Working Percent of {machine.name} is {machine.stats.workingRatio:.2%}')
     return None
 
 

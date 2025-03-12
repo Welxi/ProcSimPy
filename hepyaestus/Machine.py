@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from hepyaestus.Line import Line
     from hepyaestus.ProbDistribution import ProbDistribution
     from simpy import Environment
-    from simpy.resources.store import StoreGet
 
 
 class Machine(StoreNode):
@@ -29,10 +28,6 @@ class Machine(StoreNode):
         self.processingTime: RandomNumberGenerator = RandomNumberGenerator(
             distribution=processingTime
         )
-
-        self.totalWorkingTime: float = 0
-        self.totalBlockageTime: float = 0
-        self.timeLastOperationStarted: float = 0
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
@@ -57,7 +52,7 @@ class Machine(StoreNode):
                     self.isRequested = self.env.event()
                     self.printTrace(isRequested=eventData)
 
-                    self.receive(eventData.transmission)
+                    self._receive(eventData.transmission)
 
                 if self.canDispose in receivedEvents:
                     eventData = self.canDispose.value
@@ -66,7 +61,7 @@ class Machine(StoreNode):
                     self.canDispose = self.env.event()
                     self.printTrace(canDispose=eventData)
 
-                    entity = yield self.give()
+                    entity = yield self._give()
                     assert isinstance(entity, Entity)
 
                     self.giveReceiverEntity(
@@ -92,21 +87,16 @@ class Machine(StoreNode):
 
                 break
 
-            self.timeLastOperationStarted = self.env.now
+            self.stats.startingProcessing()
             yield self.env.timeout(delay=self.calculateProcessingTime())
+            self.stats.finishedProcessing()
 
             self.canReceiversReceive()
             self.canGiversGive()
 
-    def give(self) -> StoreGet:
-        self.totalWorkingTime += self.env.now - self.timeLastOperationStarted
-        return super().give()
-
-    def receive(self, entity: Entity) -> None:
-        super().receive(entity)
-
     def calculateProcessingTime(self) -> float:
-        activeEntity: Entity | None = self.getActiveEntity()
+        # TODO check greater than zero
+        activeEntity: Entity | None = self._getActiveEntity()
         if (
             activeEntity is not None
             and activeEntity.remainingProcessingTime is not None

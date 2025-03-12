@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hepyaestus.EventData import EventData
+from hepyaestus.Statistics import Statistics
 
 if TYPE_CHECKING:
     from hepyaestus.Line import Line
@@ -19,6 +20,7 @@ class BaseObject:
         self.env: Environment = env
         self.line: Line = line
         self.canPrint = self.line.canTrace(self)
+        self.stats = Statistics(env=self.env, line=self.line)
 
     def printTrace(self, **kw) -> None:
         if not self.canPrint:
