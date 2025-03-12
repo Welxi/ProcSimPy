@@ -39,7 +39,10 @@ class RandomNumberGenerator:
         generators.append(self)
 
     def generateNumber(self) -> float:
-        if self.distribution.distributionType is DistributionType.CAUCHY:
+        if (
+            self.distribution.distributionType is DistributionType.CAUCHY
+            or self.distribution.distributionType is DistributionType.GEOMETRIC
+        ):
             # return self.distribution.distributionFunction(self.NpRnd)
             raise NotImplementedError
         return self.distribution.distributionFunction(self.Rnd)

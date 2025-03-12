@@ -1,4 +1,4 @@
-from hepyaestus.ProbDistribution import FixedDistribution, NormalDistribution
+from hepyaestus.ProbDistribution import FixedDistribution, GaussianDistribution
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
 
 
@@ -9,7 +9,7 @@ def test_RandomNumberGenerator_Fixed() -> None:
 
 
 def test_RandomNumberGenerator_Normal() -> None:
-    dist = NormalDistribution(mean=1, stdev=0.1, min=0.5, max=1.5)
+    dist = GaussianDistribution(mean=1, stdev=0.1, min=0.5, max=1.5)
     rng = RandomNumberGenerator(dist)
     number = rng.generateNumber()
     assert 0.5 < number < 1.5

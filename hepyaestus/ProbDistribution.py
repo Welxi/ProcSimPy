@@ -1,6 +1,7 @@
 import math
 from abc import ABC, abstractmethod
 from enum import Enum
+from random import Random
 
 
 # Still not sure Enum is the best store of this
@@ -42,23 +43,29 @@ class ProbDistribution(ABC):
 class FixedDistribution(ProbDistribution):
     def __init__(self, mean: float) -> None:
         super().__init__(DistributionType.FIXED)
+
+        if mean <= 0:
+            raise ValueError('Mean Less or Equal to Zero not supported')
+
         self.mean: float = mean
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         return self.mean
 
 
-class NormalDistribution(ProbDistribution):
+class GaussianDistribution(ProbDistribution):
     def __init__(self, mean: float, stdev: float, min: float, max: float) -> None:
         super().__init__(DistributionType.NORMAL)
-        if max < min:
-            raise ValueError('max must be greater than min')
+
+        if not (0 < min < mean < max):
+            raise ValueError('Does not match a Normal Distribution')
+
         self.mean: float = mean
         self.stdev: float = stdev
         self.min: float = min
         self.max: float = max
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         while 1:
             number: float = RanNumGenerator.normalvariate(self.mean, self.stdev)
             if self.min < number < self.max:
@@ -70,7 +77,7 @@ class ExpDistribution(ProbDistribution):
     def __init__(self, mean: float) -> None:
         super().__init__(DistributionType.EXP)
         if mean <= 0:
-            raise ValueError('Mean cannot be less than or equal to 0')
+            raise ValueError('Mean Less or Equal to Zero not supported')
 
         self.mean: float = mean
 
@@ -92,7 +99,7 @@ class GammaDistribution(ProbDistribution):
         if not self.beta:
             self.beta: float = 1 / float(self.rate)
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         return RanNumGenerator.gammavariate(self.alpha, self.beta)
 
 
@@ -103,7 +110,7 @@ class LogisticDistribution(ProbDistribution):
         self.mean: float = mean
         self.scale: float = scale
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         while 1:
             x: float = RanNumGenerator.random()
             number: float = self.mean + self.scale * math.log(x / (1 - x))
@@ -126,7 +133,7 @@ class ErlangDistribution(ProbDistribution):
         if not self.beta:
             self.beta: float = 1 / float(self.rate)
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         return RanNumGenerator.gammavariate(self.alpha, self.beta)
 
 
@@ -147,7 +154,7 @@ class LognormalDistribution(ProbDistribution):
         self.logmean: float = logmean
         self.logsd: float = logsd
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         return RanNumGenerator.lognormvariate(self.logmean, self.logsd)
 
 
@@ -158,7 +165,7 @@ class WeibullDistribution(ProbDistribution):
         self.scale: float = scale
         self.shape: float = shape
 
-    def distributionFunction(self, RanNumGenerator) -> float:
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
         return RanNumGenerator.weibullvariate(self.scale, self.shape)
 
 
@@ -188,5 +195,5 @@ class TriangularDistribution(ProbDistribution):
         self.mean: float = mean
         self.max: float = max
 
-    def distributionFunction(self, RanNumGenerator) -> float:
-        return RanNumGenerator.triangular(left=self.min, right=self.mean, mode=self.max)
+    def distributionFunction(self, RanNumGenerator: Random) -> float:
+        return RanNumGenerator.triangular(low=self.min, high=self.mean, mode=self.max)
