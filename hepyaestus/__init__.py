@@ -6,7 +6,7 @@ from hepyaestus.Machine import Machine
 from hepyaestus.ProbDistribution import (
     ExpDistribution,
     FixedDistribution,
-    NormalDistribution,
+    GaussianDistribution,
 )
 from hepyaestus.Queue import Queue
 from hepyaestus.Source import Source
