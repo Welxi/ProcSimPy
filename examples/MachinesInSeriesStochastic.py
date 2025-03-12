@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import os
+import sys
+from pathlib import Path
+
+sys.path.append(os.path.join(Path(sys.path[0]).parent))
+
 from hepyaestus import (
     Exit,
     ExpDistribution,
     Experiment,
+    GaussianDistribution,
     Line,
     Machine,
-    NormalDistribution,
     Queue,
     Source,
 )
@@ -14,8 +20,8 @@ from hepyaestus import (
 print('Machines in Series')
 
 arrivalTime = ExpDistribution(mean=0.5)
-processingTimeM1 = NormalDistribution(mean=0.25, stdev=0.1, min=0.1, max=1)
-processingTimeM2 = NormalDistribution(mean=1.5, stdev=0.3, min=0.1, max=5)
+processingTimeM1 = GaussianDistribution(mean=0.25, stdev=0.1, min=0.1, max=1)
+processingTimeM2 = GaussianDistribution(mean=1.5, stdev=0.3, min=0.1, max=5)
 
 # TODO Repairman
 source = Source('S', 'Source', interArrivalTime=arrivalTime)

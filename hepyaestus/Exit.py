@@ -25,8 +25,6 @@ class Exit(StoreNode):
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
-        self.numOfExits: int = 0
-        self.timeLastEntityLeft: float = 0
 
     def run(self) -> Generator:
         while True:
@@ -34,18 +32,12 @@ class Exit(StoreNode):
             assert self.isRequested.value is not None
 
             eventData = self.isRequested.value
-            self.isRequested = self.env.event()
             assert isinstance(eventData, EventData)
             assert isinstance(eventData.transmission, Entity)
             assert eventData.time == self.env.now
+            self.isRequested = self.env.event()
             self.printTrace(isRequested=eventData)
 
             self._receive(eventData.transmission)
 
             self.canGiversGive()
-
-    def _receive(self, entity: Entity) -> None:
-        self.exits.append(entity)
-        self.numOfExits += 1
-        self.timeLastEntityLeft = self.env.now
-        super()._receive(entity)

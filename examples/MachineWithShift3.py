@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+import os
+import sys
+from pathlib import Path
+
+sys.path.append(os.path.join(Path(sys.path[0]).parent))
+
 from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Source
 
 print('Machine With Shift Schedule and endUnfinished')
@@ -26,23 +32,25 @@ def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     line = Line(objectList=[source, machine, exit])
 
     experiment = Experiment(line=line)
-    experiment.run(maxSimTime=maxSimTime, test=test)
+    results = experiment.run(maxSimTime=maxSimTime, test=test)
 
-    workingRatio = machine.totalWorkingTime / experiment.env.now
-    # TODO totalOffShiftTime for Machine
-    offShiftRatio = 0.50  #  machine.totalOffShiftTime / experiment.env.now
+    results = results.stubs[0]  # one iteration
 
     if test:
         return {
-            'parts': exit.numOfExits,
-            'working_ratio': workingRatio * 100,
-            'off_shift_ratio': offShiftRatio * 100,
+            'parts': exit.stats.numberOfEntitiesEntered,
+            'working_percent': machine.stats.workingRatio * 100,
+            'off_shift_ratio': machine.stats.offShiftRatio * 100,
         }
 
-    print(f'Sim End Time: {experiment.env.now}')
-    print(f'the system produced {exit.numOfExits} parts')
-    print(f'the total working ratio of the {machine.name} is {workingRatio:.2%}')
-    print(f'the total off-shift ratio of the {machine.name} is {offShiftRatio:.2%}')
+    print(f'Sim End Time: {results["simTime"]}')
+    print(f'the system produced {results["partsCreated"]} parts')
+    print(
+        f'the total working ratio of the {machine.name} is {machine.stats.workingRatio:.2%}'
+    )
+    print(
+        f'the total off-shift ratio of the {machine.name} is {machine.stats.offShiftRatio:.2%}'
+    )
 
     return None
 
