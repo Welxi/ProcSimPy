@@ -24,6 +24,7 @@ dev = [
     "ruff>=0.9.4",
     "sphinx-rtd-theme>=3.0.2",
     "sphinx>=8.2.2",
+    "sphinx-autodoc2>=0.5.0",
 ]
 
 # ruff settings in ruff.toml
