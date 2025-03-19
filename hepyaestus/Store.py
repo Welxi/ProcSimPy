@@ -46,7 +46,7 @@ class StoreNode(BaseObject, ABC):
     def initialize(self, env: Environment, line: Line) -> None:
         """
         Initialize called by Line to preform setup
-        or reseting between Experiment Iterations
+        or reseting between Experiment Iterations, and then we expand
 
         :param env: SimPy Environment, mainly used for creating events and knowing current time
         :type env: Environment
