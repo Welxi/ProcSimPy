@@ -4,4 +4,4 @@ read further at [Structurizr Lite Docs](https://docs.structurizr.com/lite/quicks
 
 docker pull structurizr/lite
 docker run -it --rm -p 8080:8080 -v PATH:/usr/local/structurizr structurizr/lite
-docker run -it --rm -p 8080:8080 -v C:\spellbook\HePYaestus\Diagrams:/usr/local/structurizr structurizr/lite
+docker run -it --rm -p 8080:8080 -v C:\spellbook\ProcSimPy\Diagrams:/usr/local/structurizr structurizr/lite
