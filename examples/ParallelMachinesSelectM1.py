@@ -6,13 +6,25 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
+from hepyaestus import (
+    Exit,
+    Experiment,
+    Failure,
+    FixedDistribution,
+    Line,
+    Machine,
+    Queue,
+    Source,
+)
 
 print('Selective Queue Chooses M1 over M2')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=0.25)
+
+timeToFailure = FixedDistribution(mean=6.0)
+timeToRepair = FixedDistribution(mean=1.0)
 
 
 class SelectiveQueue(Queue):
@@ -32,11 +44,13 @@ selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
 first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-# TODO F = Failure
-# (
-#     victim=M1,
-#     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
-# )
+failure = Failure(
+    'F',
+    'Failure',
+    victim=first_machine,
+    TTF=timeToFailure,
+    TTR=timeToRepair,
+)
 
 source.defineRouting(successorList=[selectiveQ])
 selectiveQ.defineRouting(

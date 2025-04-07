@@ -6,7 +6,16 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
+from hepyaestus import (
+    Exit,
+    Experiment,
+    Failure,
+    FixedDistribution,
+    Line,
+    Machine,
+    Queue,
+    Source,
+)
 
 print('Parallel Machines')
 
@@ -14,16 +23,21 @@ arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=0.25)
 
+timeToFailure = FixedDistribution(mean=6.0)
+timeToRepair = FixedDistribution(mean=1.0)
+
 source = Source('S', 'Source', interArrivalTime=arrivalTime)
 queue = Queue('Q', 'Queue', capacity=1)
 first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-# TODO F = Failure
-# (
-#     victim=M1,
-#     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
-# )
+failure = Failure(
+    'F',
+    'Failure',
+    victim=first_machine,
+    TTF=timeToFailure,
+    TTR=timeToRepair,
+)
 
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
@@ -35,8 +49,9 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    objectList = [source, queue, first_machine, second_machine, exit]
+    objectList = [source, queue, first_machine, second_machine, exit, failure]
     line = Line(objectList=objectList)
+    line.filterTrace(failure)
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)
