@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional, Self
 from hepyaestus.Base import BaseObject
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
+from hepyaestus.Statistics import Statistics
 from simpy import Environment, Event, Store
 from simpy.core import Infinity
 
@@ -22,6 +23,7 @@ class StoreNode(BaseObject, ABC):
         self,
         id: str,
         name: str,
+        *,
         capacity: float = Infinity,
         shift: Optional[Shift] = None,
         priority: int = 0,
@@ -48,12 +50,13 @@ class StoreNode(BaseObject, ABC):
         Initialize called by Line to preform setup
         or reseting between Experiment Iterations, and then we expand
 
-        :param env: SimPy Environment, mainly used for creating events and knowing current time
+        :param env: SimPy Environment used for knowing time and creating events
         :type env: Environment
         :param line: Line Object for Learning about word state or general info
         :type line: Line
         """
         super().initialize(env, line)
+        self.stats = Statistics(env=self.env, line=self.line)
         self.printTrace(init=None)
         self.canDispose: Event = self.env.event()
         self.isRequested: Event = self.env.event()
@@ -98,9 +101,13 @@ class StoreNode(BaseObject, ABC):
         )
 
     def _give(self) -> StoreGet:
+        entity = self._getActiveEntity()
+        assert entity is not None
+        self.stats.givenEntity(entity=entity)
         return self.store.get()
 
     def _receive(self, entity: Entity) -> None:
+        self.stats.receivedEntity(entity=entity)
         entity.updateStation(station=self)
         self.store.put(entity)
 
@@ -229,3 +236,6 @@ class StoreNode(BaseObject, ABC):
                     caller=event.caller, time=self.env.now, attempt=event.attempt + 1
                 )
             )
+
+    def getStoreQueue(self) -> list:
+        return self.store.items

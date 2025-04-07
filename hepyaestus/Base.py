@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hepyaestus.EventData import EventData
-from hepyaestus.Statistics import Statistics
 
 if TYPE_CHECKING:
     from hepyaestus.Line import Line
@@ -20,9 +19,11 @@ class BaseObject:
         self.env: Environment = env
         self.line: Line = line
         self.canPrint = self.line.canTrace(self)
-        self.stats = Statistics(env=self.env, line=self.line)
 
     def printTrace(self, **kw) -> None:
+        """
+        logging the trace of the simulation to console
+        """
         if not self.canPrint:
             return
         from hepyaestus.printTrace import printTrace
@@ -33,7 +34,19 @@ class BaseObject:
         printTrace(self, **kw)
 
     def basicEventData(self) -> EventData:
+        """
+        default constructor for EventData
+
+        :return: Event with caller as self at the current simulation time
+        :rtype: EventData
+        """
         return EventData(caller=self, time=self.env.now, trace=self.canPrint)
 
     def noTraceEventData(self) -> EventData:
+        """
+        Event Data constructor with a specific point not to log
+
+        :return: _description_
+        :rtype: EventData
+        """
         return EventData(caller=self, time=self.env.now, trace=False)

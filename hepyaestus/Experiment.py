@@ -13,12 +13,12 @@ if TYPE_CHECKING:
 
 class Experiment:
     def __init__(
-        self, line: Line, seed: int = 42, seedType: SeedType = SeedType.INT
+        self, *, line: Line, seed: int = 42, seedType: SeedType = SeedType.INT
     ) -> None:
-        self.interation: int = 1
+        self.iteration: int = 1
         self.line: Line = line
         self.seed: int = seed
-        self.seedType = seedType
+        self.seedType: SeedType = seedType
         self.results: Results = Results(line=self.line)
 
     def run(
@@ -35,15 +35,15 @@ class Experiment:
 
         self.runIteration()
 
-        while self.interation < self.numberOfReplications:
-            self.interation += 1
+        while self.iteration < self.numberOfReplications:
+            self.iteration += 1
             self.seed += 1
             self.runIteration()
 
         return self.results
 
     def runIteration(self) -> None:
-        print(f'Interation {self.interation}: Seed = {self.seed}')
+        print(f'Iteration {self.iteration}: Seed = {self.seed}')
         setSeed(seed=self.seed, seedType=self.seedType)
         self.env = simpy.Environment()
         self.line.initialize(self.env)

@@ -9,7 +9,7 @@ from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
 if TYPE_CHECKING:
     from hepyaestus.Line import Line
     from hepyaestus.ProbDistribution import ProbDistribution
-    from hepyaestus.Store import StoreNode
+    from hepyaestus.StoreNode import StoreNode
     from simpy import Environment
 
 
@@ -20,6 +20,7 @@ class Entity(BaseObject):
         self,
         id: str,
         name: str,
+        *,
         startingStation: Optional[StoreNode] = None,
         remainingProcessingTime: Optional[ProbDistribution] = None,
     ) -> None:
@@ -56,6 +57,12 @@ class Entity(BaseObject):
         ]
 
     def updateStation(self, station: StoreNode) -> None:
+        """
+        Called by store node when accepting new entity
+
+        :param station: the new StoreNode that has this entity
+        :type station: StoreNode
+        """
         self.printTrace(enter=EventData(caller=station, time=self.env.now))
         self.currentStation = station
         # ? will I need a list of stations visited for output tracing

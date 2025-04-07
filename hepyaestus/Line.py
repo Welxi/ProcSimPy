@@ -4,9 +4,11 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Callable, Optional
 
 from hepyaestus.EventData import EventData
-from hepyaestus.Store import StoreNode
+from hepyaestus.RepairTechnician import RepairTechnician
+from hepyaestus.StoreNode import StoreNode
 
 if TYPE_CHECKING:
+    from hepyaestus import Failure
     from hepyaestus.Base import BaseObject
     from hepyaestus.Entity import Entity
     from hepyaestus.Exit import Exit
@@ -20,9 +22,10 @@ class Line:
     def __init__(
         self,
         objectList: list,
+        *,
         routingPriority: Optional[Callable[[StoreNode], int]] = None,
     ) -> None:
-        self.ObjList: list[StoreNode] = [
+        self.nodeList: list[StoreNode] = [
             object for object in objectList if isinstance(object, StoreNode)
         ]
 
@@ -35,6 +38,8 @@ class Line:
         self.QueueList: list[Queue] = sortByClass['Queue']
         self.SourceList: list[Source] = sortByClass['Source']
         self.EntityList: list[Entity] = sortByClass['Entity']
+        self.FailureList: list[Failure] = sortByClass['Failure']
+        self.RepairTechList: list[RepairTechnician] = sortByClass['RepairTechnician']
 
         self.routingPriority: Optional[Callable[[StoreNode], int]] = routingPriority
 
@@ -45,9 +50,17 @@ class Line:
 
     def initialize(self, env: Environment) -> None:
         self.env = env
-        for object in self.ObjList:
-            object.initialize(self.env, self)
+        for object in self.nodeList:
+            object.initialize(env=self.env, line=self)
             self.env.process(object.run())
+
+        for failure in self.FailureList:
+            failure.initialize(env=self.env, line=self)
+            self.env.process(failure.run())
+
+        for repair in self.RepairTechList:
+            repair.initialize(env=self.env, line=self)
+
         self.setWorkInProgress()
 
     def setWorkInProgress(self) -> None:
@@ -85,3 +98,6 @@ class Line:
         else:
             assert type(self.settings['printFiltering']) is list
             self.settings['printFiltering'].append(filter)
+
+    def partsCreated(self) -> int:
+        return sum(exit.stats.numberOfEntitiesEntered for exit in self.ExitList)

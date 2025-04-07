@@ -9,15 +9,15 @@ if TYPE_CHECKING:
     from collections.abc import Generator
 
     from hepyaestus.Line import Line
-    from hepyaestus.Store import StoreNode
+    from hepyaestus.StoreNode import StoreNode
     from simpy import Environment
 
 # TODO OperatorShiftScheduler
 
 
 class StoreShiftScheduler(Interruption):
-    def __init__(self, id: str, name: str, victim: StoreNode) -> None:
-        super().__init__(id, name, victim)
+    def __init__(self, id: str, name: str, *, victim: StoreNode) -> None:
+        super().__init__(id, name, victim=victim)
         assert isinstance(self.victim.shift, Shift), (
             'Shift Scheduler Victims must have a defined shift'
         )

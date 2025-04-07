@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
-from hepyaestus.Store import StoreNode
+from hepyaestus.StoreNode import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -18,6 +18,7 @@ class Queue(StoreNode):
         self,
         id: str,
         name: str,
+        *,
         capacity: int = 1,
         priority: int = 0,
     ) -> None:

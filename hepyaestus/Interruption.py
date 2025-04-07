@@ -1,20 +1,27 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 from hepyaestus.Base import BaseObject
 from hepyaestus.EventData import EventData
-from hepyaestus.Line import Line
-from hepyaestus.Store import StoreNode
 from simpy import Environment, Event
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from hepyaestus.Line import Line
+    from hepyaestus.StoreNode import StoreNode
 
 
 class Interruption(BaseObject, ABC):
-    def __init__(self, id: str, name: str, victim: StoreNode) -> None:
+    def __init__(self, id: str, name: str, *, victim: StoreNode) -> None:
         super().__init__(id, name)
         self.victim: StoreNode = victim
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
+        self.printTrace(init=None)
 
         assert isinstance(self.victim.interruptionStart, Event), (
             'interruptionStart must be event'
