@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from hepyaestus.Entity import Entity
 from hepyaestus.EventData import EventData
 from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
-from hepyaestus.Store import StoreNode
+from hepyaestus.StoreNode import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -19,7 +19,6 @@ class EntityGenerator:
     def __init__(self, source: Source, env: Environment, line: Line) -> None:
         self.env: Environment = env
         self.line: Line = line
-        self.type = 'EntityGenerator'
         self.source: Source = source
 
     def run(self) -> Generator:
@@ -42,6 +41,7 @@ class Source(StoreNode):
         self,
         id: str,
         name: str,
+        *,
         interArrivalTime: ProbDistribution,
         entity: Optional[type[Entity]] = None,
         priority: int = 0,
@@ -50,7 +50,6 @@ class Source(StoreNode):
         self.partNumber: int = 0
         self.item = entity if entity else Entity
 
-        self.type = 'Source'
         self.rng = RandomNumberGenerator(interArrivalTime)
         self.times = 0
 
@@ -86,7 +85,7 @@ class Source(StoreNode):
                     EventData(caller=self, time=self.env.now, transmission=entity)
                 )
 
-    def createEntity(self):
+    def createEntity(self) -> Entity:
         self.partNumber += 1
         entityId = f'{self.item.type[0]}{self.partNumber}'
         entityName = f'{self.item.type}{self.partNumber}'

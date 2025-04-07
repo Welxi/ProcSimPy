@@ -7,16 +7,16 @@ class Results:
         self.stubs: list[dict] = []
 
     def addIteration(self, simTime: float) -> None:
-        for object in self.line.ObjList:
+        for object in self.line.nodeList:
             object.stats.createRatios(simTime=simTime)
 
         self.stubs.append(
             {
                 'iteration': len(self.stubs),
                 'simTime': simTime,
-                'partsCreated': self.line.ExitList[0].stats.numberOfEntitiesEntered,
+                'partsCreated': self.line.partsCreated(),
                 'stats': {
-                    object.id: object.stats.toDict() for object in self.line.ObjList
+                    object.id: object.stats.toDict() for object in self.line.nodeList
                 },
             }
         )
