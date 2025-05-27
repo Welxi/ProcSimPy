@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.Base import BaseObject
+from procsimpy.Base import Base
 from simpy import Environment, Resource
 
 if TYPE_CHECKING:
-    from hepyaestus.Line import Line
+    from procsimpy.Line import Line
     from simpy.resources.resource import Request
 
 
-class ResourceObject(BaseObject):
+# Not loveing this name, but cant be overload Simpy Resource
+class ResourceObject(Base):
     def __init__(self, id: str, name: str, *, capacity: int = 1) -> None:
         super().__init__(id, name)
         assert capacity >= 0, 'capacity must be possitive'

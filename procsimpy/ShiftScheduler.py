@@ -1,50 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
-from hepyaestus.Interruption import Interruption
-
-if TYPE_CHECKING:
-    from collections.abc import Generator
-
-    from hepyaestus.Line import Line
-    from hepyaestus.StoreNode import StoreNode
-    from simpy import Environment
-
-# TODO OperatorShiftScheduler
-
-
-class StoreShiftScheduler(Interruption):
-    def __init__(self, id: str, name: str, *, victim: StoreNode) -> None:
-        super().__init__(id, name, victim=victim)
-        assert isinstance(self.victim.shift, Shift), (
-            'Shift Scheduler Victims must have a defined shift'
-        )
-        self.victim = victim
-
-    def initialize(self, env: Environment, line: Line) -> None:
-        super().initialize(env, line)
-
-    def run(self) -> Generator:
-        while True:
-            assert isinstance(self.victim.shift, Shift), (
-                'Shift Scheduler Victims must have a defined shift'
-            )
-            self.nextShiftStart, self.nextShiftEnd = self.victim.shift.next(
-                self.env.now
-            )
-            if self.victim.onShift:
-                yield self.env.timeout(self.nextShiftEnd - self.env.now)
-                self.interrupt()
-            else:
-                yield self.env.timeout(self.nextShiftStart - self.env.now)
-                self.reactivate()
+# TODO make for Operator
 
 
 def ShiftBuilder(
-    pattern: Optional[tuple[float, float]],
-    schedule: Optional[list[tuple[float, float]]],
+    pattern: Optional[tuple[float, float]] = None,
+    schedule: Optional[list[tuple[float, float]]] = None,
 ) -> ShiftPattern | ShiftSchedule:
     assert pattern is not None or schedule is not None, (
         'Pattern or Schedule must be set'
@@ -60,9 +24,6 @@ def ShiftBuilder(
 
 
 class Shift(ABC):
-    def __init__(self) -> None:
-        super().__init__()
-
     @abstractmethod
     def isOnShift(self, time: float) -> bool:
         pass
@@ -108,6 +69,7 @@ class ShiftSchedule(Shift):
         return any(start < time < end for start, end in self.schedule)
 
     def next(self, time: float) -> tuple[float, float]:
+        # TODO make so each call dose not need to loop through begining
         for idx, (_, end) in enumerate(self.schedule):
             if time > end:
                 if self.schedule[idx] != self.schedule[-1]:
