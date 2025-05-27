@@ -1,4 +1,4 @@
-from hepyaestus.Resource import ResourceObject
+from procsimpy.Resource import ResourceObject
 
 
 class RepairTechnician(ResourceObject):

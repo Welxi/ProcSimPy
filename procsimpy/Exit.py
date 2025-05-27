@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.Entity import Entity
-from hepyaestus.EventData import EventData
-from hepyaestus.StoreNode import StoreNode
+from procsimpy.Entity import Entity
+from procsimpy.EventData import EventData
+from procsimpy.StoreNode import StoreNode
 
 if TYPE_CHECKING:
     from collections.abc import Generator

@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.EventData import EventData
+from procsimpy.EventData import EventData
 
 if TYPE_CHECKING:
-    from hepyaestus.Line import Line
+    from procsimpy.Line import Line
     from simpy import Environment
 
 
@@ -26,7 +26,7 @@ class BaseObject:
         """
         if not self.canPrint:
             return
-        from hepyaestus.printTrace import printTrace
+        from procsimpy.printTrace import printTrace
 
         for key, eventData in kw.items():
             if eventData is None:

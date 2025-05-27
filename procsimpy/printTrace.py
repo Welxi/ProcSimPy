@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hepyaestus.EventData import EventData
+from procsimpy.EventData import EventData
 
 if TYPE_CHECKING:
-    from hepyaestus.Base import BaseObject
+    from procsimpy.Base import BaseObject
 
 
 def supportedKeywords() -> tuple:

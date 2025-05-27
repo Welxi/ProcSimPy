@@ -3,18 +3,18 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Optional, Self
 
-from hepyaestus.Base import BaseObject
-from hepyaestus.Entity import Entity
-from hepyaestus.EventData import EventData
-from hepyaestus.Statistics import Statistics
+from procsimpy.Base import BaseObject
+from procsimpy.Entity import Entity
+from procsimpy.EventData import EventData
+from procsimpy.Statistics import Statistics
 from simpy import Environment, Event, Store
 from simpy.core import Infinity
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from hepyaestus.Line import Line
-    from hepyaestus.ShiftScheduler import Shift
+    from procsimpy.Line import Line
+    from procsimpy.ShiftScheduler import Shift
     from simpy.resources.store import StoreGet
 
 

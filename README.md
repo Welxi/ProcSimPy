@@ -27,28 +27,23 @@ A simple single server example
 >It is important to note that you keep the same base when inputting values 
 
 ```python
-from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
+from procsimpy import Exit, Experiment, FixedDistribution, Line, Queue, Server, Source
+
 
 # Define the timings of Intrest
 arrivalTime = FixedDistribution(mean=1)
 processingTime = FixedDistribution(mean=2)
 
 # Create the Nodes of Intrest
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
+source = Source('S', 'Source', arrivalTime=arrivalTime)
 queue = Queue('Q1', 'Queue', capacity=1)
-machine = Machine('M1', 'Machine', processingTime=processingTime)
+machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 
 # Link the Nodes to each other (input/output)
 source.defineRouting(successorList=[queue])
-queue.defineRouting(
-    predecessorList=[source],
-    successorList=[machine],
-)
-machine.defineRouting(
-    predecessorList=[queue],
-    successorList=[exit],
-)
+queue.defineRouting(predecessorList=[source], successorList=[machine])
+machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[machine])
 
 # Create the Orchestration Objects

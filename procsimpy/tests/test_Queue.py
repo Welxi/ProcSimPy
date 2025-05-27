@@ -1,5 +1,5 @@
-from hepyaestus.Line import Line
-from hepyaestus.Queue import Queue
+from procsimpy.Line import Line
+from procsimpy.Queue import Queue
 from simpy import Environment
 
 preQueue = Queue('Q1', 'PreQueue')
