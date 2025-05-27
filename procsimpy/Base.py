@@ -2,51 +2,48 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from procsimpy.EventData import EventData
-
 if TYPE_CHECKING:
+    from procsimpy.EventData import EventData
     from procsimpy.Line import Line
     from simpy import Environment
 
 
-class BaseObject:
+class Base:
+    """
+    Used to ensure each piece of the simulation has access to the SimPy environment
+    and the line orchestration module. Create Identifiers used for Logging
+    and Printing Traces
+    """
+
     def __init__(self, id: str, name: str) -> None:
+        # TODO ensure unique IDs
+        # ids could also be auto generated here rather than passed in
+        #  or be made optional
         self.id: str = id
         self.name: str = name
         self.canPrint: bool = True
+        self.events: list[EventData] = []
 
     def initialize(self, env: Environment, line: Line) -> None:
+        """
+        Sets/resets component for new simulation
+
+        :param env: SimPy Simulation Environment
+        :type env: Environment
+        :param line: Line Orchestration Module
+        :type line: LineNode
+        """
         self.env: Environment = env
         self.line: Line = line
         self.canPrint = self.line.canTrace(self)
 
-    def printTrace(self, **kw) -> None:
+    def printTrace(self, event: EventData) -> None:
         """
-        logging the trace of the simulation to console
+        Common formating for logging/tracing based on arguments provided
         """
         if not self.canPrint:
             return
         from procsimpy.printTrace import printTrace
 
-        for key, eventData in kw.items():
-            if eventData is None:
-                kw[key] = self.basicEventData()
-        printTrace(self, **kw)
-
-    def basicEventData(self) -> EventData:
-        """
-        default constructor for EventData
-
-        :return: Event with caller as self at the current simulation time
-        :rtype: EventData
-        """
-        return EventData(caller=self, time=self.env.now, trace=self.canPrint)
-
-    def noTraceEventData(self) -> EventData:
-        """
-        Event Data constructor with a specific point not to log
-
-        :return: _description_
-        :rtype: EventData
-        """
-        return EventData(caller=self, time=self.env.now, trace=False)
+        self.events.append(event)
+        printTrace(event)

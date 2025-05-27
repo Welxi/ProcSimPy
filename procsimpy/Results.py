@@ -1,4 +1,9 @@
-from hepyaestus.Line import Line
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from procsimpy.Line import Line
 
 
 class Results:

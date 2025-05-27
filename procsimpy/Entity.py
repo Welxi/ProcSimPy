@@ -2,67 +2,78 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from procsimpy.Base import BaseObject
-from procsimpy.EventData import EventData
+from procsimpy.Base import Base
+from procsimpy.EventData import CreateEvent, EnterEvent
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
     from procsimpy.Line import Line
+    from procsimpy.Node import Node
     from procsimpy.ProbDistribution import ProbDistribution
-    from procsimpy.StoreNode import StoreNode
     from simpy import Environment
+    from simpy.core import SimTime
 
 
-class Entity(BaseObject):
-    type = 'Entity'
+class Entity(Base):
+    type = 'Entity'  # used for ID creation in source
+    """
+    Generic for Component that is being processed / transferred between Nodes.
+
+    It is created by a Source Node or by experiment setup with Work in Progress,
+      in which case a Starting Station must be provided
+
+    :param Base: _description_
+    :type Base: _type_
+    """
 
     def __init__(
         self,
         id: str,
         name: str,
         *,
-        startingStation: Optional[StoreNode] = None,
+        startingNode: Optional[Node] = None,
         remainingProcessingTime: Optional[ProbDistribution] = None,
     ) -> None:
         super().__init__(id, name)
-        self.startingStation: Optional[StoreNode] = startingStation
+        self.startingNode: Optional[Node] = startingNode
         self.remainingProcessingTime: Optional[RandomNumberGenerator] = (
             RandomNumberGenerator(distribution=remainingProcessingTime)
             if remainingProcessingTime is not None
             else None
         )
 
-    def initialize(
-        self,
-        env: Environment,
-        line: Line,
-        currentStation: Optional[StoreNode] = None,
-    ) -> None:
-        # Need to check here because of Inheritance rules need same parameters
-        assert currentStation is not None, 'currentStation needed for starting node'
+    def initialize(self, env: Environment, line: Line, *, currentNode: Node) -> None:  # type: ignore
+        """
+        sets/resets Entity for new simulation
 
+        :param env: SimPy Enviroment
+        :type env: Environment
+        :param line: Line Orchestration Module
+        :type line: LineNode
+        :param currentNode: Node the Entity begins at
+        :type currentNode: Node
+        """
         super().initialize(env, line)
-        self.printTrace(create=None)
-        self.creationTime: float = self.env.now
-        self.startTime: float = self.env.now
+        self.printTrace(CreateEvent(time=self.env.now, caller=self))
 
-        if self.startingStation is not None:
-            assert currentStation == self.startingStation, (
-                'currentStation must begin the same as startingStation'
-            )
+        if self.startingNode is not None:
+            assert currentNode == self.startingNode, 'Must begin at Starting Node'
+            # can this ever fail? only if user changes libary
 
-        self.currentStation: Optional[StoreNode] = currentStation
-        self.stations: list[tuple[float, Optional[StoreNode]]] = [
-            (self.env.now, currentStation)
-        ]
+        self.currentNode = currentNode
 
-    def updateStation(self, station: StoreNode) -> None:
+        self.creationTime: SimTime = self.env.now
+        self.startTime: SimTime = self.env.now
+
+        # TODO keep list of stations visited
+
+    def updateStation(self, station: Node) -> None:
         """
-        Called by store node when accepting new entity
+        Must be called when Entity has entered new Node, updates current station
 
-        :param station: the new StoreNode that has this entity
-        :type station: StoreNode
+        :param station: New Station entered
+        :type station: Node
         """
-        self.printTrace(enter=EventData(caller=station, time=self.env.now))
-        self.currentStation = station
-        # ? will I need a list of stations visited for output tracing
+        self.printTrace(EnterEvent(time=self.env.now, caller=self, station=station))
+        self.currentNode = station
+        # TODO add log of stations entered with times
