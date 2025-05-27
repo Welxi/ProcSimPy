@@ -1,44 +1,48 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from procsimpy.Interruption import Interruption
+from procsimpy.Base import Base
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from procsimpy.Line import Line
+    from procsimpy.Node import Node
     from procsimpy.ProbDistribution import ProbDistribution
-    from procsimpy.RepairTechnician import RepairTechnician
-    from procsimpy.StoreNode import StoreNode
+    from simpy import Environment
+
+# TODO Distinct Failure Types
+# delayInteruption
+# restartFailure
+# scrapFailure
+# repeating of each
+# single fail of each
 
 
-class Failure(Interruption):
+class Failure(Base):
     def __init__(
         self,
         id: str,
         name: str,
         *,
-        victim: StoreNode,
+        victim: Node,
         TTF: ProbDistribution,
         TTR: ProbDistribution,
-        repair: Optional[RepairTechnician] = None,
     ) -> None:
-        super().__init__(id, name, victim=victim)
+        super().__init__(id, name)
         self.TTF = RandomNumberGenerator(TTF)
         self.TTR = RandomNumberGenerator(TTR)
-        self.repair = repair
+        self.victim = victim
+
+    def initialize(self, env: Environment, line: Line) -> None:
+        super().initialize(env, line)
+        self.env.process(self.run())
 
     def run(self) -> Generator:
         while True:
             yield self.env.timeout(self.TTF.generateNumber())
 
-            self.interrupt()
-
-            if self.repair:
-                with self.repair.request() as repairTech:
-                    yield repairTech
-
-                    yield self.env.timeout(self.TTR.generateNumber())
-
-                    self.reactivate()
+            for process in self.victim.processes:
+                process.interrupt(self)
