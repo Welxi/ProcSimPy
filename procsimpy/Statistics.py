@@ -3,18 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from hepyaestus import Line
-    from hepyaestus.Entity import Entity
+    from procsimpy.Entity import Entity
     from simpy import Environment
-
-# In an Ideal future this module would subscribe to event notifications or
-# process event stubs to generate statistics
 
 
 class Statistics:
-    def __init__(self, env: Environment, line: Line) -> None:
+    def __init__(self, env: Environment) -> None:
         self.env: Environment = env
-        # TODO Can I trace
 
         self.totalWorkingTime: float = self.env.now
         self.timeLastOperationStarted: float = self.env.now
@@ -33,7 +28,6 @@ class Statistics:
         self.timeLastEntityExited: float = self.env.now
 
         self.entries: list[Entity] = []
-        self.exits: list[Entity] = []
 
     def createRatios(self, simTime: float) -> None:
         self.workingRatio = self.totalWorkingTime / simTime
@@ -63,20 +57,19 @@ class Statistics:
         self.entries.append(entity)
         self.timeLastEntityReceived = self.env.now
 
-        # TODO check if machine was actually idle
+        # ? Is this our definition of idle
         # ie what if it can process more than one at a time
         # do we still consider it time spent waiting as there was opportunity cost
         self.totalWaitingTime += (
             self.timeLastEntityReceived - self.timeLastOperationEnded
         )
 
-    def givenEntity(self, entity: Entity) -> None:
+    def givenEntity(self) -> None:
         self.numberOfEntitiesExited += 1
-        self.exits.append(entity)
         self.timeLastEntityExited = self.env.now
 
         self.totalBlockageTime += (
-            self.timeLastOperationEnded - self.timeLastEntityExited
+            self.timeLastEntityExited - self.timeLastOperationEnded
         )
 
     def wentOnShift(self) -> None:

@@ -4,7 +4,7 @@ from enum import Enum
 from random import Random
 
 # import numpy as np
-from hepyaestus.ProbDistribution import DistributionType, ProbDistribution
+from procsimpy.ProbDistribution import DistributionType, ProbDistribution
 
 
 class SeedType(Enum):
