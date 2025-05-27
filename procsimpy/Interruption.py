@@ -3,15 +3,15 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from hepyaestus.Base import BaseObject
-from hepyaestus.EventData import EventData
+from procsimpy.Base import BaseObject
+from procsimpy.EventData import EventData
 from simpy import Environment, Event
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from hepyaestus.Line import Line
-    from hepyaestus.StoreNode import StoreNode
+    from procsimpy.Line import Line
+    from procsimpy.StoreNode import StoreNode
 
 
 class Interruption(BaseObject, ABC):

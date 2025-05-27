@@ -3,19 +3,19 @@ from __future__ import annotations
 from itertools import count
 from typing import TYPE_CHECKING, Callable
 
-from hepyaestus.Entity import Entity
-from hepyaestus.EventData import EventData
-from hepyaestus.Line import Line
-from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
-from hepyaestus.StoreNode import StoreNode
+from procsimpy.Entity import Entity
+from procsimpy.EventData import EventData
+from procsimpy.Line import Line
+from procsimpy.RandomNumberGenerator import RandomNumberGenerator
+from procsimpy.StoreNode import StoreNode
 from simpy import Environment, Store
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from hepyaestus import Line
-    from hepyaestus.Base import BaseObject
-    from hepyaestus.ProbDistribution import ProbDistribution
+    from procsimpy import Line
+    from procsimpy.Base import BaseObject
+    from procsimpy.ProbDistribution import ProbDistribution
     from simpy import Environment
     from simpy.resources.store import StoreGet
 

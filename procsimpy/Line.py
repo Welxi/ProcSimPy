@@ -3,18 +3,18 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Callable, Optional
 
-from hepyaestus.EventData import EventData
-from hepyaestus.RepairTechnician import RepairTechnician
-from hepyaestus.StoreNode import StoreNode
+from procsimpy.EventData import EventData
+from procsimpy.RepairTechnician import RepairTechnician
+from procsimpy.StoreNode import StoreNode
 
 if TYPE_CHECKING:
-    from hepyaestus import Failure
-    from hepyaestus.Base import BaseObject
-    from hepyaestus.Entity import Entity
-    from hepyaestus.Exit import Exit
-    from hepyaestus.Machine import Machine
-    from hepyaestus.Queue import Queue
-    from hepyaestus.Source import Source
+    from procsimpy import Failure
+    from procsimpy.Base import BaseObject
+    from procsimpy.Entity import Entity
+    from procsimpy.Exit import Exit
+    from procsimpy.Machine import Machine
+    from procsimpy.Queue import Queue
+    from procsimpy.Source import Source
     from simpy import Environment
 
 

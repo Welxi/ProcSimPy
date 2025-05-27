@@ -5,8 +5,8 @@ from itertools import count
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from hepyaestus.Base import BaseObject
-    from hepyaestus.Entity import Entity
+    from procsimpy.Base import BaseObject
+    from procsimpy.Entity import Entity
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

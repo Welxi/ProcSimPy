@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from hepyaestus.Interruption import Interruption
-from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
+from procsimpy.Interruption import Interruption
+from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from hepyaestus.ProbDistribution import ProbDistribution
-    from hepyaestus.RepairTechnician import RepairTechnician
-    from hepyaestus.StoreNode import StoreNode
+    from procsimpy.ProbDistribution import ProbDistribution
+    from procsimpy.RepairTechnician import RepairTechnician
+    from procsimpy.StoreNode import StoreNode
 
 
 class Failure(Interruption):

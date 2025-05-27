@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import simpy
-from hepyaestus.RandomNumberGenerator import SeedType, setSeed
-from hepyaestus.Results import Results
+from procsimpy.RandomNumberGenerator import SeedType, setSeed
+from procsimpy.Results import Results
 
 if TYPE_CHECKING:
-    from hepyaestus.Line import Line
+    from procsimpy.Line import Line
 # ? End simulation early, why would it be needed
 
 

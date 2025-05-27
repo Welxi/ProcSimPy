@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from hepyaestus.Base import BaseObject
-from hepyaestus.EventData import EventData
-from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
+from procsimpy.Base import BaseObject
+from procsimpy.EventData import EventData
+from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
-    from hepyaestus.Line import Line
-    from hepyaestus.ProbDistribution import ProbDistribution
-    from hepyaestus.StoreNode import StoreNode
+    from procsimpy.Line import Line
+    from procsimpy.ProbDistribution import ProbDistribution
+    from procsimpy.StoreNode import StoreNode
     from simpy import Environment
 
 
