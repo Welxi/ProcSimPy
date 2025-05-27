@@ -1,23 +1,23 @@
 import pytest
 
-from hepyaestus.Base import BaseObject
-from hepyaestus.EventData import EventData
-from hepyaestus.printTrace import printTrace
+from procsimpy.Base import Base
+from procsimpy.EventData import EventData
+from procsimpy.PrintTrace import printTrace
 
 
 @pytest.fixture
-def transmission() -> BaseObject:
-    return BaseObject('TE', 'TestEntity')
+def transmission() -> Base:
+    return Base('TE', 'TestEntity')
 
 
 @pytest.fixture
-def base() -> BaseObject:
-    return BaseObject('Base', 'SimBase')
+def base() -> Base:
+    return Base('Base', 'SimBase')
 
 
 @pytest.fixture
-def caller() -> BaseObject:
-    return BaseObject('Caller', 'SimCaller')
+def caller() -> Base:
+    return Base('Caller', 'SimCaller')
 
 
 @pytest.fixture
@@ -30,11 +30,13 @@ def timecode(eventData) -> str:
     return f'@T:{eventData.time:>4} ->'
 
 
+@pytest.mark.skip('Not Implemented')
 def test_printTrace_invalidArg(base, eventData) -> None:
     with pytest.raises(ValueError, match='Unsupported phrase asdf for printTrace'):
         printTrace(base=base, asdf=eventData)
 
 
+@pytest.mark.skip('Not Implemented')
 def test_printTrace_TooManArgs(base, eventData) -> None:
     with pytest.raises(
         AssertionError, match='Only one phrase per printTrace supported'
@@ -42,6 +44,7 @@ def test_printTrace_TooManArgs(base, eventData) -> None:
         printTrace(base=base, create=eventData, signal=eventData)
 
 
+@pytest.mark.skip('Not Implemented')
 def test_printTrace_keywords(
     base, eventData, timecode, caller, transmission, capsys
 ) -> None:

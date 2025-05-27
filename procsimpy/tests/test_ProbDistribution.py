@@ -2,7 +2,7 @@ from random import Random
 
 import pytest
 
-from hepyaestus.ProbDistribution import (
+from procsimpy.ProbDistribution import (
     ExpDistribution,
     FixedDistribution,
     GaussianDistribution,

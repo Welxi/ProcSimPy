@@ -1,5 +1,5 @@
-from hepyaestus.ProbDistribution import FixedDistribution, GaussianDistribution
-from hepyaestus.RandomNumberGenerator import RandomNumberGenerator
+from procsimpy.ProbDistribution import FixedDistribution, GaussianDistribution
+from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 
 def test_RandomNumberGenerator_Fixed() -> None:
