@@ -4,16 +4,20 @@ import os
 import sys
 from pathlib import Path
 
+from procsimpy.ProbDistribution import FixedDistribution
+
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import (
+from procsimpy import (
     Exit,
     ExpDistribution,
     Experiment,
+    Failure,
     GaussianDistribution,
     Line,
-    Machine,
     Queue,
+    RepairTechnician,
+    Server,
     Source,
 )
 
@@ -23,24 +27,25 @@ arrivalTime = ExpDistribution(mean=0.5)
 processingTimeM1 = GaussianDistribution(mean=0.25, stdev=0.1, min=0.1, max=1)
 processingTimeM2 = GaussianDistribution(mean=1.5, stdev=0.3, min=0.1, max=5)
 
-# TODO Repairman
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
-queue = Queue('Q', 'Queue', capacity=1)
-first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
-second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
+timeToFailure1 = FixedDistribution(mean=60.0)
+timeToRepair1 = FixedDistribution(mean=5.0)
+
+timeToFailure2 = FixedDistribution(mean=40.0)
+timeToRepair2 = FixedDistribution(mean=10.0)
+
+source = Source('S', 'Source', arrivalTime=arrivalTime)
+queue = Queue('Q', 'Queue')
+first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
+second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
 
-# TODO Failures
-# F1 = Failure(
-#     victim=M1,
-#     distribution={'TTF': {'Fixed': {'mean': 60.0}}, 'TTR': {'Fixed': {'mean': 5.0}}},
-#     repairman=R,
-# )
-# F2 = Failure(
-#     victim=M2,
-#     distribution={'TTF': {'Fixed': {'mean': 40.0}}, 'TTR': {'Fixed': {'mean': 10.0}}},
-#     repairman=R,
-# )
+repair = RepairTechnician('R', 'Repair')
+failure1 = Failure(
+    'F1', 'Failure1', victim=first_machine, TTF=timeToFailure1, TTR=timeToRepair1
+)
+failure2 = Failure(
+    'F2', 'Failure2', victim=second_machine, TTF=timeToFailure2, TTR=timeToRepair2
+)
 
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
@@ -52,8 +57,11 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    objectList = [source, queue, first_machine, second_machine, exit]
-    line = Line(objectList=objectList)
+    line = Line(
+        nodeList=[source, queue, first_machine, second_machine, exit],
+        failures=[failure1, failure2],
+        repair=[repair],
+    )
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test, numberOfReplications=10)

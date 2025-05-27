@@ -6,14 +6,14 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import (
+from procsimpy import (
     Entity,
     Exit,
     Experiment,
     FixedDistribution,
     Line,
-    Machine,
     Queue,
+    Server,
 )
 
 print('Setting Work in Progress: One Part run till no more events')
@@ -21,9 +21,9 @@ print('Setting Work in Progress: One Part run till no more events')
 processingTime = FixedDistribution(mean=0.25)
 
 queue = Queue('Q1', 'Queue', capacity=1)
-machine = Machine('M1', 'Machine', processingTime=processingTime)
+machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
-part = Entity('P1', 'Part', startingStation=machine)
+part = Entity('P1', 'Part', startingNode=machine)
 
 queue.defineRouting(
     successorList=[machine],
@@ -38,7 +38,7 @@ exit.defineRouting(predecessorList=[machine])
 def main(
     test: bool = False, maxSimTime: float = float('inf')
 ) -> dict[str, int | float] | None:
-    line = Line(objectList=[queue, machine, exit, part])
+    line = Line(nodeList=[queue, machine, exit], WIPList=[part])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

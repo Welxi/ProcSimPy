@@ -6,14 +6,15 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import (
+from procsimpy import (
     Exit,
     Experiment,
     Failure,
     FixedDistribution,
     Line,
-    Machine,
     Queue,
+    RepairTechnician,
+    Server,
     Source,
 )
 
@@ -39,11 +40,13 @@ class SelectiveQueue(Queue):
     pass
 
 
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
+source = Source('S', 'Source', arrivalTime=arrivalTime)
 selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
-first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
-second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
+first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
+second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
+
+repair = RepairTechnician('R', 'Repair')
 failure = Failure(
     'F',
     'Failure',
@@ -62,7 +65,7 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, selectiveQ, first_machine, second_machine, exit])
+    line = Line(nodeList=[source, selectiveQ, first_machine, second_machine, exit])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

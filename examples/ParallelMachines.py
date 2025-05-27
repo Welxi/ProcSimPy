@@ -6,14 +6,15 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import (
+from procsimpy import (
     Exit,
     Experiment,
     Failure,
     FixedDistribution,
     Line,
-    Machine,
     Queue,
+    RepairTechnician,
+    Server,
     Source,
 )
 
@@ -23,20 +24,24 @@ arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=0.25)
 
-timeToFailure = FixedDistribution(mean=6.0)
-timeToRepair = FixedDistribution(mean=1.0)
+timeToFailure1 = FixedDistribution(mean=60.0)
+timeToRepair1 = FixedDistribution(mean=5.0)
 
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
-queue = Queue('Q', 'Queue', capacity=1)
-first_machine = Machine('M1', 'Machine 1', processingTime=processingTimeM1)
-second_machine = Machine('M2', 'Machine 2', processingTime=processingTimeM2)
+timeToFailure2 = FixedDistribution(mean=40.0)
+timeToRepair2 = FixedDistribution(mean=10.0)
+
+source = Source('S', 'Source', arrivalTime=arrivalTime)
+queue = Queue('Q', 'Queue')
+first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
+second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-failure = Failure(
-    'F',
-    'Failure',
-    victim=first_machine,
-    TTF=timeToFailure,
-    TTR=timeToRepair,
+
+repair = RepairTechnician('R', 'Repair')
+failure1 = Failure(
+    'F1', 'Failure1', victim=first_machine, TTF=timeToFailure1, TTR=timeToRepair1
+)
+failure2 = Failure(
+    'F2', 'Failure2', victim=second_machine, TTF=timeToFailure2, TTR=timeToRepair2
 )
 
 source.defineRouting(successorList=[queue])
@@ -48,10 +53,13 @@ second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
-def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    objectList = [source, queue, first_machine, second_machine, exit, failure]
-    line = Line(objectList=objectList)
-    line.filterTrace(failure)
+# TODO Turn into two test one with and one without failures
+def main(test: bool = False, maxSimTime: float = 4) -> dict[str, int | float] | None:
+    line = Line(
+        nodeList=[source, queue, first_machine, second_machine, exit],
+        failures=[failure1, failure2],
+        repair=[repair],
+    )
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

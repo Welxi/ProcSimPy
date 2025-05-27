@@ -6,15 +6,22 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Source
+from procsimpy import (
+    Exit,
+    Experiment,
+    FixedDistribution,
+    Line,
+    Server,
+    Source,
+)
 
 print('Machine with Basic Shift Pattern')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTime = FixedDistribution(mean=3)
 
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
-machine = Machine('M1', 'Machine', processingTime=processingTime)
+source = Source('S', 'Source', arrivalTime=arrivalTime)
+machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 
 # TODO ShiftScheduler
@@ -29,7 +36,7 @@ exit.defineRouting(predecessorList=[machine])
 
 
 def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, machine, exit])
+    line = Line(nodeList=[source, machine, exit])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

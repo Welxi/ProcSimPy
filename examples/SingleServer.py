@@ -6,32 +6,34 @@ from pathlib import Path
 
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
-from hepyaestus import Exit, Experiment, FixedDistribution, Line, Machine, Queue, Source
+from procsimpy import (
+    Exit,
+    Experiment,
+    FixedDistribution,
+    Line,
+    Queue,
+    Server,
+    Source,
+)
 
 print('Single Server')
 
 arrivalTime = FixedDistribution(mean=0.5)
 processingTime = FixedDistribution(mean=0.25)
 
-source = Source('S', 'Source', interArrivalTime=arrivalTime)
-queue = Queue('Q1', 'Queue', capacity=1)
-machine = Machine('M1', 'Machine', processingTime=processingTime)
+source = Source('S', 'Source', arrivalTime=arrivalTime)
+queue = Queue('Q1', 'Queue')
+machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 
 source.defineRouting(successorList=[queue])
-queue.defineRouting(
-    predecessorList=[source],
-    successorList=[machine],
-)
-machine.defineRouting(
-    predecessorList=[queue],
-    successorList=[exit],
-)
+queue.defineRouting(predecessorList=[source], successorList=[machine])
+machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[machine])
 
 
-def main(test=False, maxSimTime: float = 4) -> dict[str, int | float] | None:
-    line = Line(objectList=[source, queue, machine, exit])
+def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
+    line = Line(nodeList=[source, queue, machine, exit])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)
