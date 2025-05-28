@@ -3,7 +3,7 @@ description = "Discrete Event Simulation (DES) Library for the Manufacturing and
 name = "ProcSimPy"
 readme = "README.md"
 requires-python = ">=3.13"
-version = "0.1.0"
+version = "0.2.0"
 
 authors = [{ name = "Neil Sheahan", email = "neil.sheahan@ul.ie" }]
 maintainers = [{ name = "Neil Sheahan", email = "neil.sheahan@ul.ie" }]
@@ -22,9 +22,9 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.4",
+    "sphinx-autodoc2>=0.5.0",
     "sphinx-rtd-theme>=3.0.2",
     "sphinx>=8.2.2",
-    "sphinx-autodoc2>=0.5.0",
 ]
 
 # ruff settings in ruff.toml
