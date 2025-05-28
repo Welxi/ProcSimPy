@@ -1,97 +1,71 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 from procsimpy.Entity import Entity
-from procsimpy.EventData import EventData
+from procsimpy.Node import Node
+from procsimpy.ProcessEntity import ProcessEntity
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
-from procsimpy.StoreNode import StoreNode
+from simpy.core import Infinity
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
     from procsimpy.Line import Line
     from procsimpy.ProbDistribution import ProbDistribution
-    from simpy import Environment, Event
+    from simpy import Environment
 
 
-class EntityGenerator:
-    def __init__(self, source: Source, env: Environment, line: Line) -> None:
-        self.env: Environment = env
-        self.line: Line = line
-        self.source: Source = source
-
-    def run(self) -> Generator:
-        while True:
-            self.source.entityCreated.succeed(
-                # Adding caller as source because caller needs to be a Node
-                EventData(
-                    caller=self.source,
-                    time=self.source.env.now,
-                    transmission=self.source.createEntity(),
-                    trace=False,
-                )
-            )
-
-            yield self.env.timeout(self.source.calculateInterArrivalTime())
-
-
-class Source(StoreNode):
+class Source(Node):
     def __init__(
         self,
         id: str,
         name: str,
         *,
-        interArrivalTime: ProbDistribution,
-        entity: Optional[type[Entity]] = None,
-        priority: int = 0,
+        arrivalTime: ProbDistribution,
+        item: type[Entity] = Entity,
     ) -> None:
-        super().__init__(id, name, priority=priority)
-        self.partNumber: int = 0
-        self.item = entity if entity else Entity
-
-        self.rng = RandomNumberGenerator(interArrivalTime)
-        self.times = 0
-
-    def initialize(self, env: Environment, line: Line) -> None:
-        super().initialize(env, line)
-        self.entityCreated: Event = self.env.event()
-        self.events.append(self.entityCreated)
-
-        self.entityGenerator = EntityGenerator(
-            source=self, env=self.env, line=self.line
+        super().__init__(
+            id,
+            name,
+            capacity=Infinity,
         )
-        self.env.process(self.entityGenerator.run())
+        self.arrivalTime: RandomNumberGenerator = RandomNumberGenerator(arrivalTime)
 
-    def run(self) -> Generator:
-        while True:
-            yield self.entityCreated
-            assert self.entityCreated.value is not None
+        self.partNumber: int = 0
+        self.item = item
 
-            eventData = self.entityCreated.value
-            assert isinstance(eventData, EventData)
-            assert isinstance(eventData.transmission, Entity)
-            assert eventData.time == self.env.now
-            self.entityCreated = self.env.event()
-
-            self._receive(eventData.transmission)
-
-            assert self.receiver is not None
-            if self.receiver.canReceive():
-                entity = yield self._give()
-                assert isinstance(entity, Entity)
-                assert self.receiver is not None
-                self.receiver.isRequested.succeed(
-                    EventData(caller=self, time=self.env.now, transmission=entity)
-                )
+    def initialize(
+        self,
+        env: Environment,
+        line: Line,
+        *,
+        processEntity: Callable[[Node], Generator] = ProcessEntity,
+        processes: Optional[list[Callable[[Node], Generator]]] = None,
+    ) -> None:
+        if processes is None:
+            processes = []
+        processes.append(IntervalEntityGenerator)
+        super().initialize(env, line, processEntity=processEntity, processes=processes)
 
     def createEntity(self) -> Entity:
         self.partNumber += 1
         entityId = f'{self.item.type[0]}{self.partNumber}'
         entityName = f'{self.item.type}{self.partNumber}'
         item = self.item(id=entityId, name=entityName)
-        item.initialize(self.env, self.line, currentStation=self)
+        item.initialize(self.env, self.line, currentNode=self)
         return item
 
-    def calculateInterArrivalTime(self) -> float:
-        return self.rng.generateNumber()
+
+def IntervalEntityGenerator(node: Node) -> Generator:
+    assert isinstance(node, Source)
+    # This is need so that the function parameters match other processes
+
+    while True:
+        # could be changed to begin with wait
+        #  but assumption about experiment that we begin at the most intresting time
+        entity: Entity = node.createEntity()
+        with node.put(entity) as handoff:
+            yield handoff
+
+        yield node.env.timeout(delay=node.arrivalTime.generateNumber())
