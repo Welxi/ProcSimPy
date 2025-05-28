@@ -2,16 +2,18 @@
 [lint]
 # See https://docs.astral.sh/ruff/rules/
 ignore = [
-    "ISC001", # Implicitly concatenated string literals on one line
-    "N818",   # Require "Error" suffix on exception type names
-    "PYI034", # Confused by Put.__enter__ and Get.__enter__
-    "PYI041", # Use `float` instead of `int | float`
-    "RET505", # Unnecessary `else` after `return` statement
-    "RET506", # Unnecessary `else` after `raise` statement
-    "SIM105", # Use `contextlib.suppress()` instead of try-except-pass
-    "TRY003", # Avoid specifying long messages outside the exception class
-    "UP006",  # Use 'type' instead of 'Type' for annotations
-    "UP007",  # Use 'X | Y' instead of 'Optional' in annotations
+    "ISC001",  # Implicitly concatenated string literals on one line
+    "N818",    # Require "Error" suffix on exception type names
+    "PERF203", # try-except in loop
+    "PLR0913", # Number of Arguments limit
+    "PYI034",  # Confused by Put.__enter__ and Get.__enter__
+    "PYI041",  # Use `float` instead of `int | float`
+    "RET505",  # Unnecessary `else` after `return` statement
+    "RET506",  # Unnecessary `else` after `raise` statement
+    "SIM105",  # Use `contextlib.suppress()` instead of try-except-pass
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "UP006",   # Use 'type' instead of 'Type' for annotations
+    "UP007",   # Use 'X | Y' instead of 'Optional' in annotations
 ]
 select = [
     "E", # Pycodestyle
