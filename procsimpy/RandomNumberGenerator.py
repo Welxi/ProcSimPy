@@ -2,9 +2,13 @@ from __future__ import annotations
 
 from enum import Enum
 from random import Random
+from typing import TYPE_CHECKING
 
 # import numpy as np
 from procsimpy.ProbDistribution import DistributionType, ProbDistribution
+
+if TYPE_CHECKING:
+    from simpy.core import SimTime
 
 
 class SeedType(Enum):
@@ -38,7 +42,7 @@ class RandomNumberGenerator:
         self.distribution = distribution
         generators.append(self)
 
-    def generateNumber(self) -> float:
+    def generateNumber(self) -> SimTime:
         if (
             self.distribution.distributionType is DistributionType.CAUCHY
             or self.distribution.distributionType is DistributionType.GEOMETRIC

@@ -12,9 +12,11 @@ from procsimpy import (
     Exit,
     ExpDistribution,
     Experiment,
+    Failure,
     GaussianDistribution,
     Line,
     Queue,
+    RepairTechnician,
     Server,
     Source,
 )
@@ -37,6 +39,14 @@ first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
 
+repair = RepairTechnician('R', 'Repair')
+failure1 = Failure(
+    'F1', 'Failure1', victim=first_machine, TTF=timeToFailure1, TTR=timeToRepair1
+)
+failure2 = Failure(
+    'F2', 'Failure2', victim=second_machine, TTF=timeToFailure2, TTR=timeToRepair2
+)
+
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
     predecessorList=[source], successorList=[first_machine, second_machine]
@@ -47,7 +57,11 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(nodeList=[source, queue, first_machine, second_machine, exit])
+    line = Line(
+        nodeList=[source, queue, first_machine, second_machine, exit],
+        failures=[failure1, failure2],
+        repair=[repair],
+    )
 
     experiment = Experiment(line=line)
     experiment.run(maxSimTime=maxSimTime, test=test, numberOfReplications=10)

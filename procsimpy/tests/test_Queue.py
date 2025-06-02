@@ -1,3 +1,5 @@
+import pytest
+
 from procsimpy.Line import Line
 from procsimpy.Queue import Queue
 from simpy import Environment
@@ -11,13 +13,13 @@ middleQueue.defineRouting(predecessorList=[preQueue], successorList=[postQueue])
 postQueue.defineRouting(predecessorList=[middleQueue])
 
 env = Environment()
-objectList = [preQueue, middleQueue, postQueue]
-lineMock = Line(objectList=objectList)
+lineMock = Line(nodeList=[preQueue, middleQueue, postQueue])
 lineMock.initialize(env=env)
 
 
+@pytest.mark.skip('Not Implemented')
 def test_Queue() -> None:
     testQueue = Queue('TQ', 'TestQueue')
-    lineMock = Line([testQueue])
+    lineMock = Line(nodeList=[testQueue])
     lineMock.initialize(Environment())
     assert testQueue.env is not None

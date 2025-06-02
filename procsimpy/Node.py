@@ -9,7 +9,7 @@ from procsimpy.EventData import GiveEvent, InitEvent, ReceiveEvent
 from procsimpy.Operation import Operation
 from procsimpy.ProcessEntity import ProcessEntity
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
-from procsimpy.ShiftScheduler import ShiftBuilder
+from procsimpy.ShiftScheduler import Shift, ShiftBuilder
 from procsimpy.Statistics import Statistics
 from simpy import Store
 from simpy.resources.store import StoreGet, StorePut
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from procsimpy.Line import Line
     from procsimpy.ProbDistribution import ProbDistribution
     from simpy import Environment
+    from simpy.core import SimTime
     from simpy.resources.store import StoreGet, StorePut
 
 
@@ -36,14 +37,15 @@ class Node(Base):
         name: str,
         *,
         capacity: int | float = 1,
-        priority: int = 0,
+        priority: Optional[int] = None,
         processingTime: Optional[ProbDistribution] = None,
+        shift: Optional[Shift] = None,
     ) -> None:
         super().__init__(id, name)
         self.capacity: int | float = capacity
-        self.priority: int = priority
+        self.priority: Optional[int] = priority
 
-        self.processingTime = (
+        self.processingTimeGenerator = (
             RandomNumberGenerator(processingTime) if processingTime else None
         )
         self.canPrint: bool = False
@@ -78,9 +80,7 @@ class Node(Base):
         # in case of Source no previous is provided
         # could overload methods to not need availabilityStore
         self.availabilityStore = Store(env=self.env, capacity=self.maxTransactions)
-
-        for _ in range(self.availability):
-            self.availabilityStore.items.append(self.createToken())
+        self.fillAvailability()
 
         self.processEntity = processEntity
         self.processes = []
@@ -110,30 +110,10 @@ class Node(Base):
         assert len(self.previous) + len(self.next) >= 1, (
             f'{self.name} needs to be connected to at leat one other Node'
         )
-        # self.sortReceivers()
         self.giver: Node | None = self.previous[0] if self.previous else None
         self.receiver: Node | None = self.next[0] if self.next else None
 
-    def sortReceivers(self) -> None:
-        if self.line.routingPriority is not None:
-            self.next.sort(key=self.line.routingPriority)
-        else:
-            self.next.sort(key=lambda x: x.priority)
-
-    @property
-    def availability(self) -> int:
-        """
-        # Availability is amount of space available or max no of transactions
-        # whichever is smaller
-        # for the case of a store with infinite capacity a limit is required
-
-        :return: _description_
-        :rtype: int
-        """
-        currentCapacity = self.capacity - len(self.store.items)
-        return int(min(currentCapacity, self.maxTransactions))
-
-    def get(self, *, requestNode: Node) -> StoreGet:
+    def get(self) -> StoreGet:
         request = self.store.get()
         request.callbacks.append(lambda eventType: self.addAvailability(eventType))
         request.callbacks.append(
@@ -160,6 +140,30 @@ class Node(Base):
         self.processes.append(process)
         process.callbacks.append(lambda eventType: self.processes.remove(process))
 
+    def processingTime(self) -> SimTime | None:
+        activeEntity = self._getActiveEntity()
+        if activeEntity.remainingProcessingTime is not None:
+            return activeEntity.remainingProcessingTime.generateNumber()
+        if self.processingTimeGenerator is not None:
+            return self.processingTimeGenerator.generateNumber()
+        return None
+
+    def _getActiveEntity(self) -> Entity:
+        return self.store.items[0]
+
+    @property
+    def availability(self) -> int:
+        """
+        # Availability is amount of space available or max no of transactions
+        # whichever is smaller
+        # for the case of a store with infinite capacity a limit is required
+
+        :return: _description_
+        :rtype: int
+        """
+        currentCapacity = self.capacity - len(self.store.items)
+        return int(min(currentCapacity, self.maxTransactions))
+
     def createToken(self) -> AvailabilityToken:
         return AvailabilityToken(timeCreated=self.env.now, node=self)
 
@@ -169,5 +173,45 @@ class Node(Base):
     def addAvailability(self, eventType) -> None:
         self.availabilityStore.put(self.createToken())
 
-    def routeEntity(self, targets: list[AvailabilityToken]) -> AvailabilityToken | None:
-        return targets[0]
+    def fillAvailability(self) -> None:
+        # this currently assumes an empty store
+        for _ in range(self.availability):
+            self.availabilityStore.items.append(self.createToken())
+            # ? any advantage to using put Request?
+            # trigger get Requests?
+
+    def clearAvailability(self) -> None:
+        for token in self.availabilityStore.items:
+            self.availabilityStore.items.remove(token)
+
+    def routeEntity(self, targets: list[AvailabilityToken]) -> AvailabilityToken:
+        """
+        Is call in Process Enitity to decide between availale targets for handover of entity.
+        First checking Line for User defined function
+        Second checks if Priority is set on any node
+        Defaults to longest waiting
+
+        if Different routing is required it is encouraged to overload this method for the node in question
+
+        :param targets: the list of succerssor node that are currently available
+        :type targets: list[AvailabilityToken]
+        :return: the token to targets with handover
+        :rtype: AvailabilityToken
+        """
+        assert len(targets) >= 1, 'Must have targets to route'
+        if len(targets) == 1:
+            return targets[0]
+
+        if self.line.routingPriority is not None:
+            return self.line.routingPriority(targets)
+
+        if any(target.node.priority is not None for target in targets):
+            targets.sort(
+                reverse=True, key=lambda t: t.node.priority if t.node.priority else 0
+            )
+            return targets[0]
+
+        else:
+            # Defaults to node longest waiting
+            targets.sort(key=lambda t: t.node.stats.timeLastEntityExited)
+            return targets[0]

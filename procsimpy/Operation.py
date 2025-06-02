@@ -11,29 +11,50 @@ if TYPE_CHECKING:
     from procsimpy.Node import Node
 
 
-def Operation(node: Node) -> Generator:
-    # Trying to model if a node is operating/ onShift and only then processing
-    # might need to use events to model this
-    # ? Turn into class that runs this procees and updates state that can be requested
-    # if requests are made would need events made/triggerd
-    while True:
-        try:
-            nextShiftStart, nextShiftEnd = node.shift.next(node.env.now)
+class Operation:
+    def __init__(self, node: Node) -> None:
+        self.node = node
+        self.env = node.env
+        self.line = node.line
+        self.operating: bool = False
 
-            if node.shift.isOnShift(node.env.now):
-                # Allow Process Entity
-                yield node.env.timeout(nextShiftEnd - node.env.now)
-                # Disallow Process Entity
-                for process in node.processes:
-                    process.interrupt('Shift Change')
-            else:
-                yield node.env.timeout(nextShiftStart - node.env.now)
-                # self.reactivate()
-                # enable processEntity calls
-        except Interrupt as interrupt:
-            cause = interrupt.cause
-            assert isinstance(cause, Failure)
+    def run(self) -> Generator:
+        # Trying to model if a node is operating/ onShift and only then processing
+        # might need to use events to model this
+        # ? Turn into class that runs this procees and updates state that can be requested
+        # if requests are made would need events made/triggerd
+        while True:
+            try:
+                nextShiftStart, nextShiftEnd = self.node.shift.next(self.env.now)
 
-            with node.line.repairRequest(cause=cause) as repair:
-                yield repair
-                yield node.env.timeout(cause.TTR.generateNumber())
+                if self.node.shift.isOnShift(self.node.env.now):
+                    self.operating = True
+                    self.node.fillAvailability()
+                    yield self.env.timeout(nextShiftEnd - self.env.now)
+                    self.operating = False
+                    self.node.clearAvailability()
+                    # Disallow Process Entity
+                    for process in self.node.processes:
+                        process.interrupt('Shift Change')
+                else:
+                    self.operating = False
+                    self.node.clearAvailability()
+                    yield self.env.timeout(nextShiftStart - self.env.now)
+                    self.operating = True
+                    self.node.fillAvailability()
+                    # self.reactivate()
+                    # enable processEntity calls
+            except Interrupt as interrupt:
+                self.operating = False
+                self.node.clearAvailability()
+                cause = interrupt.cause
+                assert isinstance(cause, Failure)
+
+                with self.line.repairRequest(cause=cause) as repair:
+                    yield repair
+                    yield self.env.timeout(cause.TTR.generateNumber())
+                    self.operating = True
+                    self.node.fillAvailability()
+
+    def isOperating(self) -> bool:
+        return self.operating

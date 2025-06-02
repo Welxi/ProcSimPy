@@ -9,11 +9,9 @@ sys.path.append(os.path.join(Path(sys.path[0]).parent))
 from procsimpy import (
     Exit,
     Experiment,
-    Failure,
     FixedDistribution,
     Line,
     Queue,
-    RepairTechnician,
     Server,
     Source,
 )
@@ -24,25 +22,11 @@ arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=0.25)
 
-timeToFailure1 = FixedDistribution(mean=60.0)
-timeToRepair1 = FixedDistribution(mean=5.0)
-
-timeToFailure2 = FixedDistribution(mean=40.0)
-timeToRepair2 = FixedDistribution(mean=10.0)
-
 source = Source('S', 'Source', arrivalTime=arrivalTime)
 queue = Queue('Q', 'Queue')
 first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-
-repair = RepairTechnician('R', 'Repair')
-failure1 = Failure(
-    'F1', 'Failure1', victim=first_machine, TTF=timeToFailure1, TTR=timeToRepair1
-)
-failure2 = Failure(
-    'F2', 'Failure2', victim=second_machine, TTF=timeToFailure2, TTR=timeToRepair2
-)
 
 source.defineRouting(successorList=[queue])
 queue.defineRouting(
@@ -54,12 +38,8 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 # TODO Turn into two test one with and one without failures
-def main(test: bool = False, maxSimTime: float = 4) -> dict[str, int | float] | None:
-    line = Line(
-        nodeList=[source, queue, first_machine, second_machine, exit],
-        failures=[failure1, failure2],
-        repair=[repair],
-    )
+def main(test: bool = False, maxSimTime: float = 2) -> dict[str, int | float] | None:
+    line = Line(nodeList=[source, queue, first_machine, second_machine, exit])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

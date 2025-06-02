@@ -2,7 +2,7 @@ import pytest
 
 from procsimpy.Base import Base
 from procsimpy.EventData import EventData
-from procsimpy.PrintTrace import printTrace
+from procsimpy.printTrace import printTrace
 
 
 @pytest.fixture

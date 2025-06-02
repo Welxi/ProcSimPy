@@ -1,19 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
-from procsimpy.Entity import Entity
 from procsimpy.EventData import ReceiveEvent
 from procsimpy.Node import Node
 from simpy.core import Infinity
-from simpy.resources.store import StorePut
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
-
-    from procsimpy.Line import Line
-    from simpy import Environment
-    from simpy.resources.store import StoreGet
+    from procsimpy.Entity import Entity
+    from simpy.resources.store import StoreGet, StorePut
 
 
 class Exit(Node):
@@ -28,26 +23,6 @@ class Exit(Node):
         name: str,
     ) -> None:
         super().__init__(id, name, capacity=Infinity)
-
-    # def initialize(
-    #     self,
-    #     env: Environment,
-    #     line: Line,
-    #     *,
-    #     processes: list[Callable[[Node], Generator]],
-    # ) -> None:
-    #     """
-    #     sets/resets Exit for new simulation
-
-    #     :param env: SimPy Enviroment
-    #     :type env: Environment
-    #     :param line: Line Orchestration Module
-    #     :type line: LineNode
-    #     :param processes: only here to maintain standard no passthrough allowed
-    #     :type processes: list[Callable[[Node], Generator]]
-    #     """
-    #     # TODO filter to remove process entity instead of not allowing passthrough
-    #     super().initialize(env, line, processes=[])
 
     def getToken(self) -> StoreGet:
         """

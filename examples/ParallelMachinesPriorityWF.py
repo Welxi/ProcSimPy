@@ -9,9 +9,11 @@ sys.path.append(os.path.join(Path(sys.path[0]).parent))
 from procsimpy import (
     Exit,
     Experiment,
+    Failure,
     FixedDistribution,
     Line,
     Queue,
+    RepairTechnician,
     Server,
     Source,
 )
@@ -31,6 +33,15 @@ first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1, prior
 second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2, priority=0)
 exit = Exit('E', 'Exit')
 
+repair = RepairTechnician('R', 'Repair')
+failure = Failure(
+    'F',
+    'Failure',
+    victim=first_machine,
+    TTF=timeToFailure,
+    TTR=timeToRepair,
+)
+
 source.defineRouting(successorList=[selectiveQ])
 selectiveQ.defineRouting(
     predecessorList=[source], successorList=[first_machine, second_machine]
@@ -41,7 +52,11 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
-    line = Line(nodeList=[source, selectiveQ, first_machine, second_machine, exit])
+    line = Line(
+        nodeList=[source, selectiveQ, first_machine, second_machine, exit],
+        failures=[failure],
+        repair=[repair],
+    )
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)

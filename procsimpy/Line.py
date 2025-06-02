@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Callable, Optional
 
 if TYPE_CHECKING:
+    from procsimpy.AvailabilityToken import AvailabilityToken
     from procsimpy.Base import Base
     from procsimpy.Entity import Entity
     from procsimpy.Exit import Exit
@@ -37,7 +38,9 @@ class Line:
         repair: Optional[
             list[RepairTechnician]
         ] = None,  # can change to resources when operators is available
-        routingPriority: Optional[Callable[[Node], int]] = None,
+        routingPriority: Optional[
+            Callable[[list[AvailabilityToken]], AvailabilityToken]
+        ] = None,
     ) -> None:
         if WIPList is None:
             WIPList = []
@@ -70,7 +73,9 @@ class Line:
                 'While in beta only one Repair Technician is supported'
             )
 
-        self.routingPriority: Optional[Callable[[Node], int]] = routingPriority
+        self.routingPriority: Optional[
+            Callable[[list[AvailabilityToken]], AvailabilityToken]
+        ] = routingPriority
 
         self.settings: dict[str, bool | None | list[Node]] = {
             'traceIsOn': True,  # checked by baseObject before calling printTrace
@@ -136,4 +141,6 @@ class Line:
             raise ValueError('No repair Tech available')
 
         # TODO Handle many repair techs
+        # easyest way is to just make the Resource have a higher capacity
+        # would need to model skills / fixable failuremodes for any more complexity to matter
         return self.RepairTechList[0].request(cause)

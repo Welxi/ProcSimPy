@@ -11,4 +11,5 @@ from procsimpy.ProbDistribution import (
 from procsimpy.Queue import Queue
 from procsimpy.RepairTechnician import RepairTechnician
 from procsimpy.Server import Server
+from procsimpy.ShiftScheduler import Shift, ShiftBuilder, ShiftPattern, ShiftSchedule
 from procsimpy.Source import Source

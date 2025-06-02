@@ -9,11 +9,9 @@ sys.path.append(os.path.join(Path(sys.path[0]).parent))
 from procsimpy import (
     Exit,
     Experiment,
-    Failure,
     FixedDistribution,
     Line,
     Queue,
-    RepairTechnician,
     Server,
     Source,
 )
@@ -29,15 +27,12 @@ timeToRepair = FixedDistribution(mean=1.0)
 
 
 class SelectiveQueue(Queue):
-    # TODO Selective Queue
-    # override so that it first chooses M1 and then M2
-    # def selectReceiver(self, possibleReceivers=[]):
-    #     if first_machine.canAccept():
-    #         return first_machine
-    #     elif second_machine.canAccept():
-    #         return second_machine
-    #     return None
-    pass
+    def routeEntity(self, targets):
+        for target in targets:
+            if target.node.name == 'Machine 1':
+                return target
+
+        return targets[0]
 
 
 source = Source('S', 'Source', arrivalTime=arrivalTime)
@@ -45,15 +40,6 @@ selectiveQ = SelectiveQueue('Q', 'Queue', capacity=1)
 first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
 second_machine = Server('M2', 'Machine 2', processingTime=processingTimeM2)
 exit = Exit('E', 'Exit')
-
-repair = RepairTechnician('R', 'Repair')
-failure = Failure(
-    'F',
-    'Failure',
-    victim=first_machine,
-    TTF=timeToFailure,
-    TTR=timeToRepair,
-)
 
 source.defineRouting(successorList=[selectiveQ])
 selectiveQ.defineRouting(
