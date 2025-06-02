@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from procsimpy.Node import Node
 
 if TYPE_CHECKING:
     from procsimpy.ProbDistribution import ProbDistribution
+    from procsimpy.ShiftScheduler import Shift
 
 
 class Server(Node):
@@ -15,8 +16,9 @@ class Server(Node):
         name: str,
         *,
         capacity: int = 1,
-        priority: int = 0,
+        priority: Optional[int] = None,
         processingTime: ProbDistribution,
+        shift: Optional[Shift] = None,
     ) -> None:
         super().__init__(
             id,
@@ -24,4 +26,5 @@ class Server(Node):
             capacity=capacity,
             priority=priority,
             processingTime=processingTime,
+            shift=shift,
         )

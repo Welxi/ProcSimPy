@@ -35,7 +35,7 @@ class Source(Node):
         self.partNumber: int = 0
         self.item = item
 
-    def initialize(
+    def initialize(  # type: ignore
         self,
         env: Environment,
         line: Line,
@@ -65,6 +65,8 @@ def IntervalEntityGenerator(node: Node) -> Generator:
         # could be changed to begin with wait
         #  but assumption about experiment that we begin at the most intresting time
         entity: Entity = node.createEntity()
+        # ? would yield node.put(entity) be better
+        # any reason to use context manager
         with node.put(entity) as handoff:
             yield handoff
 

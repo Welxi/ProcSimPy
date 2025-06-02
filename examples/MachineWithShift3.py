@@ -4,6 +4,8 @@ import os
 import sys
 from pathlib import Path
 
+from procsimpy.ShiftScheduler import ShiftBuilder
+
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
 from procsimpy import (
@@ -20,12 +22,12 @@ print('Machine With Shift Schedule and endUnfinished')
 arrivalTime = FixedDistribution(mean=0.5)
 processingTime = FixedDistribution(mean=3)
 
-source = Source('S', 'Source', arrivalTime=arrivalTime)
-machine = Server('M1', 'Machine', processingTime=processingTime)
-exit = Exit('E', 'Exit')
+shift = ShiftBuilder(schedule=[(0, 5), (10, 15)])
+# TODO End Unfinished = True
 
-# TODO ShiftScheduler
-# SS=ShiftScheduler(victim=M, shiftPattern=[[0,5],[10,15]], endUnfinished=True)
+source = Source('S', 'Source', arrivalTime=arrivalTime)
+machine = Server('M1', 'Machine', processingTime=processingTime, shift=shift)
+exit = Exit('E', 'Exit')
 
 source.defineRouting(successorList=[machine])
 machine.defineRouting(
@@ -35,7 +37,7 @@ machine.defineRouting(
 exit.defineRouting(predecessorList=[machine])
 
 
-def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
+def main(test=False, maxSimTime: float = 20) -> dict[str, int | float] | None:
     line = Line(nodeList=[source, machine, exit])
 
     experiment = Experiment(line=line)

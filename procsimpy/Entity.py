@@ -74,6 +74,8 @@ class Entity(Base):
         :param station: New Station entered
         :type station: Node
         """
-        self.printTrace(EnterEvent(time=self.env.now, caller=self, station=station))
+        # for work in progress can be called before initialised
+        time = self.env.now if hasattr(self, 'env') else 0
+        self.printTrace(EnterEvent(time=time, caller=self, station=station))
         self.currentNode = station
         # TODO add log of stations entered with times

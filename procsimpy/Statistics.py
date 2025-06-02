@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from procsimpy.Entity import Entity
     from simpy import Environment
+    from simpy.core import SimTime
 
 
 class Statistics:
@@ -29,7 +30,7 @@ class Statistics:
 
         self.entries: list[Entity] = []
 
-    def createRatios(self, simTime: float) -> None:
+    def createRatios(self, simTime: SimTime) -> None:
         self.workingRatio = self.totalWorkingTime / simTime
         self.waitingRatio = self.totalWaitingTime / simTime
         self.blockageRatio = self.totalBlockageTime / simTime
