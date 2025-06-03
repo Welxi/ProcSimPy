@@ -6,10 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'HePYaestus'
+project = 'Process SimPy'
 copyright = '2025, Neil Sheahan'
 author = 'Neil Sheahan'
-release = '0.1.0'
+release = '0.2.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -27,6 +27,6 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 autodoc2_packages = [
-    '../../hepyaestus',
+    '../../procsimpy',
 ]
 autodoc2_render_plugin = 'myst'
