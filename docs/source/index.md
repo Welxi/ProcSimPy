@@ -1,3 +1,9 @@
+```{toctree}
+:hidden:
+guides/new_to_simulation.md
+guides/setting_up_your_experiment.md
+```
+
 # Process SimPy
 This project is built on top of the [SimPy](https://simpy.readthedocs.io/en/latest/) Library and aims to provide common abstractions used in Simulation Experiments focusing on modelling a Process, with a Particular focus on the Manufacturing domain
 
@@ -56,7 +62,4 @@ print(f'Working Percent of {machine.name} is {machine.stats.workingRatio:.2%}')
 The individual descriptions can be found in the Reference section but it is advised to read [](../source/Setting%20up%20Your%20Experiment.md) first
 
 # Contents
-```Table of Contents
-guides/new_to_simulation.md
-guides/setting_up_your_experiment.md
-```
+
