@@ -56,3 +56,8 @@ print(f'Working Percent of {machine.name} is {machine.stats.workingRatio:.2%}')
 The individual descriptions can be found in the Reference section but it is advised to read [](../source/Setting%20up%20Your%20Experiment.md) first
 
 
+```{contents} Table of Contents
+:depth: 3
+guides/new_to_simulation.md
+guides/setting_up_your_experiment.md
+```
