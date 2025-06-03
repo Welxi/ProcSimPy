@@ -1,7 +1,15 @@
 ```{toctree}
 :hidden:
+Home <self>
 guides/new_to_simulation.md
 guides/setting_up_your_experiment.md
+apidocs/index.rst
+about/acknowledgements.md
+about/defense_of_design.md
+about/how_to_contribute.md
+about/maintenance/pull_requests.md
+about/maintenance/readthedocs.md
+about/maintenance/structurizr.md
 ```
 
 # Process SimPy
