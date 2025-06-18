@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from procsimpy.Base import Base
-from procsimpy.EventData import CreateEvent, EnterEvent
+from procsimpy.ProbDistribution import FixedDistribution
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
@@ -41,6 +41,7 @@ class Entity(Base):
             if remainingProcessingTime is not None
             else None
         )
+        self.status: str = 'Init'
 
     def initialize(self, env: Environment, line: Line, *, currentNode: Node) -> None:  # type: ignore
         """
@@ -54,7 +55,7 @@ class Entity(Base):
         :type currentNode: Node
         """
         super().initialize(env, line)
-        self.printTrace(CreateEvent(time=self.env.now, caller=self))
+        # self.printTrace(CreateEvent(time=self.env.now, caller=self))
 
         if self.startingNode is not None:
             assert currentNode == self.startingNode, 'Must begin at Starting Node'
@@ -74,8 +75,16 @@ class Entity(Base):
         :param station: New Station entered
         :type station: Node
         """
+        # self.remainingProcessingTime = None
         # for work in progress can be called before initialised
-        time = self.env.now if hasattr(self, 'env') else 0
-        self.printTrace(EnterEvent(time=time, caller=self, station=station))
+        # time = self.env.now if hasattr(self, 'env') else 0
+        # self.printTrace(EnterEvent(time=time, caller=self, station=station))
         self.currentNode = station
         # TODO add log of stations entered with times
+        self.status = 'Arrived'
+
+    def pause(self, remainingProcessing: SimTime) -> None:
+        self.remainingProcessingTime = RandomNumberGenerator(
+            distribution=FixedDistribution(mean=remainingProcessing)
+        )
+        self.status = 'Paused'

@@ -33,6 +33,8 @@ class Base:
         :param line: Line Orchestration Module
         :type line: LineNode
         """
+        #? could append line to env so I dont have to pass both each time
+        #  or package together
         self.env: Environment = env
         self.line: Line = line
         self.canPrint = self.line.canTrace(self)

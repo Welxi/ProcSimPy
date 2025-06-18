@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from procsimpy import Failure
-from simpy import Interrupt
+from procsimpy.EventData import InterruptEvent
+from procsimpy.Failure import Failure
+from procsimpy.ShiftChange import ShiftChange
+from simpy import Event, Interrupt
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -17,44 +19,68 @@ class Operation:
         self.env = node.env
         self.line = node.line
         self.operating: bool = False
+        self.waitingEvents: list[Event] = []
+
+    def initialize(self):
+        self.process = self.env.process(self.run())
 
     def run(self) -> Generator:
-        # Trying to model if a node is operating/ onShift and only then processing
-        # might need to use events to model this
-        # ? Turn into class that runs this procees and updates state that can be requested
-        # if requests are made would need events made/triggerd
+        self.start()
         while True:
             try:
-                nextShiftStart, nextShiftEnd = self.node.shift.next(self.env.now)
-
-                if self.node.shift.isOnShift(self.node.env.now):
-                    self.operating = True
-                    self.node.fillAvailability()
-                    yield self.env.timeout(nextShiftEnd - self.env.now)
-                    self.operating = False
-                    self.node.clearAvailability()
-                    # Disallow Process Entity
-                    for process in self.node.processes:
-                        process.interrupt('Shift Change')
+                if self.node.shift is None:
+                    yield self.process
                 else:
-                    self.operating = False
-                    self.node.clearAvailability()
-                    yield self.env.timeout(nextShiftStart - self.env.now)
-                    self.operating = True
-                    self.node.fillAvailability()
-                    # self.reactivate()
-                    # enable processEntity calls
-            except Interrupt as interrupt:
-                self.operating = False
-                self.node.clearAvailability()
-                cause = interrupt.cause
-                assert isinstance(cause, Failure)
+                    nextShiftStart, nextShiftEnd = self.node.shift.next(self.env.now)
 
-                with self.line.repairRequest(cause=cause) as repair:
-                    yield repair
+                    # print(f'{self.env.now} : {nextShiftStart=}, {nextShiftEnd=}')
+
+                    if self.node.shift.isOnShift(self.node.env.now):
+                        self.start()
+                        yield self.env.timeout(nextShiftEnd - self.node.env.now)
+                        self.stop(ShiftChange(cause='Shift End'))
+                    else:
+                        if not self.operating:
+                            self.stop(ShiftChange(cause='Shift End'))
+                        yield self.env.timeout(nextShiftStart - self.node.env.now)
+                        self.start()
+
+            except Interrupt as interrupt:
+                cause = interrupt.cause
+                # assert isinstance(cause, (Failure, ShiftChange))
+                self.stop(cause=cause)
+
+                with self.line.repairRequest(cause=cause) as repairRequest:
+                    yield repairRequest
                     yield self.env.timeout(cause.TTR.generateNumber())
-                    self.operating = True
-                    self.node.fillAvailability()
+                    self.onRepair.succeed()
+                    self.start()
 
     def isOperating(self) -> bool:
         return self.operating
+
+    def start(self) -> None:
+        self.operating = True
+        self.node.fillAvailability()
+        # print(f'{self.node.processes=}')
+        # if self.node.store.items:
+        #     print(self.node.store.items)
+        #     self.node.process()
+
+    def stop(self, cause: Failure | ShiftChange) -> None:
+        self.operating = False
+        self.node.clearAvailability()
+        for process in self.node.processes:
+            process.interrupt(cause)
+
+    def onOperating(self) -> Event:
+        event = self.env.event()
+        self.waitingEvents.append(event)
+        return event
+
+    def failure(self, fail: Failure) -> Event:
+        event = InterruptEvent(time=self.env.now, caller=self.node, cause=fail)
+        self.node.printTrace(event=event)
+        self.process.interrupt(cause=fail)
+        self.onRepair = self.env.event()
+        return self.onRepair

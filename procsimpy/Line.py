@@ -63,10 +63,13 @@ class Line:
             )
             # ? is this true maybe an experiment wants no resloution to failures
             # turn to warning instead
-            # maybe a double warning if a long running experiment
+            # maybe a double warning if a long running experiment- start and end
             # skipped a lot of time do to no action because of failures stoping loops
 
         self.FailureList: list[Failure] = failures if failures else []
+
+        # ? Could just make this automatic
+        # would need to remove the ability to filter what failures are resolved
         self.RepairTechList: list[RepairTechnician] = repair if repair else []
         if len(self.RepairTechList) > 1:
             raise NotImplementedError(
@@ -111,8 +114,6 @@ class Line:
             assert entity.startingNode is not None, (
                 'Entity created for Work in Progress must have startingNode'
             )
-            # if not entity.startingNode.hasCapacity():
-            #     raise ValueError('Work in Progress larger than Capacity of Node')
             entity.startingNode.put(entity)
 
     def turnTraceingOff(self) -> None:

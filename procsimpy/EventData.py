@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 from itertools import count
 from typing import TYPE_CHECKING
 
+from procsimpy.Failure import Failure
+
 if TYPE_CHECKING:
     from procsimpy.Base import Base
     from procsimpy.Entity import Entity
@@ -93,28 +95,6 @@ class GiveEvent(EventData):
 
 
 @dataclass(frozen=True, kw_only=True)
-class isRequestedEvent(EventData):
-    """
-    A Node has Requested an Entity from its predecessor
-    """
-
-    requestingNode: Node
-
-    def phrase(self) -> str:
-        # could add where it was given too
-        return f'E:<isRequested> -> {self.caller.name} called from {self.requestingNode.name}'
-
-
-@dataclass(frozen=True, kw_only=True)
-class canDisposeEvent(EventData):
-    # Unused right now but could be changed to has gained availability
-    # Was termonlogy from event based architecture
-    def phrase(self) -> str:
-        # could add where it was given too
-        return f'{self.caller.name} has Availability'
-
-
-@dataclass(frozen=True, kw_only=True)
 class StartWorkEvent(EventData):
     """
     A Node has begun its processing of an Entity
@@ -140,8 +120,10 @@ class InterruptEvent(EventData):
     A Nodes Work has been Interrupted
     """
 
+    cause: Failure
+
     def phrase(self) -> str:
-        return f'{self.caller.name} interrupted by {self.caller.name}'
+        return f'{self.caller.name} interrupted by {self.cause.name}'
 
 
 # This just might never be used without event architecture
