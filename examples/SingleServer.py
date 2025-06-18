@@ -32,7 +32,7 @@ machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[machine])
 
 
-def main(test=False, maxSimTime: float = 2) -> dict[str, int | float] | None:
+def main(test=False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     line = Line(nodeList=[source, queue, machine, exit])
 
     experiment = Experiment(line=line)

@@ -52,7 +52,7 @@ second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[second_machine])
 
 
-def main(test: bool = False, maxSimTime: float = 5) -> dict[str, int | float] | None:
+def main(test: bool = False, maxSimTime: float = 100) -> dict[str, int | float] | None:
     line = Line(
         nodeList=[source, queue, first_machine, second_machine, exit],
         failures=[failure1, failure2],
@@ -67,17 +67,14 @@ def main(test: bool = False, maxSimTime: float = 5) -> dict[str, int | float] | 
     if test:
         return {
             'parts': results['partsCreated'],
-            'working_percent_M1': first_machine.stats.workingRatio * 100,
-            'working_percent_M2': second_machine.stats.workingRatio * 100,
+            'blockage_ratio': first_machine.stats.blockageRatio * 100,
         }
 
     print(f'Sim End Time: {results["simTime"]}')
     print(f'the system produced {results["partsCreated"]} parts')
+
     print(
-        f'Working Percent of {first_machine.name} is {first_machine.stats.workingRatio:.2%}'
-    )
-    print(
-        f'Working Percent of {second_machine.name} is {second_machine.stats.workingRatio:.2%}'
+        f'Blocking Percetn of {first_machine.name} is {first_machine.stats.blockageRatio:.2%}'
     )
 
     return None
