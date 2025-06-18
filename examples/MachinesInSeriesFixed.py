@@ -22,12 +22,6 @@ arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=1.5)
 
-timeToFailure1 = FixedDistribution(mean=60.0)
-timeToRepair1 = FixedDistribution(mean=5.0)
-
-timeToFailure2 = FixedDistribution(mean=40.0)
-timeToRepair2 = FixedDistribution(mean=10.0)
-
 source = Source('S', 'Source', arrivalTime=arrivalTime)
 first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
 queue = Queue('Q', 'Queue')
@@ -42,7 +36,7 @@ second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[second_machine])
 
 
-def main(test: bool = False, maxSimTime: float = 5) -> dict[str, int | float] | None:
+def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     line = Line(nodeList=[source, queue, first_machine, second_machine, exit])
 
     experiment = Experiment(line=line)

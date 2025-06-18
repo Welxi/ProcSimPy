@@ -38,7 +38,7 @@ exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
 # TODO Turn into two test one with and one without failures
-def main(test: bool = False, maxSimTime: float = 2) -> dict[str, int | float] | None:
+def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     line = Line(nodeList=[source, queue, first_machine, second_machine, exit])
 
     experiment = Experiment(line=line)

@@ -64,8 +64,16 @@ def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] |
     )
 
     experiment = Experiment(line=line)
-    experiment.run(maxSimTime=maxSimTime, test=test, numberOfReplications=10)
+    results = experiment.run(maxSimTime=maxSimTime, test=test, numberOfReplications=10)
     # TODO Set seed (in dream seed=1)
+    results = results.stubs[0]
+
+    if test:
+        return {
+            'parts': results['partsCreated'],
+            'working_percent_M1': first_machine.stats.workingRatio * 100,
+            'working_percent_M2': second_machine.stats.workingRatio * 100,
+        }
 
     # In Dream they do not have a test for this
     # They rely on the KE Tool for stat functions to generate

@@ -27,9 +27,6 @@ processingTimeM2 = FixedDistribution(mean=0.25)
 timeToFailure1 = FixedDistribution(mean=60.0)
 timeToRepair1 = FixedDistribution(mean=5.0)
 
-timeToFailure2 = FixedDistribution(mean=40.0)
-timeToRepair2 = FixedDistribution(mean=10.0)
-
 source = Source('S', 'Source', arrivalTime=arrivalTime)
 queue = Queue('Q', 'Queue')
 first_machine = Server('M1', 'Machine 1', processingTime=processingTimeM1)
@@ -39,9 +36,6 @@ exit = Exit('E', 'Exit')
 repair = RepairTechnician('R', 'Repair')
 failure1 = Failure(
     'F1', 'Failure1', victim=first_machine, TTF=timeToFailure1, TTR=timeToRepair1
-)
-failure2 = Failure(
-    'F2', 'Failure2', victim=second_machine, TTF=timeToFailure2, TTR=timeToRepair2
 )
 
 source.defineRouting(successorList=[queue])
@@ -53,11 +47,10 @@ second_machine.defineRouting(predecessorList=[queue], successorList=[exit])
 exit.defineRouting(predecessorList=[first_machine, second_machine])
 
 
-# TODO Turn into two test one with and one without failures
-def main(test: bool = False, maxSimTime: float = 2) -> dict[str, int | float] | None:
+def main(test: bool = False, maxSimTime: float = 10) -> dict[str, int | float] | None:
     line = Line(
         nodeList=[source, queue, first_machine, second_machine, exit],
-        failures=[failure1, failure2],
+        failures=[failure1],
         repair=[repair],
     )
 

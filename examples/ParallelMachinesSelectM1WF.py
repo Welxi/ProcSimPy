@@ -24,8 +24,8 @@ arrivalTime = FixedDistribution(mean=0.5)
 processingTimeM1 = FixedDistribution(mean=0.25)
 processingTimeM2 = FixedDistribution(mean=0.25)
 
-timeToFailure = FixedDistribution(mean=6.0)
-timeToRepair = FixedDistribution(mean=1.0)
+timeToFailure = FixedDistribution(mean=60.0)
+timeToRepair = FixedDistribution(mean=5.0)
 
 
 class SelectiveQueue(Queue):
