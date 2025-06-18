@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from procsimpy.AvailabilityToken import AvailabilityToken
 from procsimpy.Base import Base
+from procsimpy.Entity import Entity
 from procsimpy.EventData import GiveEvent, InitEvent, ReceiveEvent
+from procsimpy.Handover import Handover
 from procsimpy.Operation import Operation
 from procsimpy.ProcessEntity import ProcessEntity
 from procsimpy.RandomNumberGenerator import RandomNumberGenerator
-from procsimpy.ShiftScheduler import Shift, ShiftBuilder
 from procsimpy.Statistics import Statistics
 from simpy import Store
 from simpy.resources.store import StoreGet, StorePut
@@ -17,9 +18,9 @@ from simpy.resources.store import StoreGet, StorePut
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from procsimpy.Entity import Entity
     from procsimpy.Line import Line
     from procsimpy.ProbDistribution import ProbDistribution
+    from procsimpy.ShiftScheduler import Shift
     from simpy import Environment
     from simpy.core import SimTime
     from simpy.resources.store import StoreGet, StorePut
@@ -48,6 +49,7 @@ class Node(Base):
         self.processingTimeGenerator = (
             RandomNumberGenerator(processingTime) if processingTime else None
         )
+        self.shift = shift
         self.canPrint: bool = False
 
     def initialize(  # type: ignore
@@ -89,10 +91,12 @@ class Node(Base):
             for process in processes:
                 self.processes.append(self.env.process(process(self)))
 
-        self.shift = ShiftBuilder(pattern=(10, 5))
         self.operation = Operation(self)
-
+        self.operation.initialize()
         self.printTrace(InitEvent(time=self.env.now, caller=self))
+
+        self.pendingHandover = self.env.event()
+        self.env.process(Handover(self))
 
         # TODO Check for Circular Routing
 
@@ -101,6 +105,7 @@ class Node(Base):
         predecessorList: Optional[list[Node]] = None,
         successorList: Optional[list[Node]] = None,
     ) -> None:
+        # ? Previous is not used in current system could remove if no other feature is required
         self.previous: list[Node] = predecessorList if predecessorList else []
         self.next: list[Node] = successorList if successorList else []
 
@@ -125,6 +130,7 @@ class Node(Base):
 
     def put(self, item: Entity) -> StorePut:
         self.printTrace(ReceiveEvent(time=self.env.now, caller=self, entity=item))
+        self.stats.receivedEntity(entity=item)
 
         item.updateStation(station=self)
         self.stats.receivedEntity(entity=item)
@@ -141,14 +147,14 @@ class Node(Base):
         process.callbacks.append(lambda eventType: self.processes.remove(process))
 
     def processingTime(self) -> SimTime | None:
-        activeEntity = self._getActiveEntity()
+        activeEntity = self.getActiveEntity()
         if activeEntity.remainingProcessingTime is not None:
             return activeEntity.remainingProcessingTime.generateNumber()
         if self.processingTimeGenerator is not None:
             return self.processingTimeGenerator.generateNumber()
         return None
 
-    def _getActiveEntity(self) -> Entity:
+    def getActiveEntity(self) -> Entity:
         return self.store.items[0]
 
     @property
@@ -215,3 +221,10 @@ class Node(Base):
             # Defaults to node longest waiting
             targets.sort(key=lambda t: t.node.stats.timeLastEntityExited)
             return targets[0]
+
+    def finishProcessing(self):
+        for item in self.store.items:
+            assert isinstance(item, Entity)
+            if item.status != 'Processed':
+                item.status = 'Processed'
+                return

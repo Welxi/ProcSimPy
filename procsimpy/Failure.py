@@ -43,6 +43,5 @@ class Failure(Base):
     def run(self) -> Generator:
         while True:
             yield self.env.timeout(self.TTF.generateNumber())
-
-            for process in self.victim.processes:
-                process.interrupt(self)
+            repair = self.victim.operation.failure(fail=self)
+            yield repair

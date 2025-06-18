@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from procsimpy.Base import Base
+from procsimpy.Statistics import Statistics
 from simpy import Environment, Resource
 
 if TYPE_CHECKING:
@@ -10,7 +11,8 @@ if TYPE_CHECKING:
     from simpy.resources.resource import Request
 
 
-# Not loveing this name, but cant be overload Simpy Resource
+# Not loveing this name, but cant overload Simpy Resource
+# What advantage does this give than just inheriting Simpy Resource?
 class ResourceObject(Base):
     def __init__(self, id: str, name: str, *, capacity: int = 1) -> None:
         super().__init__(id, name)
@@ -19,6 +21,7 @@ class ResourceObject(Base):
 
     def initialize(self, env: Environment, line: Line) -> None:
         super().initialize(env, line)
+        self.stats = Statistics(env=self.env)
         self.res = Resource(env, capacity=self.capacity)
 
     def request(self) -> Request:

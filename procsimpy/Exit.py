@@ -35,6 +35,8 @@ class Exit(Node):
         """
         # Exits are always avaible so add Token before request
         # TODO Check if this will overfill and if that even matters
+        #? could just return a token
+        # not worry about availabilityStore
         self.availabilityStore.put(self.createToken())
         return super().getToken()
 

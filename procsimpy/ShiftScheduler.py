@@ -10,6 +10,17 @@ def ShiftBuilder(
     pattern: Optional[tuple[float, float]] = None,
     schedule: Optional[list[tuple[float, float]]] = None,
 ) -> ShiftPattern | ShiftSchedule:
+    """
+    Returns a Shift based on pattern or schedule
+
+    :param pattern: _description_, defaults to None
+    :type pattern: Optional[tuple[float, float]], optional
+    :param schedule: _description_, defaults to None
+    :type schedule: Optional[list[tuple[float, float]]], optional
+    :raises ValueError: _description_
+    :return: Shift coresponding to format of input
+    :rtype: ShiftPattern | ShiftSchedule
+    """
     assert pattern is not None or schedule is not None, (
         'Pattern or Schedule must be set'
     )
@@ -20,7 +31,7 @@ def ShiftBuilder(
     if schedule is not None:
         return ShiftSchedule(schedule=schedule)
 
-    raise ValueError('Pattern or Schedult must be set')
+    raise ValueError('Pattern or Schedule must be set')
 
 
 class Shift(ABC):
@@ -30,7 +41,14 @@ class Shift(ABC):
 
     @abstractmethod
     def next(self, time: float) -> tuple[float, float]:
-        pass
+        """
+        Returns the next working times of this shift
+
+        :param time: current time or time of intrest for next working
+        :type time: float
+        :return: (start, end) of next working time
+        :rtype: tuple[float, float]
+        """
 
 
 class ShiftPattern(Shift):
@@ -48,9 +66,11 @@ class ShiftPattern(Shift):
         return (time % self.repeat) < self.onFor
 
     def next(self, time: float) -> tuple[float, float]:
-        repeats = time // self.repeat
-        nextStart = self.repeat * repeats
-        nextEnd = self.repeat * repeats + self.onFor
+        cycles, phase = divmod(time, self.repeat)
+        if phase >= self.onFor:
+            cycles += 1
+        nextStart = self.repeat * cycles
+        nextEnd = self.repeat * cycles + self.onFor
 
         return (nextStart, nextEnd)
 
@@ -70,6 +90,9 @@ class ShiftSchedule(Shift):
 
     def next(self, time: float) -> tuple[float, float]:
         # TODO make so each call dose not need to loop through begining
+        # make sure when called at the end of a shift it returns the next one
+        # this will be the most common call
+        # TODO cache result
         for idx, (_, end) in enumerate(self.schedule):
             if time > end:
                 if self.schedule[idx] != self.schedule[-1]:
