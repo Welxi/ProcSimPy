@@ -46,7 +46,7 @@ class Statistics:
     def finishedProcessing(self) -> None:
         # Ending Time must be after Starting Time
         # Zero Time Processing Not Supported
-        assert self.env.now > self.timeLastOperationStarted, 'Operation out of order'
+        assert self.env.now >= self.timeLastOperationStarted, 'Operation out of order'
 
         self.timeLastOperationEnded = self.env.now
         self.totalWorkingTime += (

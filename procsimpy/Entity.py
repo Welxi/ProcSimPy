@@ -1,17 +1,27 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from procsimpy.Base import Base
-from procsimpy.ProbDistribution import FixedDistribution
-from procsimpy.RandomNumberGenerator import RandomNumberGenerator
 
 if TYPE_CHECKING:
+    from procsimpy.Failure import Failure
     from procsimpy.Line import Line
     from procsimpy.Node import Node
-    from procsimpy.ProbDistribution import ProbDistribution
+    from procsimpy.ShiftChange import ShiftChange
     from simpy import Environment
     from simpy.core import SimTime
+
+
+class EntityStatus(Enum):
+    INIT = 'Init'
+    ARRIVED = 'Arrived'
+    PAUSED = 'Paused'
+    PROCESSING = 'Processing'
+    PROCESSED = 'Processed'
+    TRANSIT = 'Transit'
+    SCRAPPED = 'Scrapped'
 
 
 class Entity(Base):
@@ -32,16 +42,12 @@ class Entity(Base):
         name: str,
         *,
         startingNode: Optional[Node] = None,
-        remainingProcessingTime: Optional[ProbDistribution] = None,
+        remainingProcessingTime: Optional[SimTime] = None,
     ) -> None:
         super().__init__(id, name)
         self.startingNode: Optional[Node] = startingNode
-        self.remainingProcessingTime: Optional[RandomNumberGenerator] = (
-            RandomNumberGenerator(distribution=remainingProcessingTime)
-            if remainingProcessingTime is not None
-            else None
-        )
-        self.status: str = 'Init'
+        self.processTime: Optional[SimTime] = remainingProcessingTime
+        self.status: EntityStatus = EntityStatus.INIT
 
     def initialize(self, env: Environment, line: Line, *, currentNode: Node) -> None:  # type: ignore
         """
@@ -59,14 +65,11 @@ class Entity(Base):
 
         if self.startingNode is not None:
             assert currentNode == self.startingNode, 'Must begin at Starting Node'
-            # can this ever fail? only if user changes libary
 
         self.currentNode = currentNode
 
         self.creationTime: SimTime = self.env.now
         self.startTime: SimTime = self.env.now
-
-        # TODO keep list of stations visited
 
     def updateStation(self, station: Node) -> None:
         """
@@ -75,16 +78,44 @@ class Entity(Base):
         :param station: New Station entered
         :type station: Node
         """
-        # self.remainingProcessingTime = None
         # for work in progress can be called before initialised
         # time = self.env.now if hasattr(self, 'env') else 0
         # self.printTrace(EnterEvent(time=time, caller=self, station=station))
         self.currentNode = station
-        # TODO add log of stations entered with times
-        self.status = 'Arrived'
+        self.status = EntityStatus.ARRIVED
 
-    def pause(self, remainingProcessing: SimTime) -> None:
-        self.remainingProcessingTime = RandomNumberGenerator(
-            distribution=FixedDistribution(mean=remainingProcessing)
-        )
-        self.status = 'Paused'
+        # print(f'{self.currentNode.name=} time = {self.processTime}')
+
+        if self.processTime is None:
+            self.processTime = self.currentNode.processingTime()
+
+    def startProcessing(self) -> None:
+        self.status = EntityStatus.PROCESSING
+        self.currentNode.stats.startingProcessing()
+        self.timeStarted = self.currentNode.env.now
+
+    def finishedProcessing(self) -> None:
+        self.status = EntityStatus.PROCESSED
+        self.processTime = None
+        self.currentNode.stats.finishedProcessing()
+
+        if not self.currentNode.pendingHandover.triggered:
+            self.currentNode.pendingHandover.succeed()
+
+    def pause(self, cause: Failure | ShiftChange) -> None:
+        self.status = EntityStatus.PAUSED
+        assert self.processTime is not None
+
+        timeSpent = self.env.now - self.timeStarted
+        print(f'{timeSpent=}, {self.processTime=}')
+
+        self.processTime -= timeSpent
+
+    def transit(self) -> None:
+        self.status = EntityStatus.TRANSIT
+
+    def isProcessed(self) -> bool:
+        return self.status == EntityStatus.PROCESSED
+
+    def processingTime(self) -> SimTime | None:
+        return self.processTime

@@ -19,15 +19,12 @@ from procsimpy import (
 print('Setting Work in Progress: One Part run till no more events')
 
 processingTime = FixedDistribution(mean=0.25)
-remainingTime = FixedDistribution(mean=0.1)
 
 queue = Queue('Q1', 'Queue', capacity=1)
 machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 part1 = Entity('P1', 'Part', startingNode=machine)
-part2 = Entity(
-    'P2', 'Part2', startingNode=machine, remainingProcessingTime=remainingTime
-)
+part2 = Entity('P2', 'Part2', startingNode=machine, remainingProcessingTime=0.1)
 
 queue.defineRouting(
     successorList=[machine],

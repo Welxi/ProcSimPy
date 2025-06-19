@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from procsimpy.Failure import Failure
 from procsimpy.ShiftChange import ShiftChange
@@ -9,35 +9,21 @@ from simpy import Interrupt
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from procsimpy.Node import Node
-    from simpy.core import SimTime
+    from procsimpy.Entity import Entity
 
 
-def ProcessEntity(node: Node) -> Generator:
-    timeStarted: Optional[SimTime] = None
-    processingTime = node.processingTime()
+def ProcessEntity(entity: Entity) -> Generator:
     try:
-        # Processing needs to be before get Request
-        # otherwise Entity is out of store while processing
+        processingTime = entity.processingTime()
+
+        entity.startProcessing()
 
         if processingTime is not None:
-            timeStarted = node.env.now
-            node.stats.startingProcessing()
-            yield node.env.timeout(processingTime)
-            node.stats.finishedProcessing()
+            yield entity.env.timeout(processingTime)
 
-        if not node.pendingHandover.triggered:
-            node.pendingHandover.succeed()
-
-        node.finishProcessing()
+        entity.finishedProcessing()
 
     except Interrupt as interrupt:
         cause = interrupt.cause
         assert isinstance(cause, (Failure, ShiftChange))
-
-        if processingTime is not None and timeStarted is not None:
-            timeSpent = node.env.now - timeStarted
-            print(f'{timeSpent=}, {processingTime=}')
-            timeRemaining = processingTime - timeSpent
-            entity = node.getActiveEntity()
-            entity.pause(timeRemaining)
+        entity.pause(cause=cause)
