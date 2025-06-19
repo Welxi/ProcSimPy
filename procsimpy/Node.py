@@ -86,19 +86,19 @@ class Node(Base):
 
         self.processEntity = processEntity
         self.processes = []
+        self.workQueue = []
 
         if processes is not None:
             for process in processes:
                 self.processes.append(self.env.process(process(self)))
-        # TODO recover these processes after Failure
 
         self.operation = Operation(self)
-        self.operation.initialize()
-        self.printTrace(InitEvent(time=self.env.now, caller=self))
+        self.operation.initialize(env=self.env, line=self.line)
 
         self.pendingHandover = self.env.event()
         self.env.process(Handover(self))
 
+        self.printTrace(InitEvent(time=self.env.now, caller=self))
         # TODO Check for Circular Routing
 
     def defineRouting(
@@ -141,10 +141,11 @@ class Node(Base):
         return putRequest
 
     def process(self, item: Entity) -> None:
-        # need this function as request callbacks need a return type of None
-        process = self.env.process(self.processEntity(item))
-        self.processes.append(process)
-        process.callbacks.append(lambda eventType: self.processes.remove(process))
+        if item.toBeProcessed():
+            # Check for WIP Operation and Put Request can double on processing events
+            process = self.env.process(self.processEntity(item))
+            self.workQueue.append(process)
+            process.callbacks.append(lambda eventType: self.workQueue.remove(process))
 
     def processingTime(self) -> SimTime | None:
         if self.processingTimeGenerator is not None:
@@ -189,7 +190,7 @@ class Node(Base):
 
     def routeEntity(self, targets: list[AvailabilityToken]) -> AvailabilityToken:
         """
-        Is call in Process Enitity to decide between availale targets for handover of entity.
+        Is call in Process Entity to decide between availale targets for handover of entity.
         First checking Line for User defined function
         Second checks if Priority is set on any node
         Defaults to longest waiting
@@ -219,22 +220,5 @@ class Node(Base):
             targets.sort(key=lambda t: t.node.stats.timeLastEntityExited)
             return targets[0]
 
-    def finishProcessing(self):
-        for item in self.store.items:
-            assert isinstance(item, Entity)
-            if not item.isProcessed():
-                item.processed()
-                return
-
-        raise ValueError('No Items to Process')
-
     def haveProcessedEntities(self) -> bool:
-        # print(self.name, [item.status for item in self.store.items])
-
         return any(item.isProcessed() for item in self.store.items)
-
-        # for item in self.store.items:
-        #     assert isinstance(item, Entity)
-        #     if item.isProcessed():
-        #         return True
-        # return False

@@ -12,24 +12,18 @@ from procsimpy import (
     Experiment,
     FixedDistribution,
     Line,
-    Queue,
     Server,
 )
 
-print('Setting Work in Progress: One Part run till no more events')
+print('Setting Work in Progress: One Part')
 
 processingTime = FixedDistribution(mean=0.25)
 
-queue = Queue('Q1', 'Queue', capacity=1)
 machine = Server('M1', 'Machine', processingTime=processingTime)
 exit = Exit('E', 'Exit')
 part = Entity('P1', 'Part', startingNode=machine)
 
-queue.defineRouting(
-    successorList=[machine],
-)
 machine.defineRouting(
-    predecessorList=[queue],
     successorList=[exit],
 )
 exit.defineRouting(predecessorList=[machine])
@@ -38,7 +32,7 @@ exit.defineRouting(predecessorList=[machine])
 def main(
     test: bool = False, maxSimTime: float = float('inf')
 ) -> dict[str, int | float] | None:
-    line = Line(nodeList=[queue, machine, exit], WIPList=[part])
+    line = Line(nodeList=[machine, exit], WIPList=[part])
 
     experiment = Experiment(line=line)
     results = experiment.run(maxSimTime=maxSimTime, test=test)
