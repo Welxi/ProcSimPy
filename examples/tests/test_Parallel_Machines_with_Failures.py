@@ -1,7 +1,3 @@
-import pytest
-
-
-@pytest.mark.skip('Target')
 def test_parallel_machines_1_with_Failures() -> None:
     from examples.ParallelMachinesWF import main
 
@@ -12,7 +8,6 @@ def test_parallel_machines_1_with_Failures() -> None:
     assert 26.90 < results['working_percent_M2'] < 26.91
 
 
-@pytest.mark.skip('Target')
 def test_parallel_machines_2_with_Failures() -> None:
     from examples.ParallelMachinesSelectM1WF import main
 
@@ -23,7 +18,6 @@ def test_parallel_machines_2_with_Failures() -> None:
     assert 3.81 < results['working_percent_M2'] < 3.82
 
 
-@pytest.mark.skip('Target')
 def test_parallel_machines_3_with_Failures() -> None:
     from examples.ParallelMachinesPriorityWF import main
 

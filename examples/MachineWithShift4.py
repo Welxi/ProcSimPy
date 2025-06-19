@@ -25,6 +25,7 @@ processingTime = FixedDistribution(mean=3)
 
 shift = ShiftBuilder(schedule=[(0, 5), (10, 15)])
 # TODO receiveBeforeEndThreshold=3
+# clear availability early
 
 
 source = Source('S', 'Source', arrivalTime=arrivalTime)
