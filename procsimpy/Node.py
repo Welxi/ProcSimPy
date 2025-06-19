@@ -82,7 +82,6 @@ class Node(Base):
         # in case of Source no previous is provided
         # could overload methods to not need availabilityStore
         self.availabilityStore = Store(env=self.env, capacity=self.maxTransactions)
-        self.fillAvailability()
 
         self.processEntity = processEntity
         self.processes = []

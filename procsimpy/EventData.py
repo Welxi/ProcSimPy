@@ -5,12 +5,12 @@ from dataclasses import dataclass, field
 from itertools import count
 from typing import TYPE_CHECKING
 
-from procsimpy.Failure import Failure
-
 if TYPE_CHECKING:
     from procsimpy.Base import Base
     from procsimpy.Entity import Entity
+    from procsimpy.Failure import Failure
     from procsimpy.Node import Node
+    from procsimpy.ShiftChange import ShiftChange
     from simpy.core import SimTime
 
 """The Events used here are for the purpose of logging
@@ -120,7 +120,7 @@ class InterruptEvent(EventData):
     A Nodes Work has been Interrupted
     """
 
-    cause: Failure
+    cause: Failure | ShiftChange
 
     def phrase(self) -> str:
         return f'{self.caller.name} interrupted by {self.cause.name}'

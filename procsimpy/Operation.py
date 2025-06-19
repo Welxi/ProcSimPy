@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from procsimpy.Entity import Entity
-from procsimpy.EventData import InterruptEvent
+from procsimpy.EventData import InterruptEndEvent, InterruptEvent
 from procsimpy.Failure import Failure
 from procsimpy.ShiftChange import ShiftChange
-from simpy import Environment, Event, Interrupt
+from simpy import Environment, Event, Interrupt, Process
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -27,13 +27,18 @@ class Operation:
         self.process = self.env.process(self.run())
 
     def run(self) -> Generator:
-        self.start()
         while True:
             try:
                 if self.node.shift is None:
+                    self.start()
                     yield self.process
                 else:
                     nextShiftStart, nextShiftEnd = self.node.shift.next(self.env.now)
+
+                    if nextShiftEnd < self.env.now:
+                        if not self.operating:
+                            self.stop(ShiftChange(cause='Shift End'))
+                        yield self.process
 
                     # print(f'{self.env.now} : {nextShiftStart=}, {nextShiftEnd=}')
 
@@ -44,17 +49,31 @@ class Operation:
                     else:
                         if not self.operating:
                             self.stop(ShiftChange(cause='Shift End'))
+
+                        if nextShiftStart < self.env.now:
+                            if not self.operating:
+                                self.stop(ShiftChange(cause='Shift End'))
+                            yield self.process
+
                         yield self.env.timeout(nextShiftStart - self.node.env.now)
                         self.start()
 
             except Interrupt as interrupt:
                 cause = interrupt.cause
                 assert isinstance(cause, Failure)
+
+                self.node.printTrace(
+                    InterruptEvent(time=self.env.now, caller=self.node, cause=cause)
+                )
+
                 self.stop(cause=cause)
 
                 with self.line.repairRequest(cause=cause) as repairRequest:
                     yield repairRequest
                     yield self.env.timeout(cause.TTR.generateNumber())
+                    self.node.printTrace(
+                        InterruptEndEvent(time=self.env.now, caller=self.node)
+                    )
                     self.onRepair.succeed()
                     self.start()
 
@@ -73,6 +92,7 @@ class Operation:
         self.operating = False
         self.node.clearAvailability()
         for process in self.node.workQueue:
+            assert isinstance(process, Process)
             process.interrupt(cause)
 
     def onOperating(self) -> Event:

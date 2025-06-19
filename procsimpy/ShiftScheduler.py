@@ -83,25 +83,21 @@ class ShiftSchedule(Shift):
         super().__init__()
 
         self.schedule: list[tuple[float, float]] = vaildateSchedule(schedule)
+        self.currentShift = self.schedule.pop(0)
         # ? What to do when schedule doesn't cover the whole MaxSimTime
 
     def isOnShift(self, time: float) -> bool:
-        return any(start < time < end for start, end in self.schedule)
+        startShift, endShift = self.currentShift
+        return startShift <= time < endShift
+        # return any(start <= time < end for start, end in self.schedule)
 
     def next(self, time: float) -> tuple[float, float]:
-        # TODO make so each call dose not need to loop through begining
-        # make sure when called at the end of a shift it returns the next one
-        # this will be the most common call
-        # TODO cache result
-        for idx, (_, end) in enumerate(self.schedule):
-            if time > end:
-                if self.schedule[idx] != self.schedule[-1]:
-                    return self.schedule[idx + 1]
-                else:
-                    raise AssertionError('Schedule does not cover maxSimTime')
+        _, endShift = self.currentShift
 
-        # mainly here to make linter happy
-        raise AssertionError('Schedule does not cover maxSimTime')
+        if time >= endShift and self.schedule:
+            self.currentShift = self.schedule.pop(0)
+
+        return self.currentShift
 
 
 def vaildateSchedule(schedule: list[tuple[float, float]]) -> list[tuple[float, float]]:

@@ -1,7 +1,3 @@
-import pytest
-
-
-@pytest.mark.skip('Not Implemented')
 def test_Series_Fixed_with_Failures() -> None:
     from examples.MachinesInSeriesFixedWF import main
 
@@ -13,10 +9,10 @@ def test_Series_Fixed_with_Failures() -> None:
     # TODO Stats for Repair Tech
 
 
-@pytest.mark.skip('No Test Data For')
-def test_Series_Stochastic_with_Failures() -> None:
-    from examples.MachinesInSeriesStochasticWF import main
+# @pytest.mark.skip('No Test Data For')
+# def test_Series_Stochastic_with_Failures() -> None:
+#     from examples.MachinesInSeriesStochasticWF import main
 
-    results = main(test=True, maxSimTime=1440)
+#     results = main(test=True, maxSimTime=1440)
 
-    assert results is not None
+#     assert results is not None

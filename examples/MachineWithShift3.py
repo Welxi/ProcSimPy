@@ -24,6 +24,7 @@ processingTime = FixedDistribution(mean=3)
 
 shift = ShiftBuilder(schedule=[(0, 5), (10, 15)])
 # TODO End Unfinished = True
+# dont interrupt processes but clear availability
 
 source = Source('S', 'Source', arrivalTime=arrivalTime)
 machine = Server('M1', 'Machine', processingTime=processingTime, shift=shift)

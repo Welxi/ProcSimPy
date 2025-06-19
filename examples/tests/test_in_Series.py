@@ -24,10 +24,10 @@ def test_Series_Fixed() -> None:
 
 
 # Is a long test should performance test with and without rng
-@pytest.mark.skip('No Test Data For')
-def test_Series_Stochastic() -> None:
-    from examples.MachinesInSeriesStochastic import main
+# @pytest.mark.skip('No Test Data For')
+# def test_Series_Stochastic() -> None:
+#     from examples.MachinesInSeriesStochastic import main
 
-    results = main(test=True, maxSimTime=1440)
+#     results = main(test=True, maxSimTime=1440)
 
-    assert results is not None
+#     assert results is not None

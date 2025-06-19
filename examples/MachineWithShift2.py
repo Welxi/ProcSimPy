@@ -4,8 +4,6 @@ import os
 import sys
 from pathlib import Path
 
-from procsimpy.ShiftScheduler import ShiftBuilder
-
 sys.path.append(os.path.join(Path(sys.path[0]).parent))
 
 from procsimpy import (
@@ -14,6 +12,7 @@ from procsimpy import (
     FixedDistribution,
     Line,
     Server,
+    ShiftBuilder,
     Source,
 )
 
