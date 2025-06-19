@@ -2,26 +2,28 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from procsimpy.Entity import Entity
 from procsimpy.EventData import InterruptEvent
 from procsimpy.Failure import Failure
 from procsimpy.ShiftChange import ShiftChange
-from simpy import Event, Interrupt
+from simpy import Environment, Event, Interrupt
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from procsimpy.Line import Line
     from procsimpy.Node import Node
 
 
 class Operation:
     def __init__(self, node: Node) -> None:
         self.node = node
-        self.env = node.env
-        self.line = node.line
         self.operating: bool = False
         self.waitingEvents: list[Event] = []
 
-    def initialize(self):
+    def initialize(self, env: Environment, line: Line) -> None:
+        self.env = env
+        self.line = line
         self.process = self.env.process(self.run())
 
     def run(self) -> Generator:
@@ -47,7 +49,7 @@ class Operation:
 
             except Interrupt as interrupt:
                 cause = interrupt.cause
-                # assert isinstance(cause, (Failure, ShiftChange))
+                assert isinstance(cause, Failure)
                 self.stop(cause=cause)
 
                 with self.line.repairRequest(cause=cause) as repairRequest:
@@ -62,15 +64,15 @@ class Operation:
     def start(self) -> None:
         self.operating = True
         self.node.fillAvailability()
-        # print(f'{self.node.processes=}')
-        # if self.node.store.items:
-        #     print(self.node.store.items)
-        #     self.node.process()
+        for item in self.node.store.items:
+            assert isinstance(item, Entity)
+            if item.toBeProcessed():
+                self.node.process(item=item)
 
     def stop(self, cause: Failure | ShiftChange) -> None:
         self.operating = False
         self.node.clearAvailability()
-        for process in self.node.processes:
+        for process in self.node.workQueue:
             process.interrupt(cause)
 
     def onOperating(self) -> Event:

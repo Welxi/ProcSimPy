@@ -84,15 +84,13 @@ class Entity(Base):
         self.currentNode = station
         self.status = EntityStatus.ARRIVED
 
-        # print(f'{self.currentNode.name=} time = {self.processTime}')
-
         if self.processTime is None:
             self.processTime = self.currentNode.processingTime()
 
     def startProcessing(self) -> None:
         self.status = EntityStatus.PROCESSING
         self.currentNode.stats.startingProcessing()
-        self.timeStarted = self.currentNode.env.now
+        self.timeStarted = self.env.now
 
     def finishedProcessing(self) -> None:
         self.status = EntityStatus.PROCESSED
@@ -105,17 +103,16 @@ class Entity(Base):
     def pause(self, cause: Failure | ShiftChange) -> None:
         self.status = EntityStatus.PAUSED
         assert self.processTime is not None
-
-        timeSpent = self.env.now - self.timeStarted
-        print(f'{timeSpent=}, {self.processTime=}')
-
-        self.processTime -= timeSpent
+        self.processTime -= self.env.now - self.timeStarted
 
     def transit(self) -> None:
         self.status = EntityStatus.TRANSIT
 
     def isProcessed(self) -> bool:
         return self.status == EntityStatus.PROCESSED
+
+    def toBeProcessed(self) -> bool:
+        return self.status in (EntityStatus.ARRIVED, EntityStatus.PAUSED)
 
     def processingTime(self) -> SimTime | None:
         return self.processTime
