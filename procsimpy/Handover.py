@@ -14,14 +14,15 @@ if TYPE_CHECKING:
 def Handover(node: Node) -> Generator:
     while True:
         # Check if entities are ready
-        if True:
+        if not node.haveProcessedEntities():
+            # print('Waiting')
             yield node.pendingHandover
             node.pendingHandover = node.env.event()
 
         entity = yield node.get()
         assert entity is not None
         assert isinstance(entity, Entity)
-        entity.status = 'Transit'
+        entity.transit()
 
         transactions = [successor.getToken() for successor in node.next]
 

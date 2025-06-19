@@ -107,6 +107,10 @@ class Line:
         for repair in self.RepairTechList:
             repair.initialize(env=self.env, line=self)
 
+        for entity in self.WIPList:
+            assert entity.startingNode is not None
+            entity.initialize(env=self.env, line=self, currentNode=entity.startingNode)
+
         self.setWorkInProgress()
 
     def setWorkInProgress(self) -> None:

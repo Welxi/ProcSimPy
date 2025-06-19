@@ -57,7 +57,7 @@ class Node(Base):
         env: Environment,
         line: Line,
         *,
-        processEntity: Callable[[Node], Generator] = ProcessEntity,
+        processEntity: Callable[[Entity], Generator] = ProcessEntity,
         processes: Optional[list[Callable[[Node], Generator]]] = None,
     ) -> None:
         """
@@ -90,6 +90,7 @@ class Node(Base):
         if processes is not None:
             for process in processes:
                 self.processes.append(self.env.process(process(self)))
+        # TODO recover these processes after Failure
 
         self.operation = Operation(self)
         self.operation.initialize()
@@ -133,23 +134,19 @@ class Node(Base):
         self.stats.receivedEntity(entity=item)
 
         item.updateStation(station=self)
-        self.stats.receivedEntity(entity=item)
 
         putRequest = self.store.put(item)
-        putRequest.callbacks.append(lambda eventType: self.process())
+        putRequest.callbacks.append(lambda eventType: self.process(item))
         # can move to process for operation that triggers, process entity
         return putRequest
 
-    def process(self) -> None:
+    def process(self, item: Entity) -> None:
         # need this function as request callbacks need a return type of None
-        process = self.env.process(self.processEntity(self))
+        process = self.env.process(self.processEntity(item))
         self.processes.append(process)
         process.callbacks.append(lambda eventType: self.processes.remove(process))
 
     def processingTime(self) -> SimTime | None:
-        activeEntity = self.getActiveEntity()
-        if activeEntity.remainingProcessingTime is not None:
-            return activeEntity.remainingProcessingTime.generateNumber()
         if self.processingTimeGenerator is not None:
             return self.processingTimeGenerator.generateNumber()
         return None
@@ -225,6 +222,19 @@ class Node(Base):
     def finishProcessing(self):
         for item in self.store.items:
             assert isinstance(item, Entity)
-            if item.status != 'Processed':
-                item.status = 'Processed'
+            if not item.isProcessed():
+                item.processed()
                 return
+
+        raise ValueError('No Items to Process')
+
+    def haveProcessedEntities(self) -> bool:
+        # print(self.name, [item.status for item in self.store.items])
+
+        return any(item.isProcessed() for item in self.store.items)
+
+        # for item in self.store.items:
+        #     assert isinstance(item, Entity)
+        #     if item.isProcessed():
+        #         return True
+        # return False

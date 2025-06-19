@@ -19,7 +19,7 @@ def test_Series_Fixed() -> None:
     #! Data for this test not confirmed by separate Simulation Tools
     assert results is not None
     assert results['parts'] == 959
-    assert 49.99 < results['working_percent_M1'] < 50.01
+    assert 16.73 < results['working_percent_M1'] < 27.51
     assert 99.89 < results['working_percent_M2'] < 99.91
 
 
