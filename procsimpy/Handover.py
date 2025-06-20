@@ -13,16 +13,14 @@ if TYPE_CHECKING:
 
 def Handover(node: Node) -> Generator:
     while True:
+        if not node.operation.isOperating():
+            onOperating = node.operation.onOperating()
+            yield onOperating
         # Check if entities are ready
         if not node.haveProcessedEntities():
             # print('Waiting')
             yield node.pendingHandover
             node.pendingHandover = node.env.event()
-
-        entity = yield node.get()
-        assert entity is not None
-        assert isinstance(entity, Entity)
-        entity.transit()
 
         transactions = [successor.getToken() for successor in node.next]
 
@@ -53,6 +51,11 @@ def Handover(node: Node) -> Generator:
                 # replenish token if unused
                 assert isinstance(target, AvailabilityToken)
                 target.node.availabilityStore.put(target)
+
+        entity = yield node.get()
+        assert entity is not None
+        assert isinstance(entity, Entity)
+        entity.transit()
 
         with token.node.put(entity) as handoff:
             # ? could do some time checking to make sure there is no waiting at this point
