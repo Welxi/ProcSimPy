@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from procsimpy.AvailabilityToken import AvailabilityToken
 from procsimpy.Base import Base
-from procsimpy.Entity import Entity
 from procsimpy.EventData import GiveEvent, InitEvent, ReceiveEvent
 from procsimpy.Handover import Handover
 from procsimpy.Operation import Operation
@@ -18,6 +17,7 @@ from simpy.resources.store import StoreGet, StorePut
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from procsimpy.Entity import Entity
     from procsimpy.Line import Line
     from procsimpy.ProbDistribution import ProbDistribution
     from procsimpy.ShiftScheduler import Shift

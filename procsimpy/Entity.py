@@ -104,7 +104,7 @@ class Entity(Base):
         self.status = EntityStatus.PAUSED
         assert self.processTime is not None
         self.processTime -= self.env.now - self.timeStarted
-        self.currentNode.stats.finishedProcessing()
+        self.currentNode.stats.finishedProcessing(isPause=True)
 
     def transit(self) -> None:
         self.status = EntityStatus.TRANSIT

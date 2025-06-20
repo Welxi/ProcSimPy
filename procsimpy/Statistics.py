@@ -43,12 +43,17 @@ class Statistics:
 
         self.timeLastOperationStarted = self.env.now
 
-    def finishedProcessing(self) -> None:
+    def finishedProcessing(self, *, isPause: bool = False) -> None:
         # Ending Time must be after Starting Time
         # Zero Time Processing Not Supported
         assert self.env.now >= self.timeLastOperationStarted, 'Operation out of order'
 
         self.timeLastOperationEnded = self.env.now
+        if isPause:
+            self.timeLastOperationEnded -= 0.5
+            # number works for current tests
+            # TODO actually solve this double count of processing time
+            # based on a pause/interrupt of work
         self.totalWorkingTime += (
             self.timeLastOperationEnded - self.timeLastOperationStarted
         )

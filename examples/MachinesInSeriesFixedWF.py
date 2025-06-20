@@ -74,7 +74,7 @@ def main(test: bool = False, maxSimTime: float = 100) -> dict[str, int | float] 
     print(f'the system produced {results["partsCreated"]} parts')
 
     print(
-        f'Blocking Percetn of {first_machine.name} is {first_machine.stats.blockageRatio:.2%}'
+        f'Blocking Percent of {first_machine.name} is {first_machine.stats.blockageRatio:.2%}'
     )
 
     return None

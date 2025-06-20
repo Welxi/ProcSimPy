@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from procsimpy.Entity import Entity
     from procsimpy.Failure import Failure
     from procsimpy.Node import Node
-    from procsimpy.ShiftChange import ShiftChange
     from simpy.core import SimTime
 
 """The Events used here are for the purpose of logging
@@ -120,7 +119,7 @@ class InterruptEvent(EventData):
     A Nodes Work has been Interrupted
     """
 
-    cause: Failure | ShiftChange
+    cause: Failure
 
     def phrase(self) -> str:
         return f'{self.caller.name} interrupted by {self.cause.name}'
@@ -133,8 +132,10 @@ class InterruptEndEvent(EventData):
     A Nodes Interruption has been resolved
     """
 
+    cause: Failure
+
     def phrase(self) -> str:
-        return f'{self.caller.name} interruption ended on {self.caller.name}'
+        return f'{self.cause.name} interruption ended on {self.caller.name}'
 
 
 # This might not be nessary for work to begin but would be useful for logging
@@ -146,6 +147,26 @@ class WIPEvent(EventData):
 
     def phrase(self) -> str:
         return f'{self.caller.name} has Work in Progress'
+
+
+@dataclass(frozen=True, kw_only=True)
+class ShiftStartEvent(EventData):
+    """
+    A node has begun a shift
+    """
+
+    def phrase(self) -> str:
+        return f'{self.caller.name} has started a Shift'
+
+
+@dataclass(frozen=True, kw_only=True)
+class ShiftEndEvent(EventData):
+    """
+    A node has ended a shift
+    """
+
+    def phrase(self) -> str:
+        return f'{self.caller.name} has ended a Shift'
 
 
 # Possible Future Events
