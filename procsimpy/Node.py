@@ -214,10 +214,9 @@ class Node(Base):
             )
             return targets[0]
 
-        else:
-            # Defaults to node longest waiting
-            targets.sort(key=lambda t: t.node.stats.timeLastEntityExited)
-            return targets[0]
+        # Defaults to node longest waiting
+        targets.sort(key=lambda t: t.node.stats.timeLastEntityExited)
+        return targets[0]
 
     def haveProcessedEntities(self) -> bool:
         return any(item.isProcessed() for item in self.store.items)

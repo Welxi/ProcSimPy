@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from procsimpy.EventData import EventData
 
+# TODO format spaceing based on maxSimTime
+
 
 # If this remains this small just move to Base
 # May be changeing to using logger instead of printing
