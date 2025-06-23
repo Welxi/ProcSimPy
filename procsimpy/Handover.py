@@ -52,6 +52,10 @@ def Handover(node: Node) -> Generator:
                 assert isinstance(target, AvailabilityToken)
                 target.node.availabilityStore.put(target)
 
+        if not node.operation.isOperating():
+            onOperating = node.operation.onOperating()
+            yield onOperating
+
         entity = yield node.get()
         assert entity is not None
         assert isinstance(entity, Entity)

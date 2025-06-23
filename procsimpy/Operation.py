@@ -79,6 +79,7 @@ class Operation:
                 self.node.printTrace(
                     InterruptEvent(time=self.env.now, caller=self.node, cause=cause)
                 )
+                self.node.stats.failed()
 
                 self.stop(cause=cause)
 
@@ -90,6 +91,7 @@ class Operation:
                             time=self.env.now, caller=self.node, cause=cause
                         )
                     )
+                    self.node.stats.repaired()
                     self.onRepair.succeed()
                     self.start()
 
