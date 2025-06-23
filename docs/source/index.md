@@ -1,6 +1,7 @@
 ```{toctree}
 :hidden:
 Home <self>
+Reference/Nodes/Node.md
 guides/new_to_simulation.md
 guides/setting_up_your_experiment.md
 apidocs/index.rst
