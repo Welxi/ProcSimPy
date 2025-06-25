@@ -2,6 +2,14 @@
 :hidden:
 Home <self>
 Reference/Nodes/Node.md
+Reference/Nodes/Exit.md
+Reference/Nodes/Queue.md
+Reference/Nodes/Server.md
+Reference/Nodes/Source.md
+Reference/Entity.md
+Reference/Experiment.md
+Reference/Line.md
+Reference/Probability.md
 guides/new_to_simulation.md
 guides/setting_up_your_experiment.md
 apidocs/index.rst
