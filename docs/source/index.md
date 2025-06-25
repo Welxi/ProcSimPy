@@ -12,6 +12,7 @@ Reference/Line.md
 Reference/Probability.md
 guides/new_to_simulation.md
 guides/setting_up_your_experiment.md
+guides/installation.md
 apidocs/index.rst
 about/acknowledgements.md
 about/defense_of_design.md
