@@ -4,7 +4,7 @@ Currently in Alpha, you must clone and install dependencies (in project.toml) fr
 
 1. Clone the Project:
 	- get command from green Code button above repository
-	- or `git clone https://github.com/Welxi/HePYaestus.git`
+	- or `git clone https://github.com/Welxi/ProcSimPy/`
 
 2. Move to Folder Created
 
