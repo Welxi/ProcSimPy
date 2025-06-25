@@ -118,6 +118,7 @@ class Line:
             assert entity.startingNode is not None, (
                 'Entity created for Work in Progress must have startingNode'
             )
+            # TODO check entity.startingNode for capacity and 
             entity.startingNode.put(entity)
 
     def turnTraceingOff(self) -> None:

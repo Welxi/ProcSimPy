@@ -8,3 +8,5 @@ this is in control of the world state and is modules learn about the world in wh
 when and object needs a resource and does not have a linked router or similar it requests one from the line
 
 this is one way to set experiment default or standard operating procedures.
+
+Line is responsible for the setup of nodes at the beginning of each experiment 

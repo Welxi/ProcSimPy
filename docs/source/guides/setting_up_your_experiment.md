@@ -3,7 +3,7 @@ To create a model you will need two aspects of this project,
 - the Orchestration Objects
 - the Nodes to describe the model desired
 
-Knowledge of both of these aspects will be require to create a valid model and experiment. A set of examples have been provided [[here]] 
+Knowledge of both of these aspects will be required to create a valid model and experiment. A set of examples have been provided {{here}} 
 ## Orchestration Objects
 #### Experiment
 Controlling running iterations of the experiment and handles collecting and handling of results output and post processing

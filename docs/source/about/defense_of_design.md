@@ -1,5 +1,3 @@
-
-
 In many cases when setting up ProcSimPy objects accessing prebuilt functionality is done in the constructor method. the preferred method is to use the enums provided, this allows for greater static analysis done by your editor and ensuring the requested functionality is supported. If there is missing functionality please open an Issue on the GitHub Page
 
 

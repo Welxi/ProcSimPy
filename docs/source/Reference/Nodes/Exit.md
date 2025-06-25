@@ -1,7 +1,5 @@
-###### Exit
-Goal: Abstract Finishing point of Process
-
-This node represents the conclusion of the process, entities that have arrive here are considered to be finished good or achieved the goal of the process
+# Exit
+This node represents the conclusion of the process, entities that have arrive here are considered to be finished goods or have had service provided
 
 Exit modifies Node with the goal of always having availability. 
 the capacity of the internal SimPy Store is set to Infinity.

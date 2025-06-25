@@ -22,6 +22,8 @@ class EntityStatus(Enum):
     PROCESSED = 'Processed'
     TRANSIT = 'Transit'
     SCRAPPED = 'Scrapped'
+    # TODO make one for when it is sitting in Source
+    # TODO make one for when it has reached Exit
 
 
 class Entity(Base):

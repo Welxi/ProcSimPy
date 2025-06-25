@@ -9,8 +9,8 @@ Exponential
 Gamma
 Logistic
 Erlang
-~~Geometric (Requires NumPY)~~
 Lognormal
 Weibull
-~~Cauchy (Requires NumPY)~~
 Triangular
+
+ Many common Probability Distributions are provided by this library but it can be extended if they do not meet your needs. A specific Step functions modelling your component of interested would be one example that could be extended, or a sampling of already collected data.
