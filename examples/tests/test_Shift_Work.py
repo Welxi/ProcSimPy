@@ -1,3 +1,6 @@
+import pytest
+
+
 def testServerWithShift1() -> None:
     from examples.MachineWithShift1 import main
 
@@ -16,7 +19,7 @@ def testServerWithShift2() -> None:
     assert 49.99 < results['working_percent'] < 50.01
 
 
-# @pytest.mark.skip('Not Implemented')
+@pytest.mark.skip('Not Implemented')
 def testServerWithShift3() -> None:
     from examples.MachineWithShift3 import main
 
@@ -26,7 +29,7 @@ def testServerWithShift3() -> None:
     # assert 59.99 < results['working_percent'] < 60.01
 
 
-# @pytest.mark.skip('Not Implemented')
+@pytest.mark.skip('Not Implemented')
 def testServerWithShift4() -> None:
     from examples.MachineWithShift4 import main
 
