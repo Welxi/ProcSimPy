@@ -39,6 +39,8 @@ it is not interrupted by the Operation Process as to not recreated requests, but
 - before requesting availability
 - before removing entity from store
 
+Pre-empting is not currently supported 
+
 
 
 

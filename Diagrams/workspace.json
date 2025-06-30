@@ -3,10 +3,11 @@
   "description" : "Description",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2025-04-07T15:14:35Z",
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2025-06-30T14:25:20Z",
   "model" : {
     "people" : [ {
-      "id" : "107",
+      "id" : "53",
       "location" : "Unspecified",
       "name" : "User",
       "properties" : {
@@ -14,26 +15,14 @@
       },
       "relationships" : [ {
         "description" : "Uses",
-        "destinationId" : "101",
-        "id" : "116",
-        "sourceId" : "107",
-        "tags" : "Relationship"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "58",
-        "id" : "117",
-        "linkedRelationshipId" : "116",
-        "sourceId" : "107"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "100",
-        "id" : "118",
-        "sourceId" : "107",
+        "destinationId" : "56",
+        "id" : "60",
+        "sourceId" : "53",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Person"
     }, {
-      "id" : "108",
+      "id" : "54",
       "location" : "Unspecified",
       "name" : "Super User",
       "properties" : {
@@ -41,38 +30,26 @@
       },
       "relationships" : [ {
         "description" : "Creates",
-        "destinationId" : "110",
-        "id" : "119",
-        "sourceId" : "108",
+        "destinationId" : "56",
+        "id" : "61",
+        "sourceId" : "54",
         "tags" : "Relationship"
       }, {
         "description" : "Extends",
         "destinationId" : "2",
-        "id" : "120",
-        "sourceId" : "108",
+        "id" : "62",
+        "sourceId" : "54",
         "tags" : "Relationship"
       }, {
         "description" : "Extends",
         "destinationId" : "1",
-        "id" : "121",
-        "linkedRelationshipId" : "120",
-        "sourceId" : "108"
-      }, {
-        "description" : "Extends",
-        "destinationId" : "59",
-        "id" : "122",
-        "sourceId" : "108",
-        "tags" : "Relationship"
-      }, {
-        "description" : "Extends",
-        "destinationId" : "58",
-        "id" : "123",
-        "linkedRelationshipId" : "122",
-        "sourceId" : "108"
+        "id" : "63",
+        "linkedRelationshipId" : "62",
+        "sourceId" : "54"
       } ],
       "tags" : "Element,Person"
     }, {
-      "id" : "109",
+      "id" : "55",
       "location" : "Unspecified",
       "name" : "Developer",
       "properties" : {
@@ -81,159 +58,141 @@
       "relationships" : [ {
         "description" : "Creates",
         "destinationId" : "2",
-        "id" : "124",
-        "sourceId" : "109",
+        "id" : "64",
+        "sourceId" : "55",
         "tags" : "Relationship"
       }, {
         "description" : "Creates",
         "destinationId" : "1",
-        "id" : "125",
-        "linkedRelationshipId" : "124",
-        "sourceId" : "109"
-      }, {
-        "description" : "Creates",
-        "destinationId" : "59",
-        "id" : "126",
-        "sourceId" : "109",
-        "tags" : "Relationship"
-      }, {
-        "description" : "Creates",
-        "destinationId" : "58",
-        "id" : "127",
-        "linkedRelationshipId" : "126",
-        "sourceId" : "109"
+        "id" : "65",
+        "linkedRelationshipId" : "64",
+        "sourceId" : "55"
       } ],
       "tags" : "Element,Person"
     } ],
     "softwareSystems" : [ {
       "containers" : [ {
         "components" : [ {
-          "description" : "Ensures unique id and output Tracing",
+          "description" : "Cordinator for running experiment iteration and output of data",
           "documentation" : { },
           "id" : "3",
-          "name" : "BaseObject",
+          "name" : "Experiment",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.base"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.experiment"
           },
+          "relationships" : [ {
+            "description" : "Creates a line to run experiment",
+            "destinationId" : "4",
+            "id" : "18",
+            "sourceId" : "3",
+            "tags" : "Relationship"
+          } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Node in the Process of consideration",
+          "description" : "State tracker and Broker between Nodes",
           "documentation" : { },
           "id" : "4",
-          "name" : "StoreNode",
+          "name" : "Line",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.store"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.line"
           },
           "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "3",
-            "id" : "29",
+            "description" : "Manages",
+            "destinationId" : "8",
+            "id" : "19",
             "sourceId" : "4",
             "tags" : "Relationship"
           }, {
-            "description" : "Depends",
-            "destinationId" : "45",
-            "id" : "48",
+            "description" : "Manages",
+            "destinationId" : "9",
+            "id" : "20",
             "sourceId" : "4",
             "tags" : "Relationship"
           }, {
-            "description" : "Depends",
-            "destinationId" : "44",
-            "id" : "49",
-            "linkedRelationshipId" : "48",
-            "sourceId" : "4"
+            "description" : "Manages",
+            "destinationId" : "10",
+            "id" : "21",
+            "sourceId" : "4",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Manages",
+            "destinationId" : "11",
+            "id" : "22",
+            "sourceId" : "4",
+            "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "A Limitied Resource a StoreNode may need to preform its step",
+          "description" : "Ensures unique id, connection to SimPy Environment and output tracing",
           "documentation" : { },
           "id" : "5",
-          "name" : "ResourceObject",
+          "name" : "Base",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.res"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.base"
           },
-          "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "3",
-            "id" : "30",
-            "sourceId" : "5",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Depends",
-            "destinationId" : "46",
-            "id" : "52",
-            "sourceId" : "5",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Depends",
-            "destinationId" : "44",
-            "id" : "53",
-            "linkedRelationshipId" : "52",
-            "sourceId" : "5"
-          } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Generic for the item the Process is being preform on, Manufactured Part or Customer engaging is service",
+          "description" : "Generic for the item the Process is being preformed on, Manufactured Part or Customer engaging is service",
           "documentation" : { },
           "id" : "6",
           "name" : "Entity",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.entity"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.entity"
           },
           "relationships" : [ {
             "description" : "Inherits",
-            "destinationId" : "3",
-            "id" : "28",
+            "destinationId" : "5",
+            "id" : "23",
             "sourceId" : "6",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Abstract for the end of the Process",
+          "description" : "Generic Node for a Step in a Process",
           "documentation" : { },
           "id" : "7",
-          "name" : "Exit",
+          "name" : "Node",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.exit"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.node"
           },
           "relationships" : [ {
-            "description" : "Is a Node",
-            "destinationId" : "4",
-            "id" : "31",
+            "description" : "Inherits",
+            "destinationId" : "5",
+            "id" : "24",
             "sourceId" : "7",
             "tags" : "Relationship"
           }, {
-            "description" : "Consumes",
-            "destinationId" : "6",
-            "id" : "40",
+            "description" : "Depends",
+            "destinationId" : "43",
+            "id" : "46",
             "sourceId" : "7",
             "tags" : "Relationship"
+          }, {
+            "description" : "Depends",
+            "destinationId" : "42",
+            "id" : "47",
+            "linkedRelationshipId" : "46",
+            "sourceId" : "7"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Node that requires time to complete its process",
+          "description" : "Abstract for the beginning of the Process, Customer initial engagement or warehouse of stock",
           "documentation" : { },
           "id" : "8",
-          "name" : "Machine",
+          "name" : "Source",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.machine"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.source"
           },
           "relationships" : [ {
             "description" : "Is a Node",
-            "destinationId" : "4",
-            "id" : "32",
+            "destinationId" : "7",
+            "id" : "29",
             "sourceId" : "8",
             "tags" : "Relationship"
           }, {
             "description" : "Consumes",
             "destinationId" : "6",
-            "id" : "41",
-            "sourceId" : "8",
-            "tags" : "Relationship"
-          }, {
-            "description" : "has Successor",
-            "destinationId" : "7",
-            "id" : "57",
+            "id" : "33",
             "sourceId" : "8",
             "tags" : "Relationship"
           } ],
@@ -244,212 +203,187 @@
           "id" : "9",
           "name" : "Queue",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.queue"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.queue"
           },
           "relationships" : [ {
             "description" : "Is a Node",
-            "destinationId" : "4",
-            "id" : "33",
+            "destinationId" : "7",
+            "id" : "28",
             "sourceId" : "9",
             "tags" : "Relationship"
           }, {
             "description" : "Consumes",
             "destinationId" : "6",
-            "id" : "42",
+            "id" : "32",
             "sourceId" : "9",
             "tags" : "Relationship"
           }, {
-            "description" : "has Successor",
-            "destinationId" : "8",
-            "id" : "56",
+            "description" : "Has Successor",
+            "destinationId" : "10",
+            "id" : "41",
             "sourceId" : "9",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Abstract for the begining of the Process, Customer initial engagement or warehouse of stock",
+          "description" : "Node that requires time to complete its work",
           "documentation" : { },
           "id" : "10",
-          "name" : "Source",
+          "name" : "Server",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.source"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.server"
           },
           "relationships" : [ {
             "description" : "Is a Node",
-            "destinationId" : "4",
-            "id" : "34",
+            "destinationId" : "7",
+            "id" : "27",
             "sourceId" : "10",
             "tags" : "Relationship"
           }, {
             "description" : "Consumes",
             "destinationId" : "6",
-            "id" : "43",
-            "sourceId" : "10",
-            "tags" : "Relationship"
-          }, {
-            "description" : "has Successor",
-            "destinationId" : "9",
-            "id" : "55",
+            "id" : "31",
             "sourceId" : "10",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "Cordinator for running experiment iteration and output of data",
+          "description" : "Abstract for the end of the Process",
           "documentation" : { },
           "id" : "11",
-          "name" : "Experiment",
+          "name" : "Exit",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.experiment"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.exit"
           },
           "relationships" : [ {
-            "description" : "Creates a line to run experiment",
-            "destinationId" : "12",
-            "id" : "35",
+            "description" : "Is a Node",
+            "destinationId" : "7",
+            "id" : "26",
+            "sourceId" : "11",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Consumes",
+            "destinationId" : "6",
+            "id" : "30",
             "sourceId" : "11",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
-          "description" : "State tracker and Broker between nodes",
+          "description" : "A Limiting Factor for the process, eg Number of Repair Technicians",
           "documentation" : { },
           "id" : "12",
-          "name" : "Line",
+          "name" : "Resource",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.line"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.res"
           },
           "relationships" : [ {
-            "description" : "Manages",
-            "destinationId" : "10",
-            "id" : "36",
-            "sourceId" : "12",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Manages",
-            "destinationId" : "9",
-            "id" : "37",
-            "sourceId" : "12",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Manages",
-            "destinationId" : "8",
-            "id" : "38",
-            "sourceId" : "12",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Manages",
-            "destinationId" : "7",
-            "id" : "39",
-            "sourceId" : "12",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "description" : "Personnel Resource Required for task",
-          "documentation" : { },
-          "id" : "13",
-          "name" : "Operator",
-          "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.operator"
-          },
-          "relationships" : [ {
-            "description" : "Is a Resource",
+            "description" : "Inherits",
             "destinationId" : "5",
-            "id" : "20",
-            "sourceId" : "13",
+            "id" : "25",
+            "sourceId" : "12",
             "tags" : "Relationship"
           }, {
-            "description" : "Can be required by",
-            "destinationId" : "4",
-            "id" : "22",
-            "sourceId" : "13",
+            "description" : "Depends",
+            "destinationId" : "44",
+            "id" : "50",
+            "sourceId" : "12",
             "tags" : "Relationship"
+          }, {
+            "description" : "Depends",
+            "destinationId" : "42",
+            "id" : "51",
+            "linkedRelationshipId" : "50",
+            "sourceId" : "12"
           } ],
           "tags" : "Element,Component"
         }, {
           "description" : "Personnel Resource With ability to repair failures",
           "documentation" : { },
-          "id" : "14",
+          "id" : "13",
           "name" : "Repair Technician",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.repair"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.repair"
           },
           "relationships" : [ {
+            "description" : "Repairs Failure",
+            "destinationId" : "7",
+            "id" : "34",
+            "sourceId" : "13",
+            "tags" : "Relationship"
+          }, {
             "description" : "Is a Resource",
-            "destinationId" : "5",
-            "id" : "21",
-            "sourceId" : "14",
+            "destinationId" : "12",
+            "id" : "36",
+            "sourceId" : "13",
             "tags" : "Relationship"
           }, {
             "description" : "Able to correct cause of failure",
-            "destinationId" : "16",
-            "id" : "26",
-            "sourceId" : "14",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Repairs Failure",
-            "destinationId" : "4",
-            "id" : "27",
-            "sourceId" : "14",
+            "destinationId" : "15",
+            "id" : "39",
+            "sourceId" : "13",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
           "description" : "Non Ideal situation to deal with",
           "documentation" : { },
-          "id" : "15",
+          "id" : "14",
           "name" : "Interruption",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.interruption"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.interruption"
           },
-          "relationships" : [ {
-            "description" : "Non Ideal situation to deal with",
-            "destinationId" : "4",
-            "id" : "23",
-            "sourceId" : "15",
-            "tags" : "Relationship"
-          } ],
           "tags" : "Element,Component"
         }, {
           "description" : "Interruption to stop Node until repair",
           "documentation" : { },
-          "id" : "16",
+          "id" : "15",
           "name" : "Node Failure",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.failure"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.failure"
           },
           "relationships" : [ {
-            "description" : "Interruption to stop Node until repair",
-            "destinationId" : "15",
-            "id" : "24",
-            "sourceId" : "16",
+            "description" : "Interruption until repair",
+            "destinationId" : "14",
+            "id" : "37",
+            "sourceId" : "15",
             "tags" : "Relationship"
           }, {
             "description" : "Stops Process until repaired",
-            "destinationId" : "4",
-            "id" : "25",
-            "sourceId" : "16",
+            "destinationId" : "7",
+            "id" : "38",
+            "sourceId" : "15",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component"
         }, {
           "description" : "Controls timing for Shifts and breaks",
           "documentation" : { },
-          "id" : "17",
+          "id" : "16",
           "name" : "Shift Scheduler",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.procsimpy.shift"
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.shift"
           },
           "relationships" : [ {
             "description" : "Influences operating times",
-            "destinationId" : "4",
-            "id" : "18",
-            "sourceId" : "17",
+            "destinationId" : "7",
+            "id" : "35",
+            "sourceId" : "16",
             "tags" : "Relationship"
-          }, {
-            "description" : "Influences operating times",
-            "destinationId" : "5",
-            "id" : "19",
+          } ],
+          "tags" : "Element,Component"
+        }, {
+          "description" : "Records stats for model component",
+          "documentation" : { },
+          "id" : "17",
+          "name" : "Statistics",
+          "properties" : {
+            "structurizr.dsl.identifier" : "processsimpy.procsimpy.stats"
+          },
+          "relationships" : [ {
+            "description" : "Records stats",
+            "destinationId" : "7",
+            "id" : "40",
             "sourceId" : "17",
             "tags" : "Relationship"
           } ],
@@ -459,59 +393,59 @@
         "id" : "2",
         "name" : "ProcSimPy",
         "properties" : {
-          "structurizr.dsl.identifier" : "process.procsimpy"
+          "structurizr.dsl.identifier" : "processsimpy.procsimpy"
         },
         "relationships" : [ {
           "description" : "Depends",
-          "destinationId" : "45",
-          "id" : "50",
-          "linkedRelationshipId" : "48",
+          "destinationId" : "43",
+          "id" : "48",
+          "linkedRelationshipId" : "46",
+          "sourceId" : "2"
+        }, {
+          "description" : "Depends",
+          "destinationId" : "42",
+          "id" : "49",
+          "linkedRelationshipId" : "46",
           "sourceId" : "2"
         }, {
           "description" : "Depends",
           "destinationId" : "44",
-          "id" : "51",
-          "linkedRelationshipId" : "48",
-          "sourceId" : "2"
-        }, {
-          "description" : "Depends",
-          "destinationId" : "46",
-          "id" : "54",
-          "linkedRelationshipId" : "52",
+          "id" : "52",
+          "linkedRelationshipId" : "50",
           "sourceId" : "2"
         } ],
         "tags" : "Element,Container"
       }, {
         "components" : [ {
           "documentation" : { },
-          "id" : "45",
+          "id" : "43",
           "name" : "Store",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.simpyv4.store"
+            "structurizr.dsl.identifier" : "processsimpy.simpyv4.store"
           },
           "tags" : "Element,Component"
         }, {
           "documentation" : { },
-          "id" : "46",
+          "id" : "44",
           "name" : "Resource",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.simpyv4.res"
+            "structurizr.dsl.identifier" : "processsimpy.simpyv4.res"
           },
           "tags" : "Element,Component"
         }, {
           "documentation" : { },
-          "id" : "47",
+          "id" : "45",
           "name" : "Environment",
           "properties" : {
-            "structurizr.dsl.identifier" : "process.simpyv4.env"
+            "structurizr.dsl.identifier" : "processsimpy.simpyv4.env"
           },
           "tags" : "Element,Component"
         } ],
         "documentation" : { },
-        "id" : "44",
+        "id" : "42",
         "name" : "SimPy Version 4",
         "properties" : {
-          "structurizr.dsl.identifier" : "process.simpyv4"
+          "structurizr.dsl.identifier" : "processsimpy.simpyv4"
         },
         "tags" : "Element,Container"
       } ],
@@ -520,370 +454,12 @@
       "location" : "Unspecified",
       "name" : "Process SimPy",
       "properties" : {
-        "structurizr.dsl.identifier" : "process"
-      },
-      "tags" : "Element,Software System"
-    }, {
-      "containers" : [ {
-        "components" : [ {
-          "documentation" : { },
-          "id" : "60",
-          "name" : "CoreObject",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.core"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "75",
-            "sourceId" : "60",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "65",
-            "id" : "84",
-            "sourceId" : "60",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "61",
-          "name" : "Entity",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.entity"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "76",
-            "sourceId" : "61",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "65",
-            "id" : "85",
-            "sourceId" : "61",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "62",
-          "name" : "Exit",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.exit"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "77",
-            "sourceId" : "62",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "60",
-            "id" : "92",
-            "sourceId" : "62",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "63",
-          "name" : "Global 'G'",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.globals"
-          },
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "64",
-          "name" : "Machine",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.machine"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "78",
-            "sourceId" : "64",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "60",
-            "id" : "93",
-            "sourceId" : "64",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "65",
-          "name" : "ManPyObject",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.manpyobject"
-          },
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "66",
-          "name" : "ObjectInteruption",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.interupt"
-          },
-          "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "65",
-            "id" : "86",
-            "sourceId" : "66",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "67",
-          "name" : "Object Resource",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.objectres"
-          },
-          "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "65",
-            "id" : "87",
-            "sourceId" : "67",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "68",
-          "name" : "Operator",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.operator"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "79",
-            "sourceId" : "68",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "67",
-            "id" : "90",
-            "sourceId" : "68",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "69",
-          "name" : "OperatorPool",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.operatorpool"
-          },
-          "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "67",
-            "id" : "91",
-            "sourceId" : "69",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "70",
-          "name" : "Broker",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.broker"
-          },
-          "relationships" : [ {
-            "description" : "Inherits",
-            "destinationId" : "66",
-            "id" : "88",
-            "sourceId" : "70",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "71",
-          "name" : "Router",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.router"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "80",
-            "sourceId" : "71",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "66",
-            "id" : "89",
-            "sourceId" : "71",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "72",
-          "name" : "Part",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.part"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "81",
-            "sourceId" : "72",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "61",
-            "id" : "96",
-            "sourceId" : "72",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "73",
-          "name" : "Queue",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.queue"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "82",
-            "sourceId" : "73",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "60",
-            "id" : "94",
-            "sourceId" : "73",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "74",
-          "name" : "Source",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simdream.source"
-          },
-          "relationships" : [ {
-            "description" : "Depends",
-            "destinationId" : "63",
-            "id" : "83",
-            "sourceId" : "74",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Inherits",
-            "destinationId" : "60",
-            "id" : "95",
-            "sourceId" : "74",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component"
-        } ],
-        "documentation" : { },
-        "id" : "59",
-        "name" : "ManPy Dream Simulation",
-        "properties" : {
-          "structurizr.dsl.identifier" : "dream.simdream"
-        },
-        "relationships" : [ {
-          "description" : "Depends",
-          "destinationId" : "98",
-          "id" : "102",
-          "sourceId" : "59",
-          "tags" : "Relationship"
-        }, {
-          "description" : "Depends",
-          "destinationId" : "97",
-          "id" : "103",
-          "linkedRelationshipId" : "102",
-          "sourceId" : "59"
-        }, {
-          "description" : "Depends",
-          "destinationId" : "99",
-          "id" : "104",
-          "sourceId" : "59",
-          "tags" : "Relationship"
-        } ],
-        "tags" : "Element,Container"
-      }, {
-        "components" : [ {
-          "documentation" : { },
-          "id" : "98",
-          "name" : "Environment",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simpyv2.env"
-          },
-          "tags" : "Element,Component"
-        }, {
-          "documentation" : { },
-          "id" : "99",
-          "name" : "Resource",
-          "properties" : {
-            "structurizr.dsl.identifier" : "dream.simpyv2.res"
-          },
-          "tags" : "Element,Component"
-        } ],
-        "documentation" : { },
-        "id" : "97",
-        "name" : "Simpy V2",
-        "properties" : {
-          "structurizr.dsl.identifier" : "dream.simpyv2"
-        },
-        "tags" : "Element,Container"
-      }, {
-        "documentation" : { },
-        "id" : "100",
-        "name" : "Knowledge Extraction Tool",
-        "properties" : {
-          "structurizr.dsl.identifier" : "dream.ket"
-        },
-        "relationships" : [ {
-          "description" : "Feeds Model Data",
-          "destinationId" : "59",
-          "id" : "105",
-          "sourceId" : "100",
-          "tags" : "Relationship"
-        } ],
-        "tags" : "Element,Container"
-      }, {
-        "documentation" : { },
-        "id" : "101",
-        "name" : "Web User Interface",
-        "properties" : {
-          "structurizr.dsl.identifier" : "dream.webui"
-        },
-        "relationships" : [ {
-          "description" : "Gets Simulation Data from",
-          "destinationId" : "59",
-          "id" : "106",
-          "sourceId" : "101",
-          "tags" : "Relationship"
-        } ],
-        "tags" : "Element,Container"
-      } ],
-      "documentation" : { },
-      "id" : "58",
-      "location" : "Unspecified",
-      "name" : "Dream Project",
-      "properties" : {
-        "structurizr.dsl.identifier" : "dream"
+        "structurizr.dsl.identifier" : "processsimpy"
       },
       "tags" : "Element,Software System"
     }, {
       "documentation" : { },
-      "id" : "110",
+      "id" : "56",
       "location" : "Unspecified",
       "name" : "Simulation Model",
       "properties" : {
@@ -891,124 +467,110 @@
       },
       "relationships" : [ {
         "description" : "Implements",
-        "destinationId" : "2",
-        "id" : "111",
-        "sourceId" : "110",
+        "destinationId" : "3",
+        "id" : "57",
+        "sourceId" : "56",
         "tags" : "Relationship"
+      }, {
+        "description" : "Implements",
+        "destinationId" : "2",
+        "id" : "58",
+        "linkedRelationshipId" : "57",
+        "sourceId" : "56"
       }, {
         "description" : "Implements",
         "destinationId" : "1",
-        "id" : "112",
-        "linkedRelationshipId" : "111",
-        "sourceId" : "110"
-      }, {
-        "description" : "Implements",
-        "destinationId" : "11",
-        "id" : "113",
-        "sourceId" : "110",
-        "tags" : "Relationship"
-      }, {
-        "description" : "Implements",
-        "destinationId" : "59",
-        "id" : "114",
-        "sourceId" : "110",
-        "tags" : "Relationship"
-      }, {
-        "description" : "Implements",
-        "destinationId" : "58",
-        "id" : "115",
-        "linkedRelationshipId" : "114",
-        "sourceId" : "110"
+        "id" : "59",
+        "linkedRelationshipId" : "57",
+        "sourceId" : "56"
       } ],
       "tags" : "Element,Software System"
     } ]
   },
   "name" : "Name",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgogICAgbW9kZWwgewogICAgICAgIFByb2Nlc3MgPSBzb2Z0d2FyZVN5c3RlbSAiUHJvY2VzcyBTaW1QeSJ7CiAgICAgICAgICAgIFByb2NTaW1QeSA9IGNvbnRhaW5lciAiUHJvY1NpbVB5InsKICAgICAgICAgICAgICAgIGJhc2UgPSBjb21wb25lbnQgIkJhc2VPYmplY3QiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJFbnN1cmVzIHVuaXF1ZSBpZCBhbmQgb3V0cHV0IFRyYWNpbmciCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdG9yZSA9IGNvbXBvbmVudCAiU3RvcmVOb2RlInsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiTm9kZSBpbiB0aGUgUHJvY2VzcyBvZiBjb25zaWRlcmF0aW9uIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcmVzID0gY29tcG9uZW50ICJSZXNvdXJjZU9iamVjdCJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkEgTGltaXRpZWQgUmVzb3VyY2UgYSBTdG9yZU5vZGUgbWF5IG5lZWQgdG8gcHJlZm9ybSBpdHMgc3RlcCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGVudGl0eSA9IGNvbXBvbmVudCAiRW50aXR5InsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiR2VuZXJpYyBmb3IgdGhlIGl0ZW0gdGhlIFByb2Nlc3MgaXMgYmVpbmcgcHJlZm9ybSBvbiwgTWFudWZhY3R1cmVkIFBhcnQgb3IgQ3VzdG9tZXIgZW5nYWdpbmcgaXMgc2VydmljZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGV4aXQgPSBjb21wb25lbnQgIkV4aXQiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJBYnN0cmFjdCBmb3IgdGhlIGVuZCBvZiB0aGUgUHJvY2VzcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIG1hY2hpbmUgPSBjb21wb25lbnQgIk1hY2hpbmUiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJOb2RlIHRoYXQgcmVxdWlyZXMgdGltZSB0byBjb21wbGV0ZSBpdHMgcHJvY2VzcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHF1ZXVlID0gY29tcG9uZW50ICJRdWV1ZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkJ1ZmZlciBvciBSb3V0aW5nIE5vZGUiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzb3VyY2UgPSBjb21wb25lbnQgIlNvdXJjZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkFic3RyYWN0IGZvciB0aGUgYmVnaW5pbmcgb2YgdGhlIFByb2Nlc3MsIEN1c3RvbWVyIGluaXRpYWwgZW5nYWdlbWVudCBvciB3YXJlaG91c2Ugb2Ygc3RvY2siCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBleHBlcmltZW50ID0gY29tcG9uZW50ICJFeHBlcmltZW50InsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiQ29yZGluYXRvciBmb3IgcnVubmluZyBleHBlcmltZW50IGl0ZXJhdGlvbiBhbmQgb3V0cHV0IG9mIGRhdGEiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBsaW5lID0gY29tcG9uZW50ICJMaW5lInsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiU3RhdGUgdHJhY2tlciBhbmQgQnJva2VyIGJldHdlZW4gbm9kZXMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgICAgICBvcGVyYXRvciA9IGNvbXBvbmVudCAiT3BlcmF0b3IiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJQZXJzb25uZWwgUmVzb3VyY2UgUmVxdWlyZWQgZm9yIHRhc2siCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICByZXBhaXIgPSBjb21wb25lbnQgIlJlcGFpciBUZWNobmljaWFuIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlBlcnNvbm5lbCBSZXNvdXJjZSBXaXRoIGFiaWxpdHkgdG8gcmVwYWlyIGZhaWx1cmVzIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgaW50ZXJydXB0aW9uID0gY29tcG9uZW50ICJJbnRlcnJ1cHRpb24iewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJOb24gSWRlYWwgc2l0dWF0aW9uIHRvIGRlYWwgd2l0aCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIGZhaWx1cmUgPSBjb21wb25lbnQgIk5vZGUgRmFpbHVyZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkludGVycnVwdGlvbiB0byBzdG9wIE5vZGUgdW50aWwgcmVwYWlyIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgc2hpZnQgPSBjb21wb25lbnQgIlNoaWZ0IFNjaGVkdWxlciJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvbnRyb2xzIHRpbWluZyBmb3IgU2hpZnRzIGFuZCBicmVha3MiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgICAgICBzaGlmdCAtPiBzdG9yZSAiSW5mbHVlbmNlcyBvcGVyYXRpbmcgdGltZXMiCiAgICAgICAgICAgICAgICBzaGlmdCAtPiByZXMgIkluZmx1ZW5jZXMgb3BlcmF0aW5nIHRpbWVzIgogICAgICAgIAogICAgICAgICAgICAgICAgb3BlcmF0b3IgLT4gcmVzICJJcyBhIFJlc291cmNlIgogICAgICAgICAgICAgICAgcmVwYWlyIC0+IHJlcyAiSXMgYSBSZXNvdXJjZSIKICAgICAgICAKICAgICAgICAgICAgICAgIG9wZXJhdG9yIC0+IHN0b3JlICJDYW4gYmUgcmVxdWlyZWQgYnkiCiAgICAgICAgCiAgICAgICAgICAgICAgICBpbnRlcnJ1cHRpb24gLT4gc3RvcmUgIk5vbiBJZGVhbCBzaXR1YXRpb24gdG8gZGVhbCB3aXRoIgogICAgICAgICAgICAgICAgZmFpbHVyZSAtPiBpbnRlcnJ1cHRpb24gIkludGVycnVwdGlvbiB0byBzdG9wIE5vZGUgdW50aWwgcmVwYWlyIgogICAgICAgICAgICAgICAgZmFpbHVyZSAtPiBzdG9yZSAiU3RvcHMgUHJvY2VzcyB1bnRpbCByZXBhaXJlZCIKICAgICAgICAgICAgICAgIHJlcGFpciAtPiBmYWlsdXJlICJBYmxlIHRvIGNvcnJlY3QgY2F1c2Ugb2YgZmFpbHVyZSIKICAgICAgICAKICAgICAgICAgICAgICAgIHJlcGFpciAtPiBzdG9yZSAiUmVwYWlycyBGYWlsdXJlIgogICAgICAgIAogICAgICAgICAgICAgICAgZW50aXR5IC0+IGJhc2UgIkluaGVyaXRzIgogICAgICAgIAogICAgICAgICAgICAgICAgc3RvcmUgLT4gYmFzZSAiSW5oZXJpdHMiCiAgICAgICAgICAgICAgICByZXMgLT4gYmFzZSAiSW5oZXJpdHMiCiAgICAgICAgCiAgICAgICAgICAgICAgICBleGl0IC0+IHN0b3JlICJJcyBhIE5vZGUiCiAgICAgICAgICAgICAgICBtYWNoaW5lIC0+IHN0b3JlICJJcyBhIE5vZGUiCiAgICAgICAgICAgICAgICBxdWV1ZSAtPiBzdG9yZSAiSXMgYSBOb2RlIgogICAgICAgICAgICAgICAgc291cmNlIC0+IHN0b3JlICJJcyBhIE5vZGUiCiAgICAgICAgCiAgICAgICAgICAgICAgICBleHBlcmltZW50IC0+IGxpbmUgIkNyZWF0ZXMgYSBsaW5lIHRvIHJ1biBleHBlcmltZW50IgogICAgICAgIAogICAgICAgICAgICAgICAgbGluZSAtPiBzb3VyY2UgIk1hbmFnZXMiCiAgICAgICAgICAgICAgICBsaW5lIC0+IHF1ZXVlICJNYW5hZ2VzIgogICAgICAgICAgICAgICAgbGluZSAtPiBtYWNoaW5lICJNYW5hZ2VzIgogICAgICAgICAgICAgICAgbGluZSAtPiBleGl0ICJNYW5hZ2VzIgogICAgICAgIAogICAgICAgICAgICAgICAgZXhpdCAtPiBlbnRpdHkgIkNvbnN1bWVzIgogICAgICAgICAgICAgICAgbWFjaGluZSAtPiBlbnRpdHkgIkNvbnN1bWVzIgogICAgICAgICAgICAgICAgcXVldWUgLT4gZW50aXR5ICJDb25zdW1lcyIKICAgICAgICAgICAgICAgIHNvdXJjZSAtPiBlbnRpdHkgIkNvbnN1bWVzIgogICAgICAgIAogICAgICAgICAgICAgICAgI1RPRE8gU3RhdGlzdGljcwogICAgICAgICAgICAgICAgI1RPRE8gU3ViIHByb2Nlc3NlcyAoRW50aXR5IGNyZWF0ZWlvbiwgcHJvY2VzcyBlbnRpdHkpCiAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgc2ltcHlWNCA9IGNvbnRhaW5lciAiU2ltUHkgVmVyc2lvbiA0InsKICAgICAgICAgICAgICAgIHN0b3JlID0gY29tcG9uZW50ICJTdG9yZSIKICAgICAgICAgICAgICAgIHJlcyA9IGNvbXBvbmVudCAiUmVzb3VyY2UiCiAgICAgICAgICAgICAgICBlbnYgPSBjb21wb25lbnQgIkVudmlyb25tZW50IgogICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgIFByb2NTaW1QeS5zdG9yZSAtPiBzaW1weVY0LnN0b3JlICJEZXBlbmRzIgogICAgICAgICAgICBQcm9jU2ltUHkucmVzIC0+IHNpbXB5VjQucmVzICJEZXBlbmRzIgogICAgICAgICAgICAKICAgICAgICAgICAgUHJvY1NpbVB5LnNvdXJjZSAtPiBQcm9jU2ltUHkucXVldWUgImhhcyBTdWNjZXNzb3IiCiAgICAgICAgICAgIFByb2NTaW1QeS5xdWV1ZSAtPiBQcm9jU2ltUHkubWFjaGluZSAiaGFzIFN1Y2Nlc3NvciIKICAgICAgICAgICAgUHJvY1NpbVB5Lm1hY2hpbmUgLT4gUHJvY1NpbVB5LmV4aXQgImhhcyBTdWNjZXNzb3IiCiAgICAgICAgfQogICAgICAgIGRyZWFtID0gc29mdHdhcmVTeXN0ZW0gIkRyZWFtIFByb2plY3QiIHsKICAgICAgICAgICAgICAgIHNpbURyZWFtID0gY29udGFpbmVyICJNYW5QeSBEcmVhbSBTaW11bGF0aW9uIiB7CiAgICAgICAgICAgICAgICAgICAgY29yZSA9IGNvbXBvbmVudCAiQ29yZU9iamVjdCIKICAgICAgICAgICAgICAgICAgICBlbnRpdHkgPSBjb21wb25lbnQgIkVudGl0eSIKICAgICAgICAgICAgICAgICAgICBleGl0ID0gY29tcG9uZW50ICJFeGl0IgogICAgICAgICAgICAgICAgICAgIGdsb2JhbHMgPSBjb21wb25lbnQgIkdsb2JhbCAnRyciCiAgICAgICAgICAgICAgICAgICAgbWFjaGluZSA9IGNvbXBvbmVudCAiTWFjaGluZSIKICAgICAgICAgICAgICAgICAgICBtYW5weU9iamVjdCA9IGNvbXBvbmVudCAiTWFuUHlPYmplY3QiCiAgICAgICAgICAgICAgICAgICAgaW50ZXJ1cHQgPSBjb21wb25lbnQgIk9iamVjdEludGVydXB0aW9uIgogICAgICAgICAgICAgICAgICAgIG9iamVjdFJlcyA9IGNvbXBvbmVudCAiT2JqZWN0IFJlc291cmNlIgogICAgICAgICAgICAgICAgICAgIG9wZXJhdG9yID0gY29tcG9uZW50ICJPcGVyYXRvciIKICAgICAgICAgICAgICAgICAgICBvcGVyYXRvclBvb2wgPSBjb21wb25lbnQgIk9wZXJhdG9yUG9vbCIKICAgICAgICAgICAgICAgICAgICBicm9rZXIgPSBjb21wb25lbnQgIkJyb2tlciIKICAgICAgICAgICAgICAgICAgICByb3V0ZXIgPSBjb21wb25lbnQgIlJvdXRlciIKICAgICAgICAgICAgICAgICAgICBwYXJ0ID0gY29tcG9uZW50ICJQYXJ0IgogICAgICAgICAgICAgICAgICAgIHF1ZXVlID0gY29tcG9uZW50ICJRdWV1ZSIKICAgICAgICAgICAgICAgICAgICBzb3VyY2UgPSBjb21wb25lbnQgIlNvdXJjZSIKICAgICAgICAKICAgICAgICAgICAgICAgICAgICBjb3JlIC0+IGdsb2JhbHMgIkRlcGVuZHMiCiAgICAgICAgICAgICAgICAgICAgZW50aXR5IC0+IGdsb2JhbHMgIkRlcGVuZHMiCiAgICAgICAgICAgICAgICAgICAgZXhpdCAtPiBnbG9iYWxzICJEZXBlbmRzIgogICAgICAgICAgICAgICAgICAgIG1hY2hpbmUgIC0+IGdsb2JhbHMgIkRlcGVuZHMiCiAgICAgICAgICAgICAgICAgICAgb3BlcmF0b3IgLT4gZ2xvYmFscyAiRGVwZW5kcyIKICAgICAgICAgICAgICAgICAgICByb3V0ZXIgLT4gZ2xvYmFscyAiRGVwZW5kcyIKICAgICAgICAgICAgICAgICAgICBwYXJ0IC0+IGdsb2JhbHMgIkRlcGVuZHMiCiAgICAgICAgICAgICAgICAgICAgcXVldWUgLT4gZ2xvYmFscyAiRGVwZW5kcyIKICAgICAgICAgICAgICAgICAgICBzb3VyY2UgLT4gZ2xvYmFscyAiRGVwZW5kcyIKICAgICAgICAKICAgICAgICAgICAgICAgICAgICBjb3JlIC0+IG1hbnB5T2JqZWN0ICJJbmhlcml0cyIKICAgICAgICAgICAgICAgICAgICBlbnRpdHkgLT4gbWFucHlPYmplY3QgIkluaGVyaXRzIgogICAgICAgICAgICAgICAgICAgIGludGVydXB0IC0+IG1hbnB5T2JqZWN0ICJJbmhlcml0cyIKICAgICAgICAgICAgICAgICAgICBvYmplY3RSZXMgLT4gbWFucHlPYmplY3QgIkluaGVyaXRzIgogICAgICAgIAogICAgICAgICAgICAgICAgICAgIGJyb2tlciAtPiBpbnRlcnVwdCAiSW5oZXJpdHMiCiAgICAgICAgICAgICAgICAgICAgcm91dGVyIC0+IGludGVydXB0ICJJbmhlcml0cyIKICAgICAgICAgICAgICAgICAgICBvcGVyYXRvciAtPiBvYmplY3RSZXMgIkluaGVyaXRzIgogICAgICAgICAgICAgICAgICAgIG9wZXJhdG9yUG9vbCAtPiBvYmplY3RSZXMgIkluaGVyaXRzIgogICAgICAgIAogICAgICAgICAgICAgICAgICAgIGV4aXQgLT4gY29yZSAiSW5oZXJpdHMiCiAgICAgICAgICAgICAgICAgICAgbWFjaGluZSAtPiBjb3JlICJJbmhlcml0cyIKICAgICAgICAgICAgICAgICAgICBxdWV1ZSAtPiBjb3JlICJJbmhlcml0cyIKICAgICAgICAgICAgICAgICAgICBzb3VyY2UgLT4gY29yZSAiSW5oZXJpdHMiCiAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgcGFydCAtPiBlbnRpdHkgIkluaGVyaXRzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc2ltcHlWMiA9IGNvbnRhaW5lciAiU2ltcHkgVjIiewogICAgICAgICAgICAgICAgICAgIGVudiA9IGNvbXBvbmVudCAiRW52aXJvbm1lbnQiCiAgICAgICAgICAgICAgICAgICAgcmVzID0gY29tcG9uZW50ICJSZXNvdXJjZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGtldCA9IGNvbnRhaW5lciAiS25vd2xlZGdlIEV4dHJhY3Rpb24gVG9vbCIKICAgICAgICAgICAgICAgIHdlYlVJID0gY29udGFpbmVyICJXZWIgVXNlciBJbnRlcmZhY2UiCiAgICAgICAgCiAgICAgICAgICAgICAgICBzaW1EcmVhbSAtPiBzaW1weVYyLmVudiAiRGVwZW5kcyIKICAgICAgICAgICAgICAgIHNpbURyZWFtIC0+IHNpbXB5VjIucmVzICJEZXBlbmRzIgogICAgICAgIAogICAgICAgICAgICAgICAga2V0IC0+IHNpbURyZWFtICJGZWVkcyBNb2RlbCBEYXRhIgogICAgICAgICAgICAgICAgd2ViVUkgLT4gc2ltRHJlYW0gIkdldHMgU2ltdWxhdGlvbiBEYXRhIGZyb20iCiAgICAgICAgfQoKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIgogICAgICAgIHN1cGVydXNlciA9IHBlcnNvbiAiU3VwZXIgVXNlciIKICAgICAgICBkZXZlbG9wZXIgPSBwZXJzb24gIkRldmVsb3BlciIKCiAgICAgICAgc2ltTW9kZWwgPSBzb2Z0d2FyZVN5c3RlbSAiU2ltdWxhdGlvbiBNb2RlbCIKICAgICAgICBzaW1Nb2RlbCAtPiBQcm9jZXNzLlByb2NTaW1QeSAiSW1wbGVtZW50cyIKICAgICAgICBzaW1Nb2RlbCAtPiBQcm9jZXNzLlByb2NTaW1QeS5leHBlcmltZW50ICJJbXBsZW1lbnRzIgogICAgICAgIHNpbU1vZGVsIC0+IGRyZWFtLnNpbURyZWFtICJJbXBsZW1lbnRzIgoKICAgICAgICAjIHVzZXIgLT4gc2ltTW9kZWwgIkNyZWF0ZXMiCiAgICAgICAgdXNlciAtPiBkcmVhbS53ZWJVSSAiVXNlcyIKICAgICAgICB1c2VyIC0+IGRyZWFtLmtldCAiVXNlcyIKCiAgICAgICAgc3VwZXJVc2VyIC0+IHNpbU1vZGVsICJDcmVhdGVzIgogICAgICAgIHN1cGVyVXNlciAtPiBQcm9jZXNzLlByb2NTaW1QeSAiRXh0ZW5kcyIKICAgICAgICBzdXBlclVzZXIgLT4gZHJlYW0uc2ltRHJlYW0gIkV4dGVuZHMiCgogICAgICAgIGRldmVsb3BlciAtPiBQcm9jZXNzLlByb2NTaW1QeSAiQ3JlYXRlcyIKICAgICAgICBkZXZlbG9wZXIgLT4gZHJlYW0uc2ltRHJlYW0gIkNyZWF0ZXMiCiAgICB9CgoKICAgIHZpZXdzIHsKICAgICAgICAKICAgICAgICB0aGVtZSBkZWZhdWx0CgogICAgICAgICMgc3lzdGVtQ29udGV4dCBzaW1Nb2RlbCAic2ltTW9kZWxzYyIgewogICAgICAgICMgICAgIGluY2x1ZGUgKgogICAgICAgICMgICAgIGF1dG9sYXlvdXQgdGIKICAgICAgICAjIH0KCiAgICAgICAgIyBzeXN0ZW1Db250ZXh0IE5laWwgIk5laWxzYyIgewogICAgICAgICMgICAgIGluY2x1ZGUgKgogICAgICAgICMgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICAjIH0KCiAgICAgICAgIyBzeXN0ZW1Db250ZXh0IGRyZWFtICJEcmVhbXNjIiB7CiAgICAgICAgIyAgICAgaW5jbHVkZSAqCiAgICAgICAgIyAgICAgYXV0b2xheW91dCBscgogICAgICAgICMgfQoKCiAgICAgICAgY29udGFpbmVyIFByb2Nlc3MgIlVzZXJJbnRlcmFjdGlvbiIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgaW5jbHVkZSAtPnNpbU1vZGVsCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgoKICAgICAgICAjIGNvbnRhaW5lciBkcmVhbSAiZHJlYW1jYyIgewogICAgICAgICMgICAgIGluY2x1ZGUgKgogICAgICAgICMgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICAjIH0KCiAgICAgICAgY29tcG9uZW50IFByb2Nlc3MuUHJvY1NpbVB5ICJBbGxDb21wb25lbnRzInsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgICMgYXV0b2xheW91dCBscgogICAgICAgIH0KIAogICAgICAgICMgY29tcG9uZW50IGRyZWFtLnNpbURyZWFtICJzaW1EcmVhbSIgewogICAgICAgICMgICAgIGluY2x1ZGUgKgogICAgICAgICMgICAgIGF1dG9sYXlvdXQgYnQKICAgICAgICAjIH0KCiAgICAgICAgZHluYW1pYyBQcm9jZXNzLlByb2NTaW1QeSAiSGFuZG92ZXJXaXRoQ2FwYWNpdHkiewogICAgICAgICAgICB0aXRsZSAiQ29yZSBIYW5kb3ZlciBvZiBFbnRpdHksIE1hY2hpbmUgaXMgd2FpdGluZyIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlIC0+IFByb2Nlc3MuUHJvY1NpbVB5LmVudGl0eSAiRW50aXR5IGlzIGNyZWF0ZWQgYnkgU291cmNlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5lbnRpdHkgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlICJFbnRpdHkgaXMgYXNzaWduZWQgdG8gU291cmNlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5zb3VyY2UgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIlNvdXJjZSBhc2tzIGlmIHJlY2l2ZXIgY2FuUmVjaWV2ZSIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlICJJZiBub3QgYXQgQ2FwYWNpdHkgcmV0dXJucyBUcnVlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5zb3VyY2UgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIlRyaWdnZXJzIGlzUmVxdWVzdGVkIEV2ZW50IG9uIFF1ZXVlIgoKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkubWFjaGluZSAiUXVldWUgYXNrcyBpZiByZWNpdmVyIGNhblJlY2lldmUiCiAgICAgICAgICAgIFByb2Nlc3MuUHJvY1NpbVB5Lm1hY2hpbmUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIk1hY2hpbmUgaXMgd2FpdGluZyBzbyByZXR1cm5zIHRydWUiCiAgICAgICAgICAgIFByb2Nlc3MuUHJvY1NpbVB5LnF1ZXVlIC0+IFByb2Nlc3MuUHJvY1NpbVB5Lm1hY2hpbmUgIlRyaWdnZXJzIGlzUmVxdWVzdGVkIEV2ZW50IG9uIE1hY2hpbmUiCgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5tYWNoaW5lIC0+IFByb2Nlc3MuUHJvY1NpbVB5LmV4aXQgIk1hY2hpbmUgYXNrcyBpZiByZWNpdmVyIGNhblJlY2lldmUiCiAgICAgICAgICAgIFByb2Nlc3MuUHJvY1NpbVB5LmV4aXQgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkubWFjaGluZSAiRXhpdCBjYW4gYWx3YXlzIHJlY2l2ZSIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkubWFjaGluZSAtPiBQcm9jZXNzLlByb2NTaW1QeS5leGl0ICJUcmlnZ2VycyBpc1JlcXVlc3RlZCBFdmVudCBvbiBFeGl0IgogICAgICAgIH0KCiAgICAgICAgZHluYW1pYyBQcm9jZXNzLlByb2NTaW1QeSAiSGFuZG92ZXJXaXRob3V0Q2FwYWNpdHkiewogICAgICAgICAgICB0aXRsZSAiQ29yZSBIYW5kb3ZlciBvZiBFbnRpdHksIE1hY2hpbmUgaXMgd29ya2luZyIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlIC0+IFByb2Nlc3MuUHJvY1NpbVB5LmVudGl0eSAiRW50aXR5IGlzIGNyZWF0ZWQgYnkgU291cmNlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5lbnRpdHkgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlICJFbnRpdHkgaXMgYXNzaWduZWQgdG8gU291cmNlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5zb3VyY2UgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIlNvdXJjZSBhc2tzIGlmIHJlY2l2ZXIgY2FuUmVjaWV2ZSIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkuc291cmNlICJJZiBub3QgYXQgQ2FwYWNpdHkgcmV0dXJucyBUcnVlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5zb3VyY2UgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIlRyaWdnZXJzIGlzUmVxdWVzdGVkIEV2ZW50IG9uIFF1ZXVlIgoKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkubWFjaGluZSAiUXVldWUgYXNrcyBpZiByZWNpdmVyIGNhblJlY2lldmUiCiAgICAgICAgICAgIFByb2Nlc3MuUHJvY1NpbVB5Lm1hY2hpbmUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkucXVldWUgIk1hY2hpbmUgaXMgd29ya2luZyBzbyByZXR1cm5zIGZhbHNlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5tYWNoaW5lIC0+IFByb2Nlc3MuUHJvY1NpbVB5LnF1ZXVlICJBZnRlciBzb21lIHRpbWUgYXNrcyBpZiBnaXZlciBjYW5HaXZlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5xdWV1ZSAtPiBQcm9jZXNzLlByb2NTaW1QeS5tYWNoaW5lICJpZiBoYXMgRW50aXR5IHJldHVybnMgdHVyZSIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkubWFjaGluZSAtPiBQcm9jZXNzLlByb2NTaW1QeS5xdWV1ZSAiVHJpZ2dlcnMgY2FuR2lzcG9zZSBFdmVudCBvbiBRdWV1ZSIKCiAgICAgICAgICAgIFByb2Nlc3MuUHJvY1NpbVB5Lm1hY2hpbmUgLT4gUHJvY2Vzcy5Qcm9jU2ltUHkuZXhpdCAiTWFjaGluZSBhc2tzIGlmIHJlY2l2ZXIgY2FuUmVjaWV2ZSIKICAgICAgICAgICAgUHJvY2Vzcy5Qcm9jU2ltUHkuZXhpdCAtPiBQcm9jZXNzLlByb2NTaW1QeS5tYWNoaW5lICJFeGl0IGNhbiBhbHdheXMgcmVjaXZlIgogICAgICAgICAgICBQcm9jZXNzLlByb2NTaW1QeS5tYWNoaW5lIC0+IFByb2Nlc3MuUHJvY1NpbVB5LmV4aXQgIlRyaWdnZXJzIGlzUmVxdWVzdGVkIEV2ZW50IG9uIEV4aXQiCiAgICAgICAgfQogICAgfQogICAgCn0="
+    "structurizr.dsl" : "d29ya3NwYWNlIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgogICAgbW9kZWwgewogICAgICAgIFByb2Nlc3NTaW1QeSA9IHNvZnR3YXJlU3lzdGVtICJQcm9jZXNzIFNpbVB5InsKICAgICAgICAgICAgUHJvY1NpbVB5ID0gY29udGFpbmVyICJQcm9jU2ltUHkiewogICAgICAgICAgICAgICAgZXhwZXJpbWVudCA9IGNvbXBvbmVudCAiRXhwZXJpbWVudCJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvcmRpbmF0b3IgZm9yIHJ1bm5pbmcgZXhwZXJpbWVudCBpdGVyYXRpb24gYW5kIG91dHB1dCBvZiBkYXRhIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbGluZSA9IGNvbXBvbmVudCAiTGluZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlN0YXRlIHRyYWNrZXIgYW5kIEJyb2tlciBiZXR3ZWVuIE5vZGVzIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgYmFzZSA9IGNvbXBvbmVudCAiQmFzZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkVuc3VyZXMgdW5pcXVlIGlkLCBjb25uZWN0aW9uIHRvIFNpbVB5IEVudmlyb25tZW50IGFuZCBvdXRwdXQgdHJhY2luZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIGVudGl0eSA9IGNvbXBvbmVudCAiRW50aXR5InsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiR2VuZXJpYyBmb3IgdGhlIGl0ZW0gdGhlIFByb2Nlc3MgaXMgYmVpbmcgcHJlZm9ybWVkIG9uLCBNYW51ZmFjdHVyZWQgUGFydCBvciBDdXN0b21lciBlbmdhZ2luZyBpcyBzZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgbm9kZSA9IGNvbXBvbmVudCAiTm9kZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkdlbmVyaWMgTm9kZSBmb3IgYSBTdGVwIGluIGEgUHJvY2VzcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIHNvdXJjZSA9IGNvbXBvbmVudCAiU291cmNlInsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiQWJzdHJhY3QgZm9yIHRoZSBiZWdpbm5pbmcgb2YgdGhlIFByb2Nlc3MsIEN1c3RvbWVyIGluaXRpYWwgZW5nYWdlbWVudCBvciB3YXJlaG91c2Ugb2Ygc3RvY2siCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBxdWV1ZSA9IGNvbXBvbmVudCAiUXVldWUiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJCdWZmZXIgb3IgUm91dGluZyBOb2RlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc2VydmVyID0gY29tcG9uZW50ICJTZXJ2ZXIiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJOb2RlIHRoYXQgcmVxdWlyZXMgdGltZSB0byBjb21wbGV0ZSBpdHMgd29yayIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGV4aXQgPSBjb21wb25lbnQgIkV4aXQiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJBYnN0cmFjdCBmb3IgdGhlIGVuZCBvZiB0aGUgUHJvY2VzcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIHJlcyA9IGNvbXBvbmVudCAiUmVzb3VyY2UiewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJBIExpbWl0aW5nIEZhY3RvciBmb3IgdGhlIHByb2Nlc3MsIGVnIE51bWJlciBvZiBSZXBhaXIgVGVjaG5pY2lhbnMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAjIG9wZXJhdG9yID0gY29tcG9uZW50ICJPcGVyYXRvciJ7CiAgICAgICAgICAgICAgICAjICAgICBkZXNjcmlwdGlvbiAiUGVyc29ubmVsIFJlc291cmNlIFJlcXVpcmVkIGZvciB0YXNrIgogICAgICAgICAgICAgICAgIyB9CiAgICAgICAgICAgICAgICByZXBhaXIgPSBjb21wb25lbnQgIlJlcGFpciBUZWNobmljaWFuIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlBlcnNvbm5lbCBSZXNvdXJjZSBXaXRoIGFiaWxpdHkgdG8gcmVwYWlyIGZhaWx1cmVzIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgaW50ZXJydXB0aW9uID0gY29tcG9uZW50ICJJbnRlcnJ1cHRpb24iewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJOb24gSWRlYWwgc2l0dWF0aW9uIHRvIGRlYWwgd2l0aCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIGZhaWx1cmUgPSBjb21wb25lbnQgIk5vZGUgRmFpbHVyZSJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkludGVycnVwdGlvbiB0byBzdG9wIE5vZGUgdW50aWwgcmVwYWlyIgogICAgICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICAgICAgc2hpZnQgPSBjb21wb25lbnQgIlNoaWZ0IFNjaGVkdWxlciJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvbnRyb2xzIHRpbWluZyBmb3IgU2hpZnRzIGFuZCBicmVha3MiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgICAgICBzdGF0cyA9IGNvbXBvbmVudCAiU3RhdGlzdGljcyJ7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlJlY29yZHMgc3RhdHMgZm9yIG1vZGVsIGNvbXBvbmVudCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgICAgIGV4cGVyaW1lbnQgLT4gbGluZSAiQ3JlYXRlcyBhIGxpbmUgdG8gcnVuIGV4cGVyaW1lbnQiCiAgICAgICAgCiAgICAgICAgICAgICAgICBsaW5lIC0+IHNvdXJjZSAiTWFuYWdlcyIKICAgICAgICAgICAgICAgIGxpbmUgLT4gcXVldWUgIk1hbmFnZXMiCiAgICAgICAgICAgICAgICBsaW5lIC0+IHNlcnZlciAiTWFuYWdlcyIKICAgICAgICAgICAgICAgIGxpbmUgLT4gZXhpdCAiTWFuYWdlcyIKICAgICAgICAKICAgICAgICAgICAgICAgIGVudGl0eSAtPiBiYXNlICJJbmhlcml0cyIKICAgICAgICAKICAgICAgICAgICAgICAgIG5vZGUgLT4gYmFzZSAiSW5oZXJpdHMiCiAgICAgICAgICAgICAgICByZXMgLT4gYmFzZSAiSW5oZXJpdHMiCiAgICAgICAgCiAgICAgICAgICAgICAgICBleGl0IC0+IG5vZGUgIklzIGEgTm9kZSIKICAgICAgICAgICAgICAgIHNlcnZlciAtPiBub2RlICJJcyBhIE5vZGUiCiAgICAgICAgICAgICAgICBxdWV1ZSAtPiBub2RlICJJcyBhIE5vZGUiCiAgICAgICAgICAgICAgICBzb3VyY2UgLT4gbm9kZSAiSXMgYSBOb2RlIgogICAgICAgIAogICAgICAgICAgICAgICAgZXhpdCAtPiBlbnRpdHkgIkNvbnN1bWVzIgogICAgICAgICAgICAgICAgc2VydmVyIC0+IGVudGl0eSAiQ29uc3VtZXMiCiAgICAgICAgICAgICAgICBxdWV1ZSAtPiBlbnRpdHkgIkNvbnN1bWVzIgogICAgICAgICAgICAgICAgc291cmNlIC0+IGVudGl0eSAiQ29uc3VtZXMiCiAgICAgICAgCiAgICAgICAgICAgICAgICByZXBhaXIgLT4gbm9kZSAiUmVwYWlycyBGYWlsdXJlIgogICAgICAgIAogICAgICAgICAgICAgICAgc2hpZnQgLT4gbm9kZSAiSW5mbHVlbmNlcyBvcGVyYXRpbmcgdGltZXMiCiAgICAgICAgICAgICAgICAjIHNoaWZ0IC0+IHJlcyAiSW5mbHVlbmNlcyBvcGVyYXRpbmcgdGltZXMiCiAgICAgICAgCiAgICAgICAgICAgICAgICAjIG9wZXJhdG9yIC0+IHJlcyAiSXMgYSBSZXNvdXJjZSIKICAgICAgICAgICAgICAgIHJlcGFpciAtPiByZXMgIklzIGEgUmVzb3VyY2UiCiAgICAgICAgCiAgICAgICAgICAgICAgICAjIG9wZXJhdG9yIC0+IG5vZGUgIkNhbiBiZSByZXF1aXJlZCBieSIKICAgICAgICAKICAgICAgICAgICAgICAgICMgaW50ZXJydXB0aW9uIC0+IG5vZGUgIk5vbiBJZGVhbCBzaXR1YXRpb24gdG8gZGVhbCB3aXRoIgogICAgICAgICAgICAgICAgZmFpbHVyZSAtPiBpbnRlcnJ1cHRpb24gIkludGVycnVwdGlvbiB1bnRpbCByZXBhaXIiCiAgICAgICAgICAgICAgICBmYWlsdXJlIC0+IG5vZGUgIlN0b3BzIFByb2Nlc3MgdW50aWwgcmVwYWlyZWQiCiAgICAgICAgICAgICAgICByZXBhaXIgLT4gZmFpbHVyZSAiQWJsZSB0byBjb3JyZWN0IGNhdXNlIG9mIGZhaWx1cmUiCiAgICAgICAgCiAgICAgICAgICAgICAgICBzdGF0cyAtPiBub2RlICJSZWNvcmRzIHN0YXRzIgogICAgICAgIAogICAgICAgICAgICAgICAgcXVldWUgLT4gc2VydmVyICJIYXMgU3VjY2Vzc29yIgogICAgICAgIAogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBzaW1weVY0ID0gY29udGFpbmVyICJTaW1QeSBWZXJzaW9uIDQiewogICAgICAgICAgICAgICAgc3RvcmUgPSBjb21wb25lbnQgIlN0b3JlIgogICAgICAgICAgICAgICAgcmVzID0gY29tcG9uZW50ICJSZXNvdXJjZSIKICAgICAgICAgICAgICAgIGVudiA9IGNvbXBvbmVudCAiRW52aXJvbm1lbnQiCiAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgUHJvY1NpbVB5Lm5vZGUgLT4gc2ltcHlWNC5zdG9yZSAiRGVwZW5kcyIKICAgICAgICAgICAgUHJvY1NpbVB5LnJlcyAtPiBzaW1weVY0LnJlcyAiRGVwZW5kcyIKICAgICAgICB9CgogICAgICAgIHVzZXIgPSBwZXJzb24gIlVzZXIiCiAgICAgICAgc3VwZXJ1c2VyID0gcGVyc29uICJTdXBlciBVc2VyIgogICAgICAgIGRldmVsb3BlciA9IHBlcnNvbiAiRGV2ZWxvcGVyIgoKICAgICAgICBzaW1Nb2RlbCA9IHNvZnR3YXJlU3lzdGVtICJTaW11bGF0aW9uIE1vZGVsIgogICAgICAgIHNpbU1vZGVsIC0+IFByb2Nlc3NTaW1QeS5Qcm9jU2ltUHkuZXhwZXJpbWVudCAiSW1wbGVtZW50cyIKCiAgICAgICAgdXNlciAtPiBzaW1Nb2RlbCAiVXNlcyIKCiAgICAgICAgc3VwZXJVc2VyIC0+IHNpbU1vZGVsICJDcmVhdGVzIgogICAgICAgIHN1cGVyVXNlciAtPiBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5ICJFeHRlbmRzIgoKICAgICAgICBkZXZlbG9wZXIgLT4gUHJvY2Vzc1NpbVB5LlByb2NTaW1QeSAiQ3JlYXRlcyIKICAgIH0KCgogICAgdmlld3MgewogICAgICAgIAogICAgICAgIHRoZW1lIGRlZmF1bHQKCiAgICAgICAgY29udGFpbmVyIFByb2Nlc3NTaW1QeSAiVXNlckludGVyYWN0aW9uIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBpbmNsdWRlIC0+c2ltTW9kZWwKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgY29tcG9uZW50IFByb2Nlc3NTaW1QeS5Qcm9jU2ltUHkgIkFsbENvbXBvbmVudHMiewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgICMgZHluYW1pYyBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5ICJPcGVyYXRpb24iewogICAgICAgICMgICAgIHRpdGxlICJPcGVyYXRpb24gUHJvY2VzcyIKICAgICAgICAjIH0KCiAgICAgICAgZHluYW1pYyBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5ICJIYW5kb3ZlciJ7CiAgICAgICAgICAgIHRpdGxlICJIYW5kb3ZlciBQcm9jZXNzIgogICAgICAgICAgICBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5LnF1ZXVlIC0+IFByb2Nlc3NTaW1QeS5Qcm9jU2ltUHkubm9kZSAiUmVxdWVzdHMgQXZhaWxhYmlsaXR5IFRva2VuIgogICAgICAgICAgICBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5Lm5vZGUgLT4gUHJvY2Vzc1NpbVB5LlByb2NTaW1QeS5xdWV1ZSAiSGFzIG5vIGF2YWlsYWJpbGl0eSBzbyByZXF1ZXN0IGlzIG5vdCByZXNvbHZlZCIKICAgICAgICAgICAgUHJvY2Vzc1NpbVB5LlByb2NTaW1QeS5xdWV1ZSAtPiBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5LnNlcnZlciAiUmVxdWVzdHMgQXZhaWxhYmlsaXR5IFRva2VuIgogICAgICAgICAgICBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5LnNlcnZlciAtPiBQcm9jZXNzU2ltUHkuUHJvY1NpbVB5LnF1ZXVlICJIYXMgQXZhaWxhYmlsaXR5IFRva2VuIHRvIGdpdmUiCiAgICAgICAgICAgIFByb2Nlc3NTaW1QeS5Qcm9jU2ltUHkucXVldWUgLT4gUHJvY2Vzc1NpbVB5LlByb2NTaW1QeS5zZXJ2ZXIgIlJvdXRlcyBFbnRpdHkgYmFzZWQgb24gYXZhaWxhYmlsaXR5IFRva2VucyIKICAgICAgICAgICAgIyBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQogICAgfQogICAgCn0="
   },
   "views" : {
     "componentViews" : [ {
       "containerId" : "2",
       "dimensions" : {
-        "height" : 3589,
-        "width" : 4504
+        "height" : 3190,
+        "width" : 3726
       },
       "elements" : [ {
         "id" : "3",
-        "x" : 3725,
-        "y" : 3190
+        "x" : 890,
+        "y" : 220
       }, {
         "id" : "4",
-        "x" : 1855,
-        "y" : 2271
+        "x" : 1721,
+        "y" : 185
       }, {
         "id" : "5",
-        "x" : 1855,
-        "y" : 3190
+        "x" : 891,
+        "y" : 1681
       }, {
         "id" : "6",
-        "x" : 3725,
-        "y" : 1588
+        "x" : 890,
+        "y" : 1195
       }, {
         "id" : "7",
-        "x" : 3725,
-        "y" : 889
+        "x" : 1690,
+        "y" : 1380
       }, {
         "id" : "8",
-        "x" : 3101,
-        "y" : 889
+        "x" : 890,
+        "y" : 715
       }, {
         "id" : "9",
-        "x" : 2478,
-        "y" : 890
+        "x" : 1515,
+        "y" : 710
       }, {
         "id" : "10",
-        "x" : 1855,
-        "y" : 880
+        "x" : 2245,
+        "y" : 715
       }, {
         "id" : "11",
-        "x" : 870,
-        "y" : 195
+        "x" : 2890,
+        "y" : 715
       }, {
         "id" : "12",
-        "x" : 1855,
-        "y" : 195
+        "x" : 891,
+        "y" : 2168
       }, {
         "id" : "13",
-        "x" : 2819,
-        "y" : 2278
+        "x" : 1595,
+        "y" : 2150
       }, {
         "id" : "14",
-        "x" : 870,
-        "y" : 2285
+        "x" : 3005,
+        "y" : 2150
       }, {
         "id" : "15",
-        "x" : 1560,
-        "y" : 1588
+        "x" : 2299,
+        "y" : 2135
       }, {
         "id" : "16",
-        "x" : 870,
-        "y" : 1590
+        "x" : 2585,
+        "y" : 1681
       }, {
         "id" : "17",
-        "x" : 1855,
-        "y" : 2730
+        "x" : 2585,
+        "y" : 1195
       }, {
-        "id" : "44",
-        "x" : 225,
-        "y" : 3190
+        "id" : "42",
+        "x" : 891,
+        "y" : 2655
       }, {
-        "id" : "110",
+        "id" : "56",
         "x" : 200,
-        "y" : 195
+        "y" : 225
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "AllComponents",
       "order" : 2,
       "relationships" : [ {
-        "id" : "113"
-      }, {
         "id" : "18"
       }, {
         "id" : "19"
@@ -1057,24 +619,17 @@
       }, {
         "id" : "41"
       }, {
-        "id" : "42"
+        "id" : "47"
       }, {
-        "id" : "43"
-      }, {
-        "id" : "49"
-      }, {
-        "id" : "53"
-      }, {
-        "id" : "55"
-      }, {
-        "id" : "56"
+        "id" : "51"
       }, {
         "id" : "57"
       } ]
     } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "AllComponents",
+      "lastSavedView" : "Handover",
+      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
       "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
@@ -1094,19 +649,23 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "44",
+        "id" : "42",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "108",
+        "id" : "53",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "109",
+        "id" : "54",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "110",
+        "id" : "55",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "56",
         "x" : 0,
         "y" : 0
       } ],
@@ -1114,298 +673,81 @@
       "key" : "UserInteraction",
       "order" : 1,
       "relationships" : [ {
-        "id" : "111"
+        "id" : "49"
       }, {
-        "id" : "119"
+        "id" : "58"
       }, {
-        "id" : "120"
+        "id" : "60"
       }, {
-        "id" : "124"
+        "id" : "61"
       }, {
-        "id" : "51"
+        "id" : "62"
+      }, {
+        "id" : "64"
       } ],
       "softwareSystemId" : "1"
     } ],
     "dynamicViews" : [ {
       "dimensions" : {
-        "height" : 1351,
-        "width" : 3117
+        "height" : 1411,
+        "width" : 1640
       },
       "elementId" : "2",
       "elements" : [ {
-        "id" : "6",
-        "x" : 219,
-        "y" : 185
-      }, {
         "id" : "7",
-        "x" : 2446,
-        "y" : 725
-      }, {
-        "id" : "8",
-        "x" : 1703,
-        "y" : 721
+        "x" : 1080,
+        "y" : 100
       }, {
         "id" : "9",
-        "x" : 961,
-        "y" : 717
+        "x" : -15,
+        "y" : 120
       }, {
         "id" : "10",
-        "x" : 219,
-        "y" : 713
+        "x" : 1040,
+        "y" : 725
       } ],
       "externalBoundariesVisible" : false,
-      "key" : "HandoverWithCapacity",
+      "key" : "Handover",
       "order" : 3,
       "relationships" : [ {
-        "description" : "Entity is created by Source",
-        "id" : "43",
+        "description" : "Requests Availability Token",
+        "id" : "28",
         "order" : "1",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 365,
-          "y" : 615
-        } ]
+        "response" : false
       }, {
-        "description" : "Entity is assigned to Source",
-        "id" : "43",
+        "description" : "Has no availability so request is not resolved",
+        "id" : "28",
         "order" : "2",
         "response" : true,
         "vertices" : [ {
-          "x" : 520,
-          "y" : 595
+          "x" : 760,
+          "y" : 410
         } ]
       }, {
-        "description" : "Source asks if reciver canRecieve",
-        "id" : "55",
+        "description" : "Requests Availability Token",
+        "id" : "41",
         "order" : "3",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 815,
-          "y" : 750
-        } ]
+        "response" : false
       }, {
-        "description" : "If not at Capacity returns True",
-        "id" : "55",
+        "description" : "Has Availability Token to give",
+        "id" : "41",
         "order" : "4",
         "response" : true,
         "vertices" : [ {
-          "x" : 810,
-          "y" : 870
+          "x" : 800,
+          "y" : 845
         } ]
       }, {
-        "description" : "Triggers isRequested Event on Queue",
-        "id" : "55",
+        "description" : "Routes Entity based on availability Tokens",
+        "id" : "41",
         "order" : "5",
         "response" : false,
         "vertices" : [ {
-          "x" : 800,
-          "y" : 980
-        } ]
-      }, {
-        "description" : "Queue asks if reciver canRecieve",
-        "id" : "56",
-        "order" : "6",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 1560,
-          "y" : 760
-        } ]
-      }, {
-        "description" : "Machine is waiting so returns true",
-        "id" : "56",
-        "order" : "7",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 1565,
-          "y" : 870
-        } ]
-      }, {
-        "description" : "Triggers isRequested Event on Machine",
-        "id" : "56",
-        "order" : "8",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 1575,
-          "y" : 980
-        } ]
-      }, {
-        "description" : "Machine asks if reciver canRecieve",
-        "id" : "57",
-        "order" : "9",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 2305,
-          "y" : 770
-        } ]
-      }, {
-        "description" : "Exit can always recive",
-        "id" : "57",
-        "order" : "10",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 2300,
-          "y" : 875
-        } ]
-      }, {
-        "description" : "Triggers isRequested Event on Exit",
-        "id" : "57",
-        "order" : "11",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 2300,
-          "y" : 975
+          "x" : 760,
+          "y" : 1045
         } ]
       } ],
-      "title" : "Core Handover of Entity, Machine is waiting"
-    }, {
-      "dimensions" : {
-        "height" : 1351,
-        "width" : 3117
-      },
-      "elementId" : "2",
-      "elements" : [ {
-        "id" : "6",
-        "x" : 219,
-        "y" : 185
-      }, {
-        "id" : "7",
-        "x" : 2446,
-        "y" : 725
-      }, {
-        "id" : "8",
-        "x" : 1703,
-        "y" : 721
-      }, {
-        "id" : "9",
-        "x" : 961,
-        "y" : 717
-      }, {
-        "id" : "10",
-        "x" : 219,
-        "y" : 713
-      } ],
-      "externalBoundariesVisible" : false,
-      "key" : "HandoverWithoutCapacity",
-      "order" : 4,
-      "relationships" : [ {
-        "description" : "Entity is created by Source",
-        "id" : "43",
-        "order" : "1",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 365,
-          "y" : 615
-        } ]
-      }, {
-        "description" : "Entity is assigned to Source",
-        "id" : "43",
-        "order" : "2",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 520,
-          "y" : 595
-        } ]
-      }, {
-        "description" : "Source asks if reciver canRecieve",
-        "id" : "55",
-        "order" : "3",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 815,
-          "y" : 750
-        } ]
-      }, {
-        "description" : "If not at Capacity returns True",
-        "id" : "55",
-        "order" : "4",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 810,
-          "y" : 870
-        } ]
-      }, {
-        "description" : "Triggers isRequested Event on Queue",
-        "id" : "55",
-        "order" : "5",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 800,
-          "y" : 980
-        } ]
-      }, {
-        "description" : "Queue asks if reciver canRecieve",
-        "id" : "56",
-        "order" : "6",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 1557,
-          "y" : 869
-        } ]
-      }, {
-        "description" : "Machine is working so returns false",
-        "id" : "56",
-        "order" : "7",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 1557,
-          "y" : 719
-        } ]
-      }, {
-        "description" : "After some time asks if giver canGive",
-        "id" : "56",
-        "order" : "8",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 1556,
-          "y" : 1018
-        } ]
-      }, {
-        "description" : "if has Entity returns ture",
-        "id" : "56",
-        "order" : "9",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 1558,
-          "y" : 569
-        } ]
-      }, {
-        "description" : "Triggers canGispose Event on Queue",
-        "id" : "56",
-        "order" : "10",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 1555,
-          "y" : 1168
-        } ]
-      }, {
-        "description" : "Machine asks if reciver canRecieve",
-        "id" : "57",
-        "order" : "11",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 2299,
-          "y" : 873
-        } ]
-      }, {
-        "description" : "Exit can always recive",
-        "id" : "57",
-        "order" : "12",
-        "response" : true,
-        "vertices" : [ {
-          "x" : 2300,
-          "y" : 723
-        } ]
-      }, {
-        "description" : "Triggers isRequested Event on Exit",
-        "id" : "57",
-        "order" : "13",
-        "response" : false,
-        "vertices" : [ {
-          "x" : 2298,
-          "y" : 1022
-        } ]
-      } ],
-      "title" : "Core Handover of Entity, Machine is working"
+      "title" : "Handover Process"
     } ]
   }
 }

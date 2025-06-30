@@ -1,39 +1,43 @@
-Process = softwareSystem "Process SimPy"{
+ProcessSimPy = softwareSystem "Process SimPy"{
     ProcSimPy = container "ProcSimPy"{
-        base = component "BaseObject"{
-            description "Ensures unique id and output Tracing"
-        }
-        store = component "StoreNode"{
-            description "Node in the Process of consideration"
-        }
-        res = component "ResourceObject"{
-            description "A Limitied Resource a StoreNode may need to preform its step"
-        }
-        entity = component "Entity"{
-            description "Generic for the item the Process is being preform on, Manufactured Part or Customer engaging is service"
-        }
-        exit = component "Exit"{
-            description "Abstract for the end of the Process"
-        }
-        machine = component "Machine"{
-            description "Node that requires time to complete its process"
-        }
-        queue = component "Queue"{
-            description "Buffer or Routing Node"
-        }
-        source = component "Source"{
-            description "Abstract for the begining of the Process, Customer initial engagement or warehouse of stock"
-        }
         experiment = component "Experiment"{
             description "Cordinator for running experiment iteration and output of data"
         }
         line = component "Line"{
-            description "State tracker and Broker between nodes"
+            description "State tracker and Broker between Nodes"
         }
 
-        operator = component "Operator"{
-            description "Personnel Resource Required for task"
+        base = component "Base"{
+            description "Ensures unique id, connection to SimPy Environment and output tracing"
         }
+
+        entity = component "Entity"{
+            description "Generic for the item the Process is being preformed on, Manufactured Part or Customer engaging is service"
+        }
+
+        node = component "Node"{
+            description "Generic Node for a Step in a Process"
+        }
+
+        source = component "Source"{
+            description "Abstract for the beginning of the Process, Customer initial engagement or warehouse of stock"
+        }
+        queue = component "Queue"{
+            description "Buffer or Routing Node"
+        }
+        server = component "Server"{
+            description "Node that requires time to complete its work"
+        }
+        exit = component "Exit"{
+            description "Abstract for the end of the Process"
+        }
+
+        res = component "Resource"{
+            description "A Limiting Factor for the process, eg Number of Repair Technicians"
+        }
+        # operator = component "Operator"{
+        #     description "Personnel Resource Required for task"
+        # }
         repair = component "Repair Technician" {
             description "Personnel Resource With ability to repair failures"
         }
@@ -50,57 +54,59 @@ Process = softwareSystem "Process SimPy"{
             description "Controls timing for Shifts and breaks"
         }
 
-        shift -> store "Influences operating times"
-        shift -> res "Influences operating times"
-
-        operator -> res "Is a Resource"
-        repair -> res "Is a Resource"
-
-        operator -> store "Can be required by"
-
-        interruption -> store "Non Ideal situation to deal with"
-        failure -> interruption "Interruption to stop Node until repair"
-        failure -> store "Stops Process until repaired"
-        repair -> failure "Able to correct cause of failure"
-
-        repair -> store "Repairs Failure"
-
-        entity -> base "Inherits"
-
-        store -> base "Inherits"
-        res -> base "Inherits"
-
-        exit -> store "Is a Node"
-        machine -> store "Is a Node"
-        queue -> store "Is a Node"
-        source -> store "Is a Node"
+        stats = component "Statistics"{
+            description "Records stats for model component"
+        }
 
         experiment -> line "Creates a line to run experiment"
 
         line -> source "Manages"
         line -> queue "Manages"
-        line -> machine "Manages"
+        line -> server "Manages"
         line -> exit "Manages"
 
+        entity -> base "Inherits"
+
+        node -> base "Inherits"
+        res -> base "Inherits"
+
+        exit -> node "Is a Node"
+        server -> node "Is a Node"
+        queue -> node "Is a Node"
+        source -> node "Is a Node"
+
         exit -> entity "Consumes"
-        machine -> entity "Consumes"
+        server -> entity "Consumes"
         queue -> entity "Consumes"
         source -> entity "Consumes"
 
-        #TODO Statistics
-        #TODO Sub processes (Entity createion, process entity)
-    }
+        repair -> node "Repairs Failure"
 
+        shift -> node "Influences operating times"
+        # shift -> res "Influences operating times"
+
+        # operator -> res "Is a Resource"
+        repair -> res "Is a Resource"
+
+        # operator -> node "Can be required by"
+
+        # interruption -> node "Non Ideal situation to deal with"
+        failure -> interruption "Interruption until repair"
+        failure -> node "Stops Process until repaired"
+        repair -> failure "Able to correct cause of failure"
+
+        stats -> node "Records stats"
+
+        queue -> server "Has Successor"
+
+    }
+    
     simpyV4 = container "SimPy Version 4"{
         store = component "Store"
         res = component "Resource"
         env = component "Environment"
     }
 
-    ProcSimPy.store -> simpyV4.store "Depends"
+    ProcSimPy.node -> simpyV4.store "Depends"
     ProcSimPy.res -> simpyV4.res "Depends"
-    
-    ProcSimPy.source -> ProcSimPy.queue "has Successor"
-    ProcSimPy.queue -> ProcSimPy.machine "has Successor"
-    ProcSimPy.machine -> ProcSimPy.exit "has Successor"
 }

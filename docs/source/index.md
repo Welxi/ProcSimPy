@@ -10,6 +10,7 @@ Reference/Entity.md
 Reference/Experiment.md
 Reference/Line.md
 Reference/Probability.md
+Reference/withDiagram.md
 guides/new_to_simulation.md
 guides/setting_up_your_experiment.md
 guides/installation.md
